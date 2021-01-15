@@ -1,0 +1,56 @@
+server:
+  port: 9000
+---
+spring:
+  profiles: LOCAL, default, test
+  authKey: mockAuthKey
+  datasource:
+    url: jdbc:postgresql://192.168.99.100:5432/cag_db
+    username: postgres
+    password: ${PSQL_PASSWORD:defaultPassword}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 4
+    jpa:
+      database: postgresql
+      hibernate:
+        ddl-auto: create
+      properties:
+        hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+---
+spring:
+  profiles: DOCKER_TOOLBOX
+  authKey: mockAuthKey
+  datasource:
+    url: jdbc:postgresql://192.168.99.100:5432/cag_db
+    username: postgres
+    password: ${PSQL_PASSWORD:defaultPassword}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 4
+    jpa:
+      database: postgresql
+      hibernate:
+        ddl-auto: create
+      properties:
+        hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+---
+spring:
+  profiles: PROD
+  authKey: mockAuthKey
+  datasource:
+    url: jdbc:postgresql://ec2-54-161-58-21.compute-1.amazonaws.com:5432/cag_db?currentSchema=public
+    username: postgres
+    password: ${PSQL_PASSWORD:defaultPassword}
+  hikari:
+    minimum-idle: 2
+    maximum-pool-size: 4
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

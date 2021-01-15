@@ -1,1 +1,1 @@
-# cag-backend-api
+# Chicago Artist Guide Backend API Project

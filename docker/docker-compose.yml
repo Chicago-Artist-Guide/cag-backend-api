@@ -1,0 +1,13 @@
+version: "3"
+services:
+  db:
+    image: "postgres:11"
+    container_name: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: cag_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - /var/lib/postgresql/data
