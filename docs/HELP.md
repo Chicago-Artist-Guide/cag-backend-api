@@ -1,9 +1,4 @@
 # Read Me First
-The following was discovered as part of building this project:
-
-* The original package name 'com.demo.kafka.spring-boot-kafka-project' is invalid and this project uses 'com.demo.kafka.springbootkafkaproject' instead.
-
-# Getting Started
 
 ### Reference Documentation
 For further reference, please consider the following sections:
@@ -25,4 +20,3 @@ The following guides illustrate how to use some features concretely:
 These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
