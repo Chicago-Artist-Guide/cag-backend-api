@@ -2,14 +2,12 @@ package com.cag.cagbackendapi.integration
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
-import com.cag.cagbackendapi.error.ErrorDetails
-import com.cag.cagbackendapi.error.exceptions.UnauthorizedException
-import com.cag.cagbackendapi.model.UserModel
+import com.cag.cagbackendapi.errors.ErrorDetails
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -27,7 +25,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_validInput_201Success() {
-        val testUser = UserModel("john testy", "jj@aol.com")
+        val testUser = UserDto("john testy", "jj@aol.com")
 
         val headers = HttpHeaders()
         headers.set("authKey", "mockAuthKey")
@@ -42,7 +40,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_emptyMessage_401Unauthorized() {
-        val testUser = UserModel("john testy", "jj@aol.com")
+        val testUser = UserDto("john testy", "jj@aol.com")
 
         val headers = HttpHeaders()
         headers.set("authKey", "wrongAuthKey")

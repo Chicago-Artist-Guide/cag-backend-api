@@ -1,4 +1,4 @@
-package com.cag.cagbackendapi.service.organization;
+package com.cag.cagbackendapi.services.organization;
 
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;

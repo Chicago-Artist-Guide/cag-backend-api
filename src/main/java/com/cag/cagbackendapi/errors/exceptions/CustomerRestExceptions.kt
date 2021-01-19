@@ -1,4 +1,4 @@
-package com.cag.cagbackendapi.error.exceptions
+package com.cag.cagbackendapi.errors.exceptions
 
 class BadRequestException(errorMessage: String?, cause: Throwable?) : Exception(errorMessage, cause)
 

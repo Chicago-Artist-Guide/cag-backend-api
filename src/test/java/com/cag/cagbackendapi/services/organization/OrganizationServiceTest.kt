@@ -1,4 +1,4 @@
-package com.cag.cagbackendapi.service.organization
+package com.cag.cagbackendapi.services.organization
 
 import com.nhaarman.mockito_kotlin.*
 import org.mockito.Mock

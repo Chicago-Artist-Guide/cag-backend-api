@@ -1,10 +1,10 @@
-package com.cag.cagbackendapi.controller
+package com.cag.cagbackendapi.controllers
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
-import com.cag.cagbackendapi.error.exceptions.UnauthorizedException
-import com.cag.cagbackendapi.model.UserModel
-import com.cag.cagbackendapi.service.user.UserService
-import com.cag.cagbackendapi.service.validation.ValidationService
+import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
+import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.services.user.UserService
+import com.cag.cagbackendapi.services.validation.ValidationService
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -25,7 +25,7 @@ class UserControllerTest {
     @Test
     fun registerUser_validInput_returns201() {
         val testAuthKey = "testAuthKey"
-        val testUser = UserModel(name = "John Smith", email = "johnjohn@aol.com")
+        val testUser = UserDto(name = "John Smith", email = "johnjohn@aol.com")
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         doNothing().whenever(userService).registerUser(testUser)
@@ -40,7 +40,7 @@ class UserControllerTest {
     @Test
     fun registerUser_missingAuthKey_401UnauthorizedRequest() {
         val testAuthKey = ""
-        val testUser = UserModel(name = "john smith", email = "jj@aol.com")
+        val testUser = UserDto(name = "john smith", email = "jj@aol.com")
 
         val exception = UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null)
 

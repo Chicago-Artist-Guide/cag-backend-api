@@ -1,7 +1,7 @@
-package com.cag.cagbackendapi.service.validation;
+package com.cag.cagbackendapi.services.validation;
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
-import com.cag.cagbackendapi.error.exceptions.UnauthorizedException;
+import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

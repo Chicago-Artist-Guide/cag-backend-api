@@ -1,4 +1,4 @@
-package com.cag.cagbackendapi.error;
+package com.cag.cagbackendapi.errors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

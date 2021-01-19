@@ -1,8 +1,8 @@
-package com.cag.cagbackendapi.service.validation
+package com.cag.cagbackendapi.services.validation
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
-import com.cag.cagbackendapi.error.exceptions.BadRequestException
-import com.cag.cagbackendapi.error.exceptions.InternalServerErrorException
+import com.cag.cagbackendapi.errors.exceptions.BadRequestException
+import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

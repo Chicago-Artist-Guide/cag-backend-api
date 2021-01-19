@@ -1,7 +1,7 @@
-package com.cag.cagbackendapi.error;
+package com.cag.cagbackendapi.errors;
 
 import com.cag.cagbackendapi.constants.RestErrorMessages;
-import com.cag.cagbackendapi.error.exceptions.*;
+import com.cag.cagbackendapi.errors.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

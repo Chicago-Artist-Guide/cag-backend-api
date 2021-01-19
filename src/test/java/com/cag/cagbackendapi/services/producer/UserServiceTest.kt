@@ -1,7 +1,7 @@
-package com.cag.cagbackendapi.service.producer
+package com.cag.cagbackendapi.services.producer
 
-import com.cag.cagbackendapi.model.UserModel
-import com.cag.cagbackendapi.service.user.UserService
+import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.services.user.UserService
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class UserServiceTest {
     @Test
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
-        val inputUser = UserModel("testy tester", "testytester@aol.com")
+        val inputUser = UserDto("testy tester", "testytester@aol.com")
         val testMessage = "#### -> Producing message -> $inputUser"
 
         doNothing().whenever(logger).info(testMessage)
@@ -43,7 +43,7 @@ class UserServiceTest {
     @Test
     fun sendMessage_validButEmptyMessage_logsAndSucceeds() {
         // assemble
-        val inputUser = UserModel("", "")
+        val inputUser = UserDto("", "")
         val testMessage = "#### -> Producing message -> $inputUser"
 
         doNothing().whenever(logger).info(testMessage)

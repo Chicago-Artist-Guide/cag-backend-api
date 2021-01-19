@@ -1,9 +1,9 @@
-package com.cag.cagbackendapi.controller;
+package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.error.exceptions.UnauthorizedException;
-import com.cag.cagbackendapi.model.UserModel;
-import com.cag.cagbackendapi.service.user.UserService;
-import com.cag.cagbackendapi.service.validation.ValidationService;
+import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException;
+import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.services.user.UserService;
+import com.cag.cagbackendapi.services.validation.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/user")
+@CrossOrigin
 public class UserController {
 
     private final ValidationService validationService;
@@ -23,13 +24,14 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserModel> registerUser(
-            @RequestBody UserModel userModel,
-            @RequestHeader("authKey") String authKey
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<UserDto> registerUser(
+            @RequestParam("authKey") String authKey,
+            @RequestBody UserDto user
     ) throws UnauthorizedException {
         this.validationService.validateAuthKey(authKey);
-        this.userService.registerUser(userModel);
+        this.userService.registerUser(user);
 
-        return new ResponseEntity<>(userModel, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }
