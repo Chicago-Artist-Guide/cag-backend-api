@@ -5,7 +5,7 @@ spring:
   profiles: LOCAL, default, test
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://192.168.99.100:5432/cag_db
+    url: jdbc:postgresql://localhost:5432/cag_db
     username: cag_admin
     password: ${PSQL_PASSWORD:cag_pass}
     hikari:
@@ -20,7 +20,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 ---
 spring:
-  profiles: DOCKER_TOOLBOX
+  profiles: WINDOWS
   authKey: mockAuthKey
   datasource:
     url: jdbc:postgresql://192.168.99.100:5432/cag_db
@@ -41,7 +41,7 @@ spring:
   profiles: PROD
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://ec2-54-161-58-21.compute-1.amazonaws.com:5432/cag_db?currentSchema=public
+    url: tbd
     username: cag_admin
     password: ${PSQL_PASSWORD:cag_pass}
   hikari:

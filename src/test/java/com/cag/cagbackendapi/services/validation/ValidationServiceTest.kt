@@ -1,9 +1,11 @@
 package com.cag.cagbackendapi.services.validation
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
-import com.cag.cagbackendapi.errors.exceptions.BadRequestException
-import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
-import com.nhaarman.mockito_kotlin.*
+import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
+import com.nhaarman.mockito_kotlin.doNothing
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.verifyZeroInteractions
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.slf4j.Logger
+import java.lang.reflect.Field
 
 @ExtendWith(MockitoExtension::class)
 internal class ValidationServiceTest {
@@ -23,26 +26,14 @@ internal class ValidationServiceTest {
     private lateinit var validationService: ValidationService
 
     @Test
-    fun validateAuthKey_validAuthKey_succeeds() {
-        // assemble
-        val requestAuthKey = "key"
-
-        // act
-        validationService.validateAuthKey(requestAuthKey)
-
-        // assert
-        verifyZeroInteractions(logger)
-    }
-
-    @Test
-    fun validateAuthKey_blankMessage_400BadRequest() {
+    fun validateAuthKey_emptyAuthKey_401Unauthorized() {
         // assemble
         val inputMessage = ""
 
         doNothing().whenever(logger).error(DetailedErrorMessages.MISSING_AUTH_KEY)
 
         // act
-        val actual = assertThrows<BadRequestException> {
+        val actual = assertThrows<UnauthorizedException> {
             validationService.validateAuthKey(inputMessage)
         }
 
@@ -53,14 +44,14 @@ internal class ValidationServiceTest {
     }
 
     @Test
-    fun validateAuthKey_nullMessage_400BadRequest() {
+    fun validateAuthKey_nullAuthKey_401Unauthorized() {
         // assemble
         val inputMessage = null
 
         doNothing().whenever(logger).error(DetailedErrorMessages.MISSING_AUTH_KEY)
 
         // act
-        val actual = assertThrows<BadRequestException> {
+        val actual = assertThrows<UnauthorizedException> {
             validationService.validateAuthKey(inputMessage)
         }
 
@@ -71,20 +62,20 @@ internal class ValidationServiceTest {
     }
 
     @Test
-    fun validateAuthKey_messageWithMoney_400BadRequest() {
+    fun validateAuthKey_wrongAuthKey_401Unauthorized() {
         // assemble
-        val inputMessage = "null$"
+        val inputMessage = "wrongAuthKey"
 
-        doNothing().whenever(logger).error(DetailedErrorMessages.MISSING_AUTH_KEY)
+        doNothing().whenever(logger).error(DetailedErrorMessages.WRONG_AUTH_KEY)
 
         // act
-        val actual = assertThrows<InternalServerErrorException> {
+        val actual = assertThrows<UnauthorizedException> {
             validationService.validateAuthKey(inputMessage)
         }
 
         // assert
-        assertEquals(actual.message, DetailedErrorMessages.MISSING_AUTH_KEY)
-        verify(logger).error(DetailedErrorMessages.MISSING_AUTH_KEY)
+        assertEquals(actual.message, DetailedErrorMessages.WRONG_AUTH_KEY)
+        verify(logger).error(DetailedErrorMessages.WRONG_AUTH_KEY)
         verifyZeroInteractions(logger)
     }
 }

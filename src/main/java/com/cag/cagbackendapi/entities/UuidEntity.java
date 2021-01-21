@@ -14,4 +14,8 @@ public class UuidEntity {
     public UuidEntity() {
         this.id = UUID.randomUUID();
     }
+
+    public UUID getId() {
+        return id;
+    }
 }

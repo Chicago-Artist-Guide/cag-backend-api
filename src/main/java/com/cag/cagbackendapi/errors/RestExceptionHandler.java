@@ -16,7 +16,7 @@ import java.util.Date;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(Exception.class);
+    private final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(value = { BadRequestException.class })
     protected ResponseEntity<ErrorDetails> handleBadRequestException(Exception ex, WebRequest request) {

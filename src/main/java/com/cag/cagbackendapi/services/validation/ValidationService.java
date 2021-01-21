@@ -18,7 +18,7 @@ public class ValidationService {
         this.logger = logger;
     }
 
-    public void validateAuthKey(String requestAuthKey) throws UnauthorizedException {
+    public void validateAuthKey(String requestAuthKey) {
         if (requestAuthKey == null || requestAuthKey.isEmpty()) {
             logger.error(DetailedErrorMessages.MISSING_AUTH_KEY);
             throw new UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null);

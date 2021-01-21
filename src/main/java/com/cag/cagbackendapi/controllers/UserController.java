@@ -1,6 +1,5 @@
 package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException;
 import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.services.user.UserService;
 import com.cag.cagbackendapi.services.validation.ValidationService;
@@ -26,12 +25,12 @@ public class UserController {
     @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserDto> registerUser(
-            @RequestParam("authKey") String authKey,
-            @RequestBody UserDto user
-    ) throws UnauthorizedException {
+            @RequestHeader("authKey") String authKey,
+            @RequestBody UserDto userDto
+    ) {
         this.validationService.validateAuthKey(authKey);
-        this.userService.registerUser(user);
+        this.userService.registerUser(userDto);
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 }
