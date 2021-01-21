@@ -57,7 +57,7 @@ Now that your database is running, navigate in Intellij to the: **src -> main ->
 
 See my windows build config for reference:
 
-![alt tag](./docs/imgs/windows-build-config.jpg)
+![alt tag](./docs/imgs/windows-build-config.JPG)
 
 ## Postman
 
