@@ -1,6 +1,6 @@
 # Chicago Artist Guide Backend API Project
 
-## To run this project you'll need to install these free apps:.
+## To run this project you'll need to install these free apps:
 
 - Intellij IDEA Community Edition: https://www.jetbrains.com/idea/download/#section=windows
 - Docker: https://docs.docker.com/get-docker/
