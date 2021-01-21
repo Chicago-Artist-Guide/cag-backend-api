@@ -68,3 +68,19 @@ Now that you're running your project that's connected to the database, let's hit
 In our collection, you'll see a **local/** and **prod/** directory. Our local requests point to the local app running on our local machines, while the prod folder will point to our deployed application. If your app is running in Intellij and your postgres database is running in docker - you should be able to use the saveUser request in the local directory in our postman collection to save a new test user to our database. It should look like this when you run it:
 
 ![alt tag](./docs/imgs/postman-save-user-request.jpg)
+
+## Swagger UI
+
+To make it even easier to interact with our endpoints - I added Swagger-UI. Now when you run the application and view it in your browser you'll be taken to our Swagger-UI page where you can send requests to any of our endpoints just like you would in Postman. The URL I use to get to this page is: **http://localhost:9000/**.
+
+![alt tag](./docs/imgs/swagger-ui.JPG)
+
+Once on this screen, you can click any of our requests, then click the "Try It Out" button on the request. You'll then be prompted to enter in all the information for the request. In this case, it's the authKey and the user request body:
+
+![alt tag](./docs/imgs/swagger-register-user-request.JPG)
+
+Now that you've entered this information you can click the blue "Execute" button to send the request:
+
+![alt tag](./docs/imgs/swagger-register-user-response.JPG)
+
+If you scroll down, you'll see the response from the request. In this case, I got 201 and the created user details returned back to me.
