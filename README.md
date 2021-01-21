@@ -41,6 +41,8 @@ The first step to running the project is to setup your database because if your 
 
 To do this: If you're on mac you can do to your terminal, if you're on windows go to Docker Quickstart Terminal. Then "cd" into the project and into the "docker/" directory. From there, run the command: "docker-compose up". This should download the postgres docker container and start to run your postgres database.
 
+![alt tag](./docs/imgs/windows-docker-run-container.JPG)
+
 With the DB Navigator plugin installed, the **DB Browser** menu should appear in your intellij. Open the DB Browser menu, click the green plus sign, add a new PostgreSQL connection. On the menu that appears to add the connection, populate it with values like this:
 
 Windows:
