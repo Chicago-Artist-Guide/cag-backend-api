@@ -4,8 +4,8 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
-import com.cag.cagbackendapi.services.user.UserService
-import com.cag.cagbackendapi.services.validation.ValidationService
+import com.cag.cagbackendapi.services.user.impl.UserService
+import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

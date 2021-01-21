@@ -1,8 +1,8 @@
 package com.cag.cagbackendapi.controllers;
 
 import com.cag.cagbackendapi.dtos.UserDto;
-import com.cag.cagbackendapi.services.user.UserService;
-import com.cag.cagbackendapi.services.validation.ValidationService;
+import com.cag.cagbackendapi.services.user.impl.UserService;
+import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

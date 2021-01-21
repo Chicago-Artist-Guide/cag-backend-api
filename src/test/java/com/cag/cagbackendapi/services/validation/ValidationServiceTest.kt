@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.services.validation
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
+import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockito_kotlin.doNothing
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
@@ -14,7 +15,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.slf4j.Logger
-import java.lang.reflect.Field
 
 @ExtendWith(MockitoExtension::class)
 internal class ValidationServiceTest {

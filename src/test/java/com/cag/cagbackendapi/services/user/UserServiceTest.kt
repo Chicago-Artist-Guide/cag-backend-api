@@ -2,10 +2,11 @@ package com.cag.cagbackendapi.services.user
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
-import com.cag.cagbackendapi.daos.UserDao
+import com.cag.cagbackendapi.daos.impl.UserDao
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
+import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockito_kotlin.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -1,5 +1,6 @@
 package com.cag.cagbackendapi.services.organization
 
+import com.cag.cagbackendapi.services.organization.impl.OrganizationService
 import com.nhaarman.mockito_kotlin.*
 import org.mockito.Mock
 import org.mockito.InjectMocks

@@ -15,8 +15,8 @@ import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value = ["LOCAL"], resolver = SpringCommandLineProfileResolver::class)
-class UserEntityControllerIntegrationTests {
+@ActiveProfiles(value = ["WINDOWS"], resolver = SpringCommandLineProfileResolver::class)
+class UserControllerIntegrationTests {
 
     @Autowired
     lateinit var testRestTemplate: TestRestTemplate

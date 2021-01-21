@@ -1,6 +1,7 @@
-package com.cag.cagbackendapi.daos
+package com.cag.cagbackendapi.daos.impl
 
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_USER
+import com.cag.cagbackendapi.daos.UserDaoI
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.repositories.UserRepository
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UserDao {
+class UserDao : UserDaoI {
     @Autowired
     private lateinit var userRepository: UserRepository
 
@@ -21,7 +22,7 @@ class UserDao {
     @Autowired
     private lateinit var modelMapper: ModelMapper
 
-    fun saveUser(userDto: UserDto): UserDto {
+    override fun saveUser(userDto: UserDto): UserDto {
         if (userDto.id == null) {
             userDto.id = UUID.randomUUID()
         }

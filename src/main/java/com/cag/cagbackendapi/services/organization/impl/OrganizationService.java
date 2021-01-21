@@ -1,10 +1,11 @@
-package com.cag.cagbackendapi.services.organization;
+package com.cag.cagbackendapi.services.organization.impl;
 
+import com.cag.cagbackendapi.services.organization.OrganizationServiceI;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrganizationService {
+public class OrganizationService implements OrganizationServiceI {
 
     private final Logger logger;
 

@@ -1,14 +1,15 @@
-package com.cag.cagbackendapi.services.user;
+package com.cag.cagbackendapi.services.user.impl;
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
-import com.cag.cagbackendapi.daos.UserDao;
+import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
+import com.cag.cagbackendapi.services.user.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserServiceI {
 
     private final UserDao userDao;
 
