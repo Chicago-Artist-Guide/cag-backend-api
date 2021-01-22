@@ -2,12 +2,11 @@ server:
   port: 9000
 ---
 spring:
-  profiles: LOCAL, default, test
+  profiles: LOCAL, default, test, MACOS
   authKey: mockAuthKey
   datasource:
     url: jdbc:postgresql://localhost:5432/cag_db
     username: cag_admin
-    password: ${PSQL_PASSWORD:cag_pass}
     hikari:
       minimum-idle: 2
       maximum-pool-size: 4

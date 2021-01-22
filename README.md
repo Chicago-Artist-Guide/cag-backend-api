@@ -49,6 +49,12 @@ Windows:
 
 ![alt tag](./docs/imgs/windows-db-navigator-config.JPG)
 
+MacOS:
+
+![alt tag](./docs/imgs/macos-db-navigator-config.png)
+
+> NOTE: The only difference in Windows & MacOS is the host address
+
 ## Setting Up Your Build Configuration & Running The Project
 
 Now that your database is running, navigate in Intellij to the: **src -> main -> java -> com.cag.cagbackendapi -> CagBackendApiApplication** file. Once in there, if your gradle is working properly you should see a green play button next to the left of the class. Click this play button and run the app. If you're on windows, it will crash because we need to specify the correct spring profile in the build configuration. Go to the build configuration as seen in the image below, and set the **VM options** to: **-Dspring.profiles.active=WINDOWS** in your build configuration. Click apply, and try to run again.
@@ -58,6 +64,12 @@ Now that your database is running, navigate in Intellij to the: **src -> main ->
 See my windows build config for reference:
 
 ![alt tag](./docs/imgs/windows-build-config.JPG)
+
+MacOS Build Config:
+
+![alt tag](./docs/imgs/macos-build-config.png)
+
+> NOTE: If you're using MacOS - you don't need to add the "VM options" for your build configuration because the default Spring profile works on MacOS since it has the host address "localhost". However, you will need to change the active spring profile in our integration test classes from "WINDOWS" to "MACOS" if you want to be able to run our tests on MacOS.
 
 ## Postman
 
