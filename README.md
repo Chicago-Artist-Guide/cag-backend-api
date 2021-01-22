@@ -1,6 +1,8 @@
 # Chicago Artist Guide Backend API Project
 
-## To run this project you'll need to install these free apps:
+I led my team at the Chicago Artist Guide in creating this backend API that powers our frontend react application using tools including: Java, Kotlin, Spring Boot, Docker, Postgres. The Chicago Artist Guide web app is a place for Chicago theatre companies, individual artists, and communities to come together and facilitates the casting process for theatre organizations.
+
+## To develop on and run this project you'll need to install these free apps:
 
 - Intellij IDEA Community Edition: https://www.jetbrains.com/idea/download/#section=windows
 - Docker: https://docs.docker.com/get-docker/
