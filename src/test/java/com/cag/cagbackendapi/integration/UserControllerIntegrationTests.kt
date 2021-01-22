@@ -15,7 +15,7 @@ import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value = ["WINDOWS"], resolver = SpringCommandLineProfileResolver::class)
+@ActiveProfiles(value = ["MACOS"], resolver = SpringCommandLineProfileResolver::class)
 class UserControllerIntegrationTests {
 
     @Autowired

@@ -73,6 +73,16 @@ MacOS Build Config:
 
 > NOTE: If you're using MacOS - you don't need to add the "VM options" for your build configuration because the default Spring profile works on MacOS since it has the host address "localhost". However, you will need to change the active spring profile in our integration test classes from "WINDOWS" to "MACOS" if you want to be able to run our tests on MacOS.
 
+## Running Our Tests
+
+Along with our features we develop, we'll also include testing for each specific use case our feature could possibly encounter. To run our tests, the first thing you'll need to do is ensure that your Intellij preferences build and run our tests from **Gradle** and not **Intellij**. Go to: **Intellij -> Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle**. From there, select: **Gradle** for the "Build and run using:" and the "Run tests using:" drop-down menus. It should look like this when you're done:
+
+![alt tag](./docs/imgs/build-and-run-using-gradle.png)
+
+Now that your settings are correct, make sure your database is up and running. You'll now be able to right-click on the "test" folder and run all of our project tests. See the image below for the correct button to click and the resulting passing tests:
+
+![alt tag](./docs/imgs/run-tests.png)
+
 ## Postman
 
 Now that you're running your project that's connected to the database, let's hit some endpoints! Open Postman. In Postman, click the black "Import" button on the top left of the Postman App next to the "+ New" button. Now navigate to the project directory and click the latest postman collection in the **postman** folder. This will import the collection into your Postman and you'll be able to run the requests in the collection against our app running on your local machine. See below image for help importing:
