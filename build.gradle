@@ -26,7 +26,6 @@ dependencies {
 	implementation "org.modelmapper:modelmapper:2.3.5" //NOTE: Maps objects of one class to another class
 	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0" //NOTE: Makes it so you don't need to annotate your models with @JsonProperty to map fields from json strings
 	implementation "org.apache.httpcomponents:httpclient" //NOTE: Fixes integration test error: I/O error on POST request for "http://localhost:58941/path": cannot retry due to server authentication, in streaming mode; nested exception is java.net.HttpRetryException: cannot retry due to server authentication, in streaming mode
-	implementation "io.franzbecker.gradle-lombok:io.franzbecker.gradle-lombok.gradle.plugin:4.0.0"
 //    implementation "org.flywaydb:flyway-core" //TODO Setup flyway
 
 	runtime "org.springframework.boot:spring-boot-devtools"
