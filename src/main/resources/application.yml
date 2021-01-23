@@ -7,6 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/cag_db?currentSchema=cag_backend_api
     username: cag_admin
+    password: ${PSQL_PASSWORD:cag_pass}
     initialization-mode: always
     hikari:
       minimum-idle: 2
@@ -25,6 +26,7 @@ spring:
   datasource:
     url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
     username: cag_admin
+    password: ${PSQL_PASSWORD:cag_pass}
     initialization-mode: always
     hikari:
       minimum-idle: 2
@@ -36,12 +38,6 @@ spring:
       properties:
         hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-flyway:
-  url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
-  user: cag_admin
-  baseline-on-migrate: true
-  validate-on-migrate: true
-  schemas: cag_backend_api
 ---
 spring:
   profiles: PROD
