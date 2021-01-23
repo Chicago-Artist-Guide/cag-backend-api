@@ -26,9 +26,10 @@ public class UserEntity {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
     private String first_name;
+    private String last_name;
     private String email;
 
     public UserDto toDto() {
-        return new UserDto(this.userId, this.first_name, this.email);
+        return new UserDto(this.userId, this.first_name, this.last_name, this.email);
     }
 }
