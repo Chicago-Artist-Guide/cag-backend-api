@@ -19,6 +19,11 @@ spring:
       properties:
         hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+flyway:
+  url: jdbc:postgresql://localhost:5432/cag_db?currentSchema=cag_backend_api
+  schemas: cag_backend_api
+  user: "cag_admin"
+  password: "cag_pass"
 ---
 spring:
   profiles: WINDOWS
@@ -38,6 +43,11 @@ spring:
       properties:
         hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+flyway:
+  url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
+  schemas: cag_backend_api
+  user: "cag_admin"
+  password: "cag_pass"
 ---
 spring:
   profiles: PROD

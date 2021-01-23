@@ -55,10 +55,3 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
-
-flyway {
-	url = 'jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api'
-	user = 'cag_admin'
-	password = 'cag_pass'
-	schemas = ['cag_backend_api']
-}
