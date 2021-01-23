@@ -38,13 +38,13 @@ class UserControllerIntegrationTests {
 
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertEquals(validTestUser.name, createUser.name)
+        assertEquals(validTestUser.first_name, createUser.first_name)
         assertEquals(validTestUser.email, createUser.email)
-        assertNotNull(createUser.id)
+        assertNotNull(createUser.user_id)
     }
 
     @Test
-    fun registerUser_emptyName_400BadRequest() {
+    fun registerUser_emptyFirstFirstName_400BadRequest() {
         val emptyNameUser = UserDto(null, "", "testuser@aol.com")
 
         val headers = HttpHeaders()
@@ -108,7 +108,7 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_nullEmailAndName400BadRequest() {
+    fun registerUser_nullEmailAndFirstName400BadRequest() {
         val nullEmailUser = UserDto(null, null, null)
 
         val headers = HttpHeaders()

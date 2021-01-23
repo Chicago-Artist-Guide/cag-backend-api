@@ -7,5 +7,5 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, UUID> {
-    UserEntity getById(UUID id);
+    UserEntity getByUserId(UUID user_id);
 }

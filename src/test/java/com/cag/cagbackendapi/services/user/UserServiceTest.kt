@@ -41,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun registerUser_missingNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndEmail_400BadRequest() {
         // assemble
         val inputUser = UserDto(null, null, null)
         val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)

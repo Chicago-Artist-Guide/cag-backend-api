@@ -5,8 +5,9 @@ spring:
   profiles: LOCAL, default, test, MACOS
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://localhost:5432/cag_db
+    url: jdbc:postgresql://localhost:5432/cag_db?currentSchema=cag_backend_api
     username: cag_admin
+    initialization-mode: always
     hikari:
       minimum-idle: 2
       maximum-pool-size: 4
@@ -22,7 +23,31 @@ spring:
   profiles: WINDOWS
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://192.168.99.100:5432/cag_db
+    url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
+    username: cag_admin
+    initialization-mode: always
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 4
+    jpa:
+      database: postgresql
+      hibernate:
+        ddl-auto: create
+      properties:
+        hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+flyway:
+  url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
+  user: cag_admin
+  baseline-on-migrate: true
+  validate-on-migrate: true
+  schemas: cag_backend_api
+---
+spring:
+  profiles: PROD
+  authKey: mockAuthKey
+  datasource:
+    url: tbd
     username: cag_admin
     password: ${PSQL_PASSWORD:cag_pass}
     hikari:
@@ -34,22 +59,4 @@ spring:
         ddl-auto: create
       properties:
         hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
----
-spring:
-  profiles: PROD
-  authKey: mockAuthKey
-  datasource:
-    url: tbd
-    username: cag_admin
-    password: ${PSQL_PASSWORD:cag_pass}
-  hikari:
-    minimum-idle: 2
-    maximum-pool-size: 4
-  jpa:
-    database: postgresql
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+          dialect: org.hibernate.dialect.PostgreSQLDialect
