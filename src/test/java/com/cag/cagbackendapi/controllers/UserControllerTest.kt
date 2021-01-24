@@ -6,7 +6,7 @@ import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.cag.cagbackendapi.services.validation.impl.ValidationService
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -27,8 +27,8 @@ class UserControllerTest {
     @Test
     fun registerUser_validInput_returns201() {
         val testAuthKey = "testAuthKey"
-        val testUser = UserDto(null, "John Smith", "johnjohn@aol.com")
-        val resultUser = UserDto(UUID.randomUUID(), "John Smith", "johnjohn@aol.com")
+        val testUser = UserDto(null, "John", "Smith", "johnjohn@aol.com")
+        val resultUser = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com")
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(testUser)).thenReturn(resultUser)
@@ -41,9 +41,9 @@ class UserControllerTest {
     }
 
     @Test
-    fun registerUser_missingNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndEmail_400BadRequest() {
         val testAuthKey = ""
-        val testUser = UserDto(id = null, name = null, email = null)
+        val testUser = UserDto(user_id = null, first_name = null, last_name = null, email = null)
 
         val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
@@ -64,7 +64,7 @@ class UserControllerTest {
     @Test
     fun registerUser_missingAuthKey_401UnauthorizedRequest() {
         val testAuthKey = ""
-        val testUser = UserDto(id = null, name = "john smith", email = "jj@aol.com")
+        val testUser = UserDto(user_id = null, first_name = "john", last_name = "smith", email = "jj@aol.com")
 
         val unauthorizedException = UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null)
 

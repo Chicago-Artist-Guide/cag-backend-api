@@ -1,55 +1,53 @@
 plugins {
-	id "java"
-	id "org.springframework.boot" version "2.3.3.RELEASE"
-	id "io.spring.dependency-management" version "1.0.10.RELEASE"
-	id "org.jetbrains.kotlin.jvm" version "1.3.72"
+	id "java" //NOTE: The Java plugin adds a number of gradle tasks to the project including: compileJava, processResources, classes, compileTestJava, processTestResources, testClasses, test
+	id "org.springframework.boot" version "2.3.3.RELEASE" //NOTE: The Spring Boot Gradle Plugin provides Spring Boot support in Gradle. It allows you to package executable jar or war archives, run Spring Boot applications, and use the dependency management provided by spring-boot-dependencies. Docs: https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
+	id "io.spring.dependency-management" version "1.0.10.RELEASE" //NOTE: A Gradle plugin that provides Maven-like dependency management and exclusions. Based on the configured dependency management metadata, the Dependency Management Plugin will control the versions of your project’s direct and transitive dependencies and will honour any exclusions declared in the poms of your project’s dependencies. Docs: https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/
+	id "org.jetbrains.kotlin.jvm" version "1.3.72" //NOTE: Needed to add kotlin to our java project
 	id "io.franzbecker.gradle-lombok" version "4.0.0" //NOTE: Needed for lombok
+	id "org.flywaydb.flyway" version "7.5.1"  //NOTE: Flyway is used for database migration management
 }
 
 group = "com.cag.cagbackendapi"
-version = "0.0.1-SNAPSHOT"
-sourceCompatibility = "11"
+version = "1.0.0"
+sourceCompatibility = "11" //NOTE: We're using java 11 with kotlin in the project (But kotlin is still compiled using java 8 which is okay because java 11 doesn't provide any benefits for kotlin)
 
 repositories {
-	mavenCentral()
+	mavenCentral() //NOTE: Grabs our dependencies from the official Apache Maven repository at https://repo.maven.apache.org/maven2/
 }
 
 dependencies {
-	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-	implementation "org.springframework.boot:spring-boot-starter-web"
-	implementation "org.springframework.boot:spring-boot-starter-data-rest"
-	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation "org.springframework.boot:spring-boot-starter-web" //NOTE: Starter of Spring web uses Spring MVC, REST and Tomcat as a default embedded server. When we run our application on our local machine - this is the server that makes it possible. Docs: https://www.javatpoint.com/spring-boot-starter-web
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa" //NOTE: Provides the CrudRepository API we use in our repositories to generate SQL for us using JPA. Docs: https://spring.io/guides/gs/accessing-data-jpa/
+	implementation "org.springframework.boot:spring-boot-starter-actuator" //NOTE: Actuator is mainly used to expose operational information about the running application — health, metrics, info, dump, env, etc. It uses HTTP endpoints or JMX beans to enable us to interact with it. Docs: https://www.baeldung.com/spring-boot-actuators
 	implementation "org.springdoc:springdoc-openapi-ui:1.2.24" //NOTE: For swagger-ui
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-	implementation "javax.validation:validation-api:2.0.0.Final"
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8" //NOTE: Needed to add kotlin to our java project
+	implementation "javax.validation:validation-api:2.0.0.Final" //NOTE: Adds sql validation annotations we can use on our entities. Docs: https://www.baeldung.com/javax-validation
 	implementation "org.projectlombok:lombok:1.16.16" //NOTE: Auto-generates constructors, getters, and setters for Java model classes using annotations
 	implementation "org.modelmapper:modelmapper:2.3.5" //NOTE: Maps objects of one class to another class
 	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0" //NOTE: Makes it so you don't need to annotate your models with @JsonProperty to map fields from json strings
 	implementation "org.apache.httpcomponents:httpclient" //NOTE: Fixes integration test error: I/O error on POST request for "http://localhost:58941/path": cannot retry due to server authentication, in streaming mode; nested exception is java.net.HttpRetryException: cannot retry due to server authentication, in streaming mode
-//    implementation "org.flywaydb:flyway-core" //TODO Setup flyway
+    implementation "org.flywaydb:flyway-core" //NOTE: Flyway is used for database migration management
 
-	runtime "org.springframework.boot:spring-boot-devtools"
-	runtime "org.postgresql:postgresql:42.2.13"
+	runtime "org.springframework.boot:spring-boot-devtools" //NOTE: The aim of the module is to try and improve the development time while working with the Spring Boot application. Spring Boot DevTools pick up the changes and restart the application. Docs: https://www.javatpoint.com/spring-boot-devtools
+	runtime "org.postgresql:postgresql:42.2.13" //NOTE: Postgres database dependency for our spring project
 
-	testImplementation "org.springframework.boot:spring-boot-starter-test" //NOTE: Needed for juniper testing
-	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0"
-	testImplementation "org.mockito:mockito-core:3.0.0"
-	testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-	testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
-	testImplementation "org.junit.platform:junit-platform-runner:1.2.0"
+	testImplementation "org.springframework.boot:spring-boot-starter-test" //NOTE: Needed for juniper java unit testing framework
+	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0" //NOTE: Java unit testing framework
+	testImplementation "org.mockito:mockito-core:3.0.0"  //NOTE: Java unit testing framework
+	testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0" //NOTE: Needed for the mockito java unit testing framework to be useable in kotlin testing classes
 }
 
 test {
-	useJUnitPlatform()
+	useJUnitPlatform() //NOTE: Used to run our tests
 }
 
-compileKotlin {
+compileKotlin { //NOTE: Gradle task to compile kotlin code using the Java 1.8
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
 
-compileTestKotlin {
+compileTestKotlin { //NOTE: Gradle task to compile kotlin code using the Java 1.8
     kotlinOptions {
         jvmTarget = "1.8"
     }

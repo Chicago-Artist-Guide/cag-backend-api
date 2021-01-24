@@ -21,7 +21,7 @@ public class UserService implements UserServiceI {
     public UserDto registerUser(UserDto userDto) {
         var badRequestMsg = "";
 
-        if (userDto.getName() == null || userDto.getName().isBlank()) {
+        if (userDto.getFirst_name() == null || userDto.getFirst_name().isBlank()) {
             badRequestMsg += DetailedErrorMessages.NAME_REQUIRED;
         }
 

@@ -23,8 +23,8 @@ class UserDao : UserDaoI {
     private lateinit var modelMapper: ModelMapper
 
     override fun saveUser(userDto: UserDto): UserDto {
-        if (userDto.id == null) {
-            userDto.id = UUID.randomUUID()
+        if (userDto.user_id == null) {
+            userDto.user_id = UUID.randomUUID()
         }
 
         logger.info(LOG_SAVE_USER(userDto))

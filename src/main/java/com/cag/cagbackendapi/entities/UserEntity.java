@@ -3,23 +3,33 @@ package com.cag.cagbackendapi.entities;
 import com.cag.cagbackendapi.dtos.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class UserEntity extends UuidEntity {
-    private UUID id;
-    private String name;
+public class UserEntity {
+    @Id
+    @Type(type = "pg-uuid")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private UUID userId;
+    private String first_name;
+    private String last_name;
     private String email;
 
     public UserDto toDto() {
-        return new UserDto(this.id, this.name, this.email);
+        return new UserDto(this.userId, this.first_name, this.last_name, this.email);
     }
 }
