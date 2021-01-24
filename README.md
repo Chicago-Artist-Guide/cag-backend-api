@@ -1,6 +1,8 @@
 # Chicago Artist Guide Backend API Project
 
-## To run this project you'll need to install these free apps:
+I led my team at the Chicago Artist Guide in creating this backend API that powers our frontend react application using tools including: Java, Kotlin, Spring Boot, Docker, Postgres. The Chicago Artist Guide web app is a place for Chicago theatre companies, individual artists, and communities to come together and facilitates the casting process for theatre organizations.
+
+## To develop on and run this project you'll need to install these free apps:
 
 - Intellij IDEA Community Edition: https://www.jetbrains.com/idea/download/#section=windows
 - Docker: https://docs.docker.com/get-docker/
@@ -49,6 +51,12 @@ Windows:
 
 ![alt tag](./docs/imgs/windows-db-navigator-config.JPG)
 
+MacOS:
+
+![alt tag](./docs/imgs/macos-db-navigator-config.png)
+
+> NOTE: The only difference in Windows & MacOS is the host address
+
 ## Setting Up Your Build Configuration & Running The Project
 
 Now that your database is running, navigate in Intellij to the: **src -> main -> java -> com.cag.cagbackendapi -> CagBackendApiApplication** file. Once in there, if your gradle is working properly you should see a green play button next to the left of the class. Click this play button and run the app. If you're on windows, it will crash because we need to specify the correct spring profile in the build configuration. Go to the build configuration as seen in the image below, and set the **VM options** to: **-Dspring.profiles.active=WINDOWS** in your build configuration. Click apply, and try to run again.
@@ -58,6 +66,22 @@ Now that your database is running, navigate in Intellij to the: **src -> main ->
 See my windows build config for reference:
 
 ![alt tag](./docs/imgs/windows-build-config.JPG)
+
+MacOS Build Config:
+
+![alt tag](./docs/imgs/macos-build-config.png)
+
+> NOTE: If you're using MacOS - you don't need to add the "VM options" for your build configuration because the default Spring profile works on MacOS since it has the host address "localhost". However, you will need to change the active spring profile in our integration test classes from "WINDOWS" to "MACOS" if you want to be able to run our tests on MacOS.
+
+## Running Our Tests
+
+Along with our features we develop, we'll also include testing for each specific use case our feature could possibly encounter. To run our tests, the first thing you'll need to do is ensure that your Intellij preferences build and run our tests from **Gradle** and not **Intellij**. Go to: **Intellij -> Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle**. From there, select: **Gradle** for the "Build and run using:" and the "Run tests using:" drop-down menus. It should look like this when you're done:
+
+![alt tag](./docs/imgs/build-and-run-using-gradle.png)
+
+Now that your settings are correct, make sure your database is up and running. You'll now be able to right-click on the "test" folder and run all of our project tests. See the image below for the correct button to click and the resulting passing tests:
+
+![alt tag](./docs/imgs/run-tests.png)
 
 ## Postman
 

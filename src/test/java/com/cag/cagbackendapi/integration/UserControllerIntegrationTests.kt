@@ -14,6 +14,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
 
+// NOTE: Update active profile to reflect your operating system to connect to database
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value = ["WINDOWS"], resolver = SpringCommandLineProfileResolver::class)
 class UserControllerIntegrationTests {
