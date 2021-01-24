@@ -16,7 +16,7 @@ object RestErrorMessages {
 object DetailedErrorMessages {
     const val MISSING_AUTH_KEY = "Request is unauthorized."
     const val WRONG_AUTH_KEY = "Invalid auth key."
-    const val NAME_REQUIRED = "Name is required. "
+    const val NAME_REQUIRED = "First name is required. "
     const val EMAIL_REQUIRED = "Email is required. "
 }
 
