@@ -13,7 +13,7 @@ spring:
       minimum-idle: 2
       maximum-pool-size: 4
     jpa:
-      database: postgresql
+      database: cag_db
       hibernate:
         ddl-auto: create
       properties:
@@ -37,7 +37,7 @@ spring:
       minimum-idle: 2
       maximum-pool-size: 4
     jpa:
-      database: postgresql
+      database: cag_db
       hibernate:
         ddl-auto: create
       properties:
@@ -60,7 +60,7 @@ spring:
       minimum-idle: 2
       maximum-pool-size: 4
     jpa:
-      database: postgresql
+      database: cag_db
       hibernate:
         ddl-auto: create
       properties:
