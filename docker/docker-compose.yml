@@ -5,9 +5,9 @@ services:
     container_name: "postgres"
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: cag_db
-      POSTGRES_HOST_AUTH_METHOD: trust
+    env_file:
+          - database.env # configure postgres
     volumes:
-      - /var/lib/postgresql/data
+          - cag-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+volumes:
+  cag-data: # named volumes can be managed easier using docker-compose

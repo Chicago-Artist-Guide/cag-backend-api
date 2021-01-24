@@ -17,3 +17,17 @@ Kill a single running container. You can get the container Id from "docker ps". 
 
 ### docker rm {id}
 Remove a killed container. When you remove a container it is gone for good and you can start fresh the next time you run your "docker-compose up" command. This is important because sometimes when you kill a postgres container or kafka container it will not start fresh the next time you run your container and it can cause problems.
+
+### docker-compose run database bash
+Enters a postgres database docker container in bash so you can run psql commands
+
+## Managing Docker Volumes
+
+### docker volume ls
+List all the docker volumes and their names on your local machine
+
+### docker volume inspect {volume name}
+Gives you details about your docker volume
+
+### docker volume rm {volume name}
+Removes a docker volume

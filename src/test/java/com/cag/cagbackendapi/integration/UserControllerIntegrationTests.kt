@@ -2,14 +2,12 @@ package com.cag.cagbackendapi.integration
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
-import com.cag.cagbackendapi.error.ErrorDetails
-import com.cag.cagbackendapi.error.exceptions.UnauthorizedException
-import com.cag.cagbackendapi.model.UserModel
+import com.cag.cagbackendapi.errors.ErrorDetails
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -17,66 +15,124 @@ import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value = ["LOCAL"], resolver = SpringCommandLineProfileResolver::class)
+@ActiveProfiles(value = ["WINDOWS"], resolver = SpringCommandLineProfileResolver::class)
 class UserControllerIntegrationTests {
 
     @Autowired
     lateinit var testRestTemplate: TestRestTemplate
 
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = jacksonObjectMapper()
+
+    private val validTestUser = UserDto(null, "test user", "testuser@aol.com")
+    private val validAuthKey = "mockAuthKey"
 
     @Test
-    fun registerUser_validInput_201Success() {
-        val testUser = UserModel("john testy", "jj@aol.com")
-
+    fun registerUser_validInput201Success() {
         val headers = HttpHeaders()
-        headers.set("authKey", "mockAuthKey")
-        val request = HttpEntity(testUser, headers)
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validTestUser, headers)
 
-        val result = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
 
-        assertNotNull(result)
-        assertEquals(HttpStatus.CREATED, result.statusCode)
-        assertEquals(testUser, request.body)
+        assertNotNull(createdUserResponse)
+        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        assertEquals(validTestUser.name, createUser.name)
+        assertEquals(validTestUser.email, createUser.email)
+        assertNotNull(createUser.id)
     }
 
     @Test
-    fun registerUser_emptyMessage_401Unauthorized() {
-        val testUser = UserModel("john testy", "jj@aol.com")
+    fun registerUser_emptyName_400BadRequest() {
+        val emptyNameUser = UserDto(null, "", "testuser@aol.com")
 
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(emptyNameUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED)
+    }
+
+    @Test
+    fun registerUser_nullName_400BadRequest() {
+        val nullNameUser = UserDto(null, null, "testuser@aol.com")
+
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(nullNameUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED)
+    }
+
+    @Test
+    fun registerUser_emptyEmail400_BadRequest() {
+        val emptyEmailUser = UserDto(null, "test user", "")
+
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(emptyEmailUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.EMAIL_REQUIRED)
+    }
+
+    @Test
+    fun registerUser_nullEmail_400BadRequest() {
+        val nullEmailUser = UserDto(null, "test user", null)
+
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(nullEmailUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.EMAIL_REQUIRED)
+    }
+
+    @Test
+    fun registerUser_nullEmailAndName400BadRequest() {
+        val nullEmailUser = UserDto(null, null, null)
+
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(nullEmailUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
+    }
+
+    @Test
+    fun registerUser_badAuthKey_401Unauthorized() {
         val headers = HttpHeaders()
         headers.set("authKey", "wrongAuthKey")
-        val request = HttpEntity(testUser, headers)
+        val request = HttpEntity(validTestUser, headers)
 
-        val result = testRestTemplate.postForEntity("/user/register", request, ResponseEntity::class.java)
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
 
-        //assertEquals(HttpStatus.UNAUTHORIZED, result.)
-        assertNotNull(request.body)
-//        assertEquals(actual.restErrorMessage, RestErrorMessages.UNAUTHORIZED_MESSAGE)
-//        assertEquals(actual.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
-    }
-
-    @Test
-    fun registerUser_nullMessage_400BadRequest() {
-        val result = testRestTemplate.postForEntity("/kafka/publish?message=", null, String::class.java)
-
-        val actual = objectMapper.readValue(result.body, ErrorDetails::class.java)
-        assertEquals(HttpStatus.BAD_REQUEST, result.statusCode)
-        assertNotNull(actual.time)
-        assertEquals(actual.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(actual.detailedMessage, DetailedErrorMessages.MISSING_AUTH_KEY)
-    }
-
-    @Test
-    fun registerUser_messageWithMoney_500InternalServerError() {
-        val testMessage = "moneyMessage$$$"
-
-        val result = testRestTemplate.postForEntity("/kafka/publish?message=$testMessage", null, String::class.java)
-
-        val actual = objectMapper.readValue(result.body, ErrorDetails::class.java)
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.statusCode)
-        assertNotNull(actual.time)
-        assertEquals(actual.restErrorMessage, RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE)
-        assertEquals(actual.detailedMessage, DetailedErrorMessages.MISSING_AUTH_KEY)
+        assertEquals(HttpStatus.UNAUTHORIZED, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.UNAUTHORIZED_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
     }
 }
