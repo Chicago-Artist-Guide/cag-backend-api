@@ -41,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun registerUser_missingFirstNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndEmail_BadRequest() {
         // assemble
         val inputUser = UserDto(null, null, null,null)
         val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
@@ -58,7 +58,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun registerUser_validInput_500DatabaseIssue() {
+    fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
         val inputUser = UserDto(null, "test", "user", "testuser@aol.com")
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)

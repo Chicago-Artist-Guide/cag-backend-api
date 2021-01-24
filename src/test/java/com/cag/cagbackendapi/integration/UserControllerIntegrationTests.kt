@@ -28,7 +28,7 @@ class UserControllerIntegrationTests {
     private val validAuthKey = "mockAuthKey"
 
     @Test
-    fun registerUser_validInput201Success() {
+    fun registerUser_validInput_201Success() {
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validTestUser, headers)
@@ -76,7 +76,7 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_emptyEmail400_BadRequest() {
+    fun registerUser_emptyEmail_400BadRequest() {
         val emptyEmailUser = UserDto(null, "test", "user", "")
 
         val headers = HttpHeaders()
@@ -108,7 +108,7 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_nullEmailAndFirstName400BadRequest() {
+    fun registerUser_nullEmailAndFirstName_400BadRequest() {
         val nullEmailUser = UserDto(null, null, null, null)
 
         val headers = HttpHeaders()
