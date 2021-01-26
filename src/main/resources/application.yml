@@ -29,7 +29,7 @@ spring:
   profiles: WINDOWS
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=cag_backend_api
+    url: jdbc:postgresql://0.0.0.0:5432/cag_db?currentSchema=cag_backend_api
     username: cag_admin
     password: ${PSQL_PASSWORD:cag_pass}
     initialization-mode: always
