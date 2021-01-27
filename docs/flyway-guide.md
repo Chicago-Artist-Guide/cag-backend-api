@@ -12,7 +12,7 @@ To create our initial flyway migration need to first add our schema .sql file to
 gradle flywayMigrate -i
 ```
 
-This will create the **flyway_schema_history** table under our **cag_backend_api** schema in our database. This table will contain all the records of our database as we add more tables and build out our database!
+This will create the **flyway_schema_history** table under our **public** schema in our database. This table will contain all the records of our database as we add more tables and build out our database!
 
 ## Adding New Migrations
 
