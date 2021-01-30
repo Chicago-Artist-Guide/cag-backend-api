@@ -40,6 +40,12 @@ DB Navigator is a plugin we use to manage our database connections that works gr
 
 ![alt tag](./docs/imgs/db-navigator-plugin.JPG)
 
+## Connecting To The QA Database
+
+Once you have DB Navigator installed, you can click the **DB Browser** tab that will appear in your Intellij once you apply the plugin and restart Intellij. From the **DB Browser** menu, you can click the green plus sign on the top left and add a new PostgreSQL connection. You can find the database credentials for the connection in the **src/main/resources/application.yml** file in the **LOCAL** Spring Profile. Grab the host, port number, database name, user name, and user password from that file and then insert the data and tst your connection. It should look like this when you're donw:
+
+![alt tag](./docs/imgs/connect-to-qa-db.png) 
+
 ## Running The Project
 
 Navigate in Intellij to the: **src -> main -> java -> com.cag.cagbackendapi -> CagBackendApiApplication** file. Once in there, if your gradle is working properly you should see a green play button next to the left of the class. Click this play button and run the app.
