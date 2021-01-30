@@ -3,7 +3,8 @@ package com.cag.cagbackendapi.services.user
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.UserDao
-import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
 import com.cag.cagbackendapi.services.user.impl.UserService
@@ -27,8 +28,8 @@ class UserServiceTest {
     @Test
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
-        val inputUser = UserDto(null, "testy", "tester", "testytester@aol.com")
-        val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com")
+        val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com")
 
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
 
@@ -43,7 +44,7 @@ class UserServiceTest {
     @Test
     fun registerUser_missingFirstNameAndEmail_BadRequest() {
         // assemble
-        val inputUser = UserDto(null, null, null,null)
+        val inputUser = RegisterUserRequestDto(null, null,null)
         val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         // act
@@ -60,7 +61,7 @@ class UserServiceTest {
     @Test
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
-        val inputUser = UserDto(null, "test", "user", "testuser@aol.com")
+        val inputUser = RegisterUserRequestDto("test", "user", "testuser@aol.com")
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
         whenever(userDao.saveUser(inputUser)).thenThrow(internalServerError)
