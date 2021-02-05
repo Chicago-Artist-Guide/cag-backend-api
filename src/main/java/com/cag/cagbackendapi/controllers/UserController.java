@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,13 @@ public class UserController {
 
     @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserDto> registerUser(
+    public ResponseEntity<UserResponseDto> registerUser(
             @RequestHeader("authKey") String authKey,
-            @RequestBody UserDto userDto
+            @RequestBody RegisterUserRequestDto registerUserRequestDto
     ) {
         this.validationService.validateAuthKey(authKey);
-        this.userService.registerUser(userDto);
+        UserResponseDto userResponseDto = this.userService.registerUser(registerUserRequestDto);
 
-        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 }
