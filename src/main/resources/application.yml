@@ -22,8 +22,8 @@ spring:
 flyway:
   url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=public
   schemas: ["public"]
-  user: "cag_admin"
-  password: "cag_pass"
+  user: "axdarkeikdwxvm"
+  password: "b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49"
 ---
 spring:
   profiles: DOCKER
