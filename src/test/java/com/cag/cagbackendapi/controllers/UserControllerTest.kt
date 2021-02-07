@@ -26,7 +26,7 @@ class UserControllerTest {
     private lateinit var userController: UserController
 
     @Test
-    fun registerUser_validInput_returns201() {
+    fun registerUser_validInput_returns201()   {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto("John", "Smith", "johnjohn@aol.com")
         val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com")
