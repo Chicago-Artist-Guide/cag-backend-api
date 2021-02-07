@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
+
 @RestController
 @RequestMapping(value = "/user")
 @CrossOrigin
@@ -32,6 +34,18 @@ public class UserController {
         this.validationService.validateAuthKey(authKey);
         UserResponseDto userResponseDto = this.userService.registerUser(registerUserRequestDto);
 
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping(value = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponseDto> deleteUser(
+            @PathVariable("userId") String userId,
+            @RequestHeader("authKey") String authKey
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        UserResponseDto userResponseDto = this.userService.deleteUser(userId);
+        // define deleteUser method (userService, userDao cmd click registerUser line 35 for examples
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 }
