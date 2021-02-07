@@ -5,4 +5,5 @@ import com.cag.cagbackendapi.dtos.UserResponseDto;
 
 public interface UserServiceI {
     UserResponseDto registerUser(RegisterUserRequestDto registerUserRequestDto);
+    UserResponseDto deleteUser(String userId);
 }
