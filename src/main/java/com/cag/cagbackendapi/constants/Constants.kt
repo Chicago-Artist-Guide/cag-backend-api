@@ -20,6 +20,7 @@ object DetailedErrorMessages {
     const val WRONG_AUTH_KEY = "Invalid auth key."
     const val NAME_REQUIRED = "First name is required. "
     const val EMAIL_REQUIRED = "Email is required. "
+    const val INVALID_USER_ID = "Invalid user ID. "
 }
 
 object LoggerMessages {

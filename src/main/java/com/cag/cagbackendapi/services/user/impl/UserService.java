@@ -44,7 +44,7 @@ public class UserService implements UserServiceI {
     public UserResponseDto getByUserId(String userId) {
 
         if(userId == null || userId == "") {
-            throw new BadRequestException("Invalid userId", null);
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
         }
 
         UUID userUUID;
@@ -52,7 +52,7 @@ public class UserService implements UserServiceI {
         try {
             userUUID = UUID.fromString(userId);
         } catch(Exception ex){
-            throw new BadRequestException("Invalid userId", null);
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
         }
 
         var userResponseDto = userDao.getUser(userUUID);
