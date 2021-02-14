@@ -56,7 +56,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED)
     }
 
     @Test
@@ -72,7 +72,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED)
     }
 
     @Test
@@ -120,7 +120,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
     }
 
     @Test

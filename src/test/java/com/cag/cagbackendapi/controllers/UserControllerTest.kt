@@ -46,7 +46,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto(first_name = null, last_name = null, email = null)
 
-        val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenThrow(badRequestException)
