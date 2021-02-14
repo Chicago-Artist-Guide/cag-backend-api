@@ -3,7 +3,6 @@ package com.cag.cagbackendapi.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -13,12 +12,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "organizations")
-public class OrganizationEntity {
+@Table(name = "age_increment")
+public class AgeIncrementEntity {
     @Id
     @Type(type = "pg-uuid")
-    @Column(name = "org_id", updatable = false, nullable = false)
-    private UUID orgId;
-    private String name;
-    private String address;
+    private UUID age_increment_id;
+    private int youngest_age;
+    private int oldest_age;
 }
