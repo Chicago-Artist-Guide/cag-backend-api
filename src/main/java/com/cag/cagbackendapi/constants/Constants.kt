@@ -21,7 +21,7 @@ object DetailedErrorMessages {
     const val FIRST_NAME_REQUIRED = "First name is required. "
     const val LAST_NAME_REQUIRED = "Last name is required. "
     const val EMAIL_REQUIRED = "Email is required. "
-    const val INVALID_UUID = "UserId not found. "
+    const val INVALID_UUID = "Invalid UserId. "
     const val USER_NOT_FOUND = "User not found."
 }
 
