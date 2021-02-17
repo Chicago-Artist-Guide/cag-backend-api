@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.constants
 
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserResponseDto
 
 object RestErrorMessages {
@@ -27,5 +28,9 @@ object DetailedErrorMessages {
 object LoggerMessages {
     fun LOG_SAVE_USER(registerUserRequest: RegisterUserRequestDto): String {
         return "Save user: $registerUserRequest"
+    }
+
+    fun LOG_UPDATE_USER(userDto: UserDto): String {
+        return "Update user: $userDto"
     }
 }

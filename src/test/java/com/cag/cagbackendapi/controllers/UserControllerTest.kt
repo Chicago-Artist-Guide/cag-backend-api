@@ -42,11 +42,11 @@ class UserControllerTest {
     }
 
     @Test
-    fun registerUser_missingFirstNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndLastNameAndEmail_400BadRequest() {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto(first_name = null, last_name = null, email = null)
 
-        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenThrow(badRequestException)
@@ -61,6 +61,7 @@ class UserControllerTest {
         verify(userService).registerUser(requestUser)
         verifyNoMoreInteractions(validationService, userService)
     }
+
 
     @Test
     fun registerUser_missingAuthKey_401UnauthorizedRequest() {

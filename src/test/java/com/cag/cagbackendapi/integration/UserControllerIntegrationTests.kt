@@ -44,7 +44,7 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_emptyFirstFirstName_400BadRequest() {
+    fun registerUser_emptyFirstNameAndLastName_400BadRequest() {
         val emptyNameUser = UserResponseDto(null, "", "", "testuser@aol.com")
 
         val headers = HttpHeaders()
@@ -56,7 +56,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED)
     }
 
     @Test
@@ -72,7 +72,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED)
     }
 
     @Test
@@ -108,7 +108,7 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_nullEmailAndFirstName_400BadRequest() {
+    fun registerUser_nullEmailAndFirstNameAndLastName_400BadRequest() {
         val nullEmailUser = UserResponseDto(null, null, null, null)
 
         val headers = HttpHeaders()
@@ -120,7 +120,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
     }
 
     @Test
