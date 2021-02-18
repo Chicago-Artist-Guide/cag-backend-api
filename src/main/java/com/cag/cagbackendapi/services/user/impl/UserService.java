@@ -1,6 +1,6 @@
 package com.cag.cagbackendapi.services.user.impl;
-
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
+import com.cag.cagbackendapi.constants.RestErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
@@ -45,6 +45,24 @@ public class UserService implements UserServiceI {
         if (userId == "" || userId == null) {
             throw new BadRequestException(DetailedErrorMessages.INVALID_USERID, null);
         }
+//         error message for invalid auth key (401)
+        // how do we define the auth key?
+         if( authKey == "" || authKey == null) {
+         throw new BadRequestException(DetailedErrorMessages.MISSING_AUTH_KEY, null);
+         }
+
+//         weird error (500)
+        //what needs to be passed into this if statement?
+        if( INTERNAL_SERVER_ERROR ) {
+        throw new BadRequestException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+       }
+
+//         valid auth/user database down (503)
+        //what needs to be passed into this if statement?
+        if (SERVICE_UNAVAILABLE) {
+            throw new BadRequestException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+        }
+
 
         UUID userUUID;
 
