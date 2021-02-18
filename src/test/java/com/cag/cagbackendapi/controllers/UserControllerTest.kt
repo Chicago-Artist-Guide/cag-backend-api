@@ -43,7 +43,7 @@ class UserControllerTest {
 
     @Test
     fun registerUser_missingFirstNameAndEmail_400BadRequest() {
-        val testAuthKey = ""
+        val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto(first_name = null, last_name = null, email = null)
 
         val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)

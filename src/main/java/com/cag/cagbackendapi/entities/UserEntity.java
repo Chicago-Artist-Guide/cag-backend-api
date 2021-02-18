@@ -18,11 +18,6 @@ import java.util.UUID;
 public class UserEntity {
     @Id
     @Type(type = "pg-uuid")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
     private String first_name;
