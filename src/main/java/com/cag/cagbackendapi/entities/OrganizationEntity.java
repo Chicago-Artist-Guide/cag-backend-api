@@ -17,6 +17,11 @@ import java.util.UUID;
 public class OrganizationEntity {
     @Id
     @Type(type = "pg-uuid")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "org_id", updatable = false, nullable = false)
     private UUID orgId;
     private String name;
