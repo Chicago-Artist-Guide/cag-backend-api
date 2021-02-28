@@ -1,5 +1,6 @@
 package com.cag.cagbackendapi.daos.impl
 
+import com.cag.cagbackendapi.constants.LoggerMessages.GET_USER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_USER
 import com.cag.cagbackendapi.daos.UserDaoI
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
@@ -28,6 +29,13 @@ class UserDao : UserDaoI {
 
         val savedUserEntity = userRepository.save(userDtoToEntity(registerUserRequestDto))
         return savedUserEntity.toDto()
+    }
+
+    override fun getUser(userUUID: UUID): UserResponseDto? {
+        logger.info(GET_USER(userUUID))
+
+        val userEntity = userRepository.getByUserId(userUUID) ?: return null
+        return userEntity.toDto()
     }
 
     private fun userDtoToEntity(registerUserRequestDto: RegisterUserRequestDto): UserEntity {
