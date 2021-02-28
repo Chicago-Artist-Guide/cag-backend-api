@@ -1,6 +1,5 @@
 package com.cag.cagbackendapi.entities;
 
-import com.cag.cagbackendapi.dtos.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +13,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class UserEntity {
+@Table(name = "past_performance")
+public class PastPerformanceEntity {
     @Id
     @Type(type = "pg-uuid")
     @GeneratedValue(generator = "UUID")
@@ -23,13 +22,16 @@ public class UserEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "user_id", updatable = false, nullable = false)
-    private UUID userId;
-    private String first_name;
-    private String last_name;
-    private String email;
+    private UUID past_performance_id;
+    private String show_title;
+    private String role;
+    private String theater_or_location;
+    private String show_url;
+    private String director;
+    private String musical_director;
+    private String theater_group;
 
-    public UserResponseDto toDto() {
-        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email);
-    }
+    @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_profile"))
+    private ProfileEntity profileEntity;
 }

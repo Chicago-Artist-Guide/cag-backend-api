@@ -1,6 +1,5 @@
 package com.cag.cagbackendapi.entities;
 
-import com.cag.cagbackendapi.dtos.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +13,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
-public class UserEntity {
+@Table(name = "age_increment_member")
+public class AgeIncrementMemberEntity {
     @Id
     @Type(type = "pg-uuid")
     @GeneratedValue(generator = "UUID")
@@ -23,13 +22,13 @@ public class UserEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "user_id", updatable = false, nullable = false)
-    private UUID userId;
-    private String first_name;
-    private String last_name;
-    private String email;
+    private UUID age_increment_member_id;
 
-    public UserResponseDto toDto() {
-        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email);
-    }
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_profile"))
+    private ProfileEntity profileEntity;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_age_increment"))
+    private AgeIncrementEntity ageIncrementEntity;
 }

@@ -3,7 +3,7 @@ package com.cag.cagbackendapi.integration
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.errors.ErrorDetails
-import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.*
@@ -24,7 +24,7 @@ class UserControllerIntegrationTests {
 
     private val objectMapper = jacksonObjectMapper()
 
-    private val validTestUser = UserDto(null, "test", "user", "testuser@aol.com")
+    private val validTestUser = UserResponseDto(null, "test", "user", "testuser@aol.com")
     private val validAuthKey = "mockAuthKey"
 
     @Test
@@ -34,7 +34,7 @@ class UserControllerIntegrationTests {
         val request = HttpEntity(validTestUser, headers)
 
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
-        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserResponseDto::class.java)
 
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
@@ -45,7 +45,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_emptyFirstFirstName_400BadRequest() {
-        val emptyNameUser = UserDto(null, "", "", "testuser@aol.com")
+        val emptyNameUser = UserResponseDto(null, "", "", "testuser@aol.com")
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -61,7 +61,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullName_400BadRequest() {
-        val nullNameUser = UserDto(null, null, null,"testuser@aol.com")
+        val nullNameUser = UserResponseDto(null, null, null,"testuser@aol.com")
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -77,7 +77,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_emptyEmail_400BadRequest() {
-        val emptyEmailUser = UserDto(null, "test", "user", "")
+        val emptyEmailUser = UserResponseDto(null, "test", "user", "")
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -93,7 +93,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullEmail_400BadRequest() {
-        val nullEmailUser = UserDto(null, "test", "user", null)
+        val nullEmailUser = UserResponseDto(null, "test", "user", null)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -109,7 +109,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullEmailAndFirstName_400BadRequest() {
-        val nullEmailUser = UserDto(null, null, null, null)
+        val nullEmailUser = UserResponseDto(null, null, null, null)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
