@@ -118,11 +118,6 @@ class UserControllerTest {
 
         assertEquals(actual.message, badRequestException.message)
         verify(validationService).validateAuthKey(testAuthKey)
-        /*
-            The no more interactions line will break the code. need to look more into it
-            //verifyNoMoreInteractions(validationService, userService)
-         */
-
     }
 
     @Test

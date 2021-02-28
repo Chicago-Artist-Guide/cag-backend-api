@@ -212,5 +212,27 @@ class UserControllerIntegrationTests {
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
     }
 
+    //getting a 200 error
+    @Test
+    fun updateUser_userNotFound_404NotFound(){
+        val validUpdateUser = UserResponseDto(user_id = UUID.randomUUID(), first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(validUpdateUser, headers2)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
+
+    }
+
+    @Test
+    fun updateUser_internalServerError_500Error(){}
+
+    @Test
+    fun updateUser_databaseDown_503Error(){}
 
 }
