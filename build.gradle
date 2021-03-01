@@ -52,3 +52,10 @@ compileTestKotlin { //NOTE: Gradle task to compile kotlin code using the Java 1.
         jvmTarget = "1.8"
     }
 }
+
+flyway {
+	url = 'jdbc:postgresql://ec2-54-159-113-254.compute-1.amazonaws.com:5432/d1s2s8407s5lms?currentSchema=public'
+	user = 'axdarkeikdwxvm'
+	password = 'b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49'
+	schemas = ['public']
+}

@@ -10,6 +10,7 @@ import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockitokotlin2.*
+import lombok.extern.java.Log
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -63,7 +64,6 @@ class UserControllerTest {
         verify(userService).registerUser(requestUser)
         verifyNoMoreInteractions(validationService, userService)
     }
-
 
     @Test
     fun registerUser_missingAuthKey_401UnauthorizedRequest() {
@@ -163,4 +163,83 @@ class UserControllerTest {
         verifyNoMoreInteractions(validationService, userService)
 
     }
+
+    @Test
+    fun getByUserId_validInput_200OK() {
+        val testAuthKey = "testAuthKey"
+        val userId = "123e4567-e89b-12d3-a456-426614174000"
+        val userUUID = UUID.fromString(userId)
+        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com")
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.getByUserId(userId)).thenReturn(userData)
+
+        userController.getByUserId(testAuthKey, userId)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).getByUserId(userId)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun getByUserId_missingUserId_400BadRequest() {
+        val testAuthKey = "testAuthKey"
+        val userId = "test user"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.getByUserId(userId)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.getByUserId(testAuthKey, userId)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).getByUserId(userId)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun getByUserId_invalidAuthKey_401UnAuthorized() {
+        val testAuthKey = "testAuthKey"
+        val userId = "test user"
+
+        val unauthorizedException = UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null)
+
+        whenever(validationService.validateAuthKey(testAuthKey)).thenThrow(unauthorizedException)
+
+        val actual = assertThrows<UnauthorizedException> {
+            userController.getByUserId(testAuthKey, userId)
+        }
+
+        assertEquals(actual.message, unauthorizedException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verifyZeroInteractions(userService)
+    }
+
+    @Test
+    fun getByUserId_nonExistentUser_404NotFound() {
+        val testAuthKey = "testAuthKey"
+        val userId = null
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.getByUserId(userId)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.getByUserId(testAuthKey, userId)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).getByUserId(userId)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
 }

@@ -6,11 +6,13 @@ import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.junit.Ignore
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.http.*
 import org.springframework.test.context.ActiveProfiles
 import java.util.*
@@ -63,7 +65,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullName_400BadRequest() {
-        val nullNameUser = UserResponseDto(null, null, null,"testuser@aol.com")
+        val nullNameUser = UserResponseDto(null, null, null, "testuser@aol.com")
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -235,4 +237,28 @@ class UserControllerIntegrationTests {
     @Test
     fun updateUser_databaseDown_503Error(){}
 
+
+    @Test
+    fun getUser_validInput_200Success() {
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validTestUser, headers)
+
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserResponseDto::class.java)
+        val userId = createUser.user_id
+
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(null,headers2)
+
+        val getUserResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.GET, request2, String::class.java)
+        val getUser = objectMapper.readValue(getUserResponse.body, UserResponseDto::class.java)
+
+        assertNotNull(getUserResponse)
+        assertEquals(HttpStatus.OK, getUserResponse.statusCode)
+        assertEquals(validTestUser.first_name, getUser.first_name)
+        assertEquals(validTestUser.email, getUser.email)
+        assertNotNull(getUser.user_id)
+    }
 }

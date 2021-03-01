@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(value = "/user")
 @CrossOrigin
@@ -48,4 +50,16 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
+
+    @GetMapping(value = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponseDto> getByUserId(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId
+    ){
+        this.validationService.validateAuthKey(authKey);
+        UserResponseDto userResponseDto = this.userService.getByUserId(userId);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
 }

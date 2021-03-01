@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.services.user.impl;
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
+import com.cag.cagbackendapi.constants.RestErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
 import com.cag.cagbackendapi.dtos.UserDto;
@@ -10,6 +11,8 @@ import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserService implements UserServiceI {
@@ -69,6 +72,29 @@ public class UserService implements UserServiceI {
         var userResponseDto = userDao.updateUser(userRequestDto);
 
         if (userRequestDto == null){
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    public UserResponseDto getByUserId(String userId) {
+
+        if(userId == null || userId == "") {
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
+        }
+
+        UUID userUUID;
+
+        try {
+            userUUID = UUID.fromString(userId);
+        } catch(Exception ex){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
+        }
+
+        var userResponseDto = userDao.getUser(userUUID);
+
+        if(userResponseDto == null) {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
         }
 

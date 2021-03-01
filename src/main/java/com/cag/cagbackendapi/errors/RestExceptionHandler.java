@@ -31,7 +31,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = { UnauthorizedException.class })
+    /*@ExceptionHandler(value = { UnauthorizedException.class })
     protected ResponseEntity<ErrorDetails> handleUnauthorizedException(Exception ex, WebRequest request) {
 
         logger.error(RestErrorMessages.UNAUTHORIZED_MESSAGE, ex);
@@ -42,7 +42,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getLocalizedMessage());
 
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
-    }
+    }*/
 
     @ExceptionHandler(value = { NotFoundException.class })
     protected ResponseEntity<ErrorDetails> handleNotFoundException(Exception ex, WebRequest request) {
@@ -54,7 +54,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 RestErrorMessages.NOT_FOUND_MESSAGE,
                 ex.getLocalizedMessage());
 
-        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = { InternalServerErrorException.class, RuntimeException.class })
@@ -69,6 +69,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 }
