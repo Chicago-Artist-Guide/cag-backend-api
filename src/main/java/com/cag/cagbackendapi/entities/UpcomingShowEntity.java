@@ -3,6 +3,7 @@ package com.cag.cagbackendapi.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -16,6 +17,11 @@ import java.util.UUID;
 public class UpcomingShowEntity {
     @Id
     @Type(type = "pg-uuid")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID upcoming_show_id;
     private String photo_url;
     private String show_title;

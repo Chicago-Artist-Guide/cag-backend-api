@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.controllers;
 
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -40,12 +43,37 @@ public class UserController {
     @DeleteMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponseDto> deleteUser(
-            @PathVariable("userId") String userId,
-            @RequestHeader("authKey") String authKey
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId
+
     ) {
         this.validationService.validateAuthKey(authKey);
         UserResponseDto userResponseDto = this.userService.deleteUser(userId);
-        // define deleteUser method (userService, userDao cmd click registerUser line 35 for examples
-        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
+    @PutMapping(value="/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponseDto> updateUser(
+            @RequestHeader("authKey") String authKey,
+            @RequestBody UserDto userRequestDto
+    ){
+        this.validationService.validateAuthKey(authKey);
+        UserResponseDto userResponseDto = this.userService.updateUser(userRequestDto);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponseDto> getByUserId(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId
+    ){
+        this.validationService.validateAuthKey(authKey);
+        UserResponseDto userResponseDto = this.userService.getByUserId(userId);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 }

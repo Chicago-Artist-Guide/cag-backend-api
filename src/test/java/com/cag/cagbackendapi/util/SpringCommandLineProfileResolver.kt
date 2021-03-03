@@ -14,4 +14,3 @@ class SpringCommandLineProfileResolver : ActiveProfilesResolver {
             defaultActiveProfilesResolver.resolve(testClass)
     }
 }
-

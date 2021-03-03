@@ -3,6 +3,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.constants.RestErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
@@ -26,7 +27,11 @@ public class UserService implements UserServiceI {
         var badRequestMsg = "";
 
         if (registerUserRequestDto.getFirst_name() == null || registerUserRequestDto.getFirst_name().isBlank()) {
-            badRequestMsg += DetailedErrorMessages.NAME_REQUIRED;
+            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
+        }
+
+        if (registerUserRequestDto.getLast_name() == null || registerUserRequestDto.getLast_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
         }
 
         if (registerUserRequestDto.getEmail() == null || registerUserRequestDto.getEmail().isBlank()) {
@@ -40,36 +45,88 @@ public class UserService implements UserServiceI {
         return userDao.saveUser(registerUserRequestDto);
     }
 
-    @Override
-    public UserResponseDto deleteUser(String userId) {
-        if (userId == "" || userId == null) {
-            throw new BadRequestException(DetailedErrorMessages.INVALID_USERID, null);
-        }
-//         error message for invalid auth key (401)
-        // how do we define the auth key?
-         if( authKey == "" || authKey == null) {
-         throw new BadRequestException(DetailedErrorMessages.MISSING_AUTH_KEY, null);
-         }
+    public UserResponseDto updateUser(UserDto userRequestDto) {
+        var badRequestMsg = "";
 
-//         weird error (500)
-        //what needs to be passed into this if statement?
-        if( INTERNAL_SERVER_ERROR ) {
-        throw new BadRequestException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
-       }
-
-//         valid auth/user database down (503)
-        //what needs to be passed into this if statement?
-        if (SERVICE_UNAVAILABLE) {
-            throw new BadRequestException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+        if (userRequestDto.getFirst_name() == null || userRequestDto.getFirst_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
         }
 
+        if (userRequestDto.getLast_name() == null || userRequestDto.getLast_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
+        }
+
+        if (userRequestDto.getEmail() == null || userRequestDto.getEmail().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
+        }
+
+        if (!badRequestMsg.isEmpty()) {
+            throw new BadRequestException(badRequestMsg, null);
+        }
+
+        if(userRequestDto.getUser_id() == null){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_UUID, null);
+        }
+
+        var userResponseDto = userDao.updateUser(userRequestDto);
+
+        if (userResponseDto == null){
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    public UserResponseDto getByUserId(String userId) {
+
+        if(userId == null || userId == "") {
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
+        }
 
         UUID userUUID;
 
         try {
             userUUID = UUID.fromString(userId);
         } catch(Exception ex){
-            throw new BadRequestException(DetailedErrorMessages.INVALID_USERID, ex);
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
+        }
+
+        var userResponseDto = userDao.getUser(userUUID);
+
+        if(userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    @Override
+    public UserResponseDto deleteUser(String userId) {
+        if (userId == "" || userId == null) {
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
+        }
+
+        /*//error message for invalid auth key (401)
+        if( authKey == "" || authKey == null) {
+            throw new BadRequestException(DetailedErrorMessages.MISSING_AUTH_KEY, null);
+        }
+
+        //weird error (500)
+        if( INTERNAL_SERVER_ERROR ) {
+            throw new BadRequestException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+        }
+
+        //valid auth/user database down (503)
+        if (SERVICE_UNAVAILABLE) {
+            throw new BadRequestException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+        }*/
+
+        UUID userUUID;
+
+        try {
+            userUUID = UUID.fromString(userId);
+        } catch(Exception ex){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
         }
 
         UserResponseDto userResponseDto = userDao.deleteUser(userUUID);
