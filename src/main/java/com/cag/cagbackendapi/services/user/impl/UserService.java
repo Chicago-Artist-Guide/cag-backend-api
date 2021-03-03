@@ -71,7 +71,7 @@ public class UserService implements UserServiceI {
 
         var userResponseDto = userDao.updateUser(userRequestDto);
 
-        if (userRequestDto == null){
+        if (userResponseDto == null){
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
         }
 
