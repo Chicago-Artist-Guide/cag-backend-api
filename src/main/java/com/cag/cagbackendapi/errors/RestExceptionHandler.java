@@ -44,6 +44,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(value = { NotFoundException.class })
+    protected ResponseEntity<ErrorDetails> handleNotFoundException(Exception ex, WebRequest request) {
+
+        logger.error(RestErrorMessages.NOT_FOUND_MESSAGE, ex);
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                RestErrorMessages.NOT_FOUND_MESSAGE,
+                ex.getLocalizedMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(value = { InternalServerErrorException.class, RuntimeException.class })
     protected ResponseEntity<ErrorDetails> handleInternalServerError(Exception ex, WebRequest request) {
 
