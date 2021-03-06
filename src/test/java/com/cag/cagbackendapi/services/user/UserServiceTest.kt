@@ -29,7 +29,7 @@ class UserServiceTest {
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
         val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null)
 
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
 

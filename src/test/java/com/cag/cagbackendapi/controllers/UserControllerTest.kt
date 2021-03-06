@@ -29,7 +29,7 @@ class UserControllerTest {
     fun registerUser_validInput_returns201()   {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto("John", "Smith", "johnjohn@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenReturn(resultUser)

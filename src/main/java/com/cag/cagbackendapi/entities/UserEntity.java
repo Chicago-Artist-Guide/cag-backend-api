@@ -28,8 +28,10 @@ public class UserEntity {
     private String first_name;
     private String last_name;
     private String email;
+    private Boolean active_status;
+    private String session_id;
 
     public UserResponseDto toDto() {
-        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email);
+        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email, this.active_status, this.session_id);
     }
 }
