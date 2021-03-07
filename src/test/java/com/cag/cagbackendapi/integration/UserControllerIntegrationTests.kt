@@ -224,19 +224,12 @@ class UserControllerIntegrationTests {
 
         val errorDetailsResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, ErrorDetails::class.java)
 
-        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
 
     }
-
-    @Test
-    fun updateUser_internalServerError_500Error(){}
-
-    @Test
-    fun updateUser_databaseDown_503Error(){}
-
 
     @Test
     fun getUser_validInput_200Success() {
