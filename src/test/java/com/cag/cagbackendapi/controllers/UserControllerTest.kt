@@ -30,7 +30,7 @@ class UserControllerTest {
     fun registerUser_validInput_returns201()   {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto("John", "Smith", "johnjohn@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenReturn(resultUser)
@@ -87,7 +87,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val userId = "123e4567-e89b-12d3-a456-426614174000"
         val userUUID = UUID.fromString(userId)
-        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com")
+        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.getByUserId(userId)).thenReturn(userData)
