@@ -7,6 +7,7 @@ import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
+import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -75,6 +76,53 @@ class UserServiceTest {
 
         // assert
         verify(userDao).saveUser(inputUser)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_validUser_success() {
+        val userId = "123e4567-e89b-12d3-a456-426614174000"
+        val userUUID = UUID.fromString(userId)
+        val result = UserResponseDto(userUUID, "Test", "User", "test.user@gmail.com")
+
+        whenever(userDao.getUser(userUUID)).thenReturn(result)
+
+        userService.getByUserId(userId)
+
+        verify(userDao).getUser(userUUID)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_invalidId_badRequest() {
+        val userId = "sadUserId"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.getByUserId(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_validInputWithDatabaseDown_InternalServerError() {
+        val userId = "123e4567-e89b-12d3-a456-426614174000"
+        val userUUID = UUID.fromString(userId)
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(userDao.getUser(userUUID)).thenThrow(internalServerError)
+
+        val actualException = assertThrows<InternalServerErrorException> {
+            userService.getByUserId(userId)
+        }
+
+        assertEquals(actualException.message, internalServerError.message)
+
+        verify(userDao).getUser(userUUID)
         verifyNoMoreInteractions(userDao)
     }
 }
