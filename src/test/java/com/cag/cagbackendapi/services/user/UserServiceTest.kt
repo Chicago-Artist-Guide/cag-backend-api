@@ -7,8 +7,10 @@ import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
+import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockitokotlin2.*
+import org.hibernate.annotations.NotFound
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -75,6 +77,86 @@ class UserServiceTest {
 
         // assert
         verify(userDao).saveUser(inputUser)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_validUser_success() {
+        val userId = UUID.randomUUID()
+
+        val result = UserResponseDto(userId, "Test", "User", "test.user@gmail.com")
+
+        whenever(userDao.getUser(userId)).thenReturn(result)
+
+        userService.getByUserId(userId.toString())
+
+        verify(userDao).getUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_invalidId_badRequest() {
+        val userId = "sadUserId"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.getByUserId(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_nullId_badRequest() {
+        val userId = ""
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.getByUserId(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_userNotFound_notFoundRequest() {
+        val userId = UUID.randomUUID()
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        whenever(userDao.getUser(userId)).thenReturn(null)
+
+        val actualException = assertThrows<NotFoundException> {
+            userService.getByUserId(userId.toString())
+        }
+
+        assertEquals(notFoundException.message, actualException.message)
+
+        verify(userDao).getUser(userId)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun getByUserId_validInputWithDatabaseDown_InternalServerError() {
+        val userId = UUID.randomUUID()
+
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(userDao.getUser(userId)).thenThrow(internalServerError)
+
+        val actualException = assertThrows<InternalServerErrorException> {
+            userService.getByUserId(userId.toString())
+        }
+
+        assertEquals(actualException.message, internalServerError.message)
+
+        verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
     }
 }
