@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.controllers;
 
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
@@ -36,6 +37,19 @@ public class UserController {
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
+
+    @PutMapping(value="/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponseDto> updateUser(
+            @RequestHeader("authKey") String authKey,
+            @RequestBody UserDto userRequestDto
+    ){
+        this.validationService.validateAuthKey(authKey);
+        UserResponseDto userResponseDto = this.userService.updateUser(userRequestDto);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)

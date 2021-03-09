@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.constants.RestErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
@@ -27,7 +28,11 @@ public class UserService implements UserServiceI {
         var badRequestMsg = "";
 
         if (registerUserRequestDto.getFirst_name() == null || registerUserRequestDto.getFirst_name().isBlank()) {
-            badRequestMsg += DetailedErrorMessages.NAME_REQUIRED;
+            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
+        }
+
+        if (registerUserRequestDto.getLast_name() == null || registerUserRequestDto.getLast_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
         }
 
         if (registerUserRequestDto.getEmail() == null || registerUserRequestDto.getEmail().isBlank()) {
@@ -39,6 +44,38 @@ public class UserService implements UserServiceI {
         }
 
         return userDao.saveUser(registerUserRequestDto);
+    }
+
+    public UserResponseDto updateUser(UserDto userRequestDto) {
+        var badRequestMsg = "";
+
+        if (userRequestDto.getFirst_name() == null || userRequestDto.getFirst_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
+        }
+
+        if (userRequestDto.getLast_name() == null || userRequestDto.getLast_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
+        }
+
+        if (userRequestDto.getEmail() == null || userRequestDto.getEmail().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
+        }
+
+        if (!badRequestMsg.isEmpty()) {
+            throw new BadRequestException(badRequestMsg, null);
+        }
+
+        if(userRequestDto.getUser_id() == null){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_UUID, null);
+        }
+
+        var userResponseDto = userDao.updateUser(userRequestDto);
+
+        if (userResponseDto == null){
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
     }
 
     public UserResponseDto getByUserId(String userId) {

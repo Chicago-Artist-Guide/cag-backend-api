@@ -2,8 +2,10 @@ package com.cag.cagbackendapi.daos.impl
 
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_USER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_USER
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_UPDATE_USER
 import com.cag.cagbackendapi.daos.UserDaoI
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.repositories.UserRepository
@@ -40,5 +42,19 @@ class UserDao : UserDaoI {
 
     private fun userDtoToEntity(registerUserRequestDto: RegisterUserRequestDto): UserEntity {
         return modelMapper.map(registerUserRequestDto, UserEntity::class.java)
+    }
+
+    override fun updateUser(userDto: UserDto): UserResponseDto? {
+        logger.info(LOG_UPDATE_USER(userDto))
+
+        val userEntity = userRepository.getByUserId(userDto.user_id) ?: return null
+
+        userEntity.first_name = userDto.first_name
+        userEntity.last_name = userDto.last_name
+        userEntity.email = userDto.email
+
+        val userResponseEntity = userRepository.save(userEntity)
+
+        return userResponseEntity.toDto()
     }
 }

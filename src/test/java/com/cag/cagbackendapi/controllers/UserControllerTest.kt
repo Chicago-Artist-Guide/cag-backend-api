@@ -2,9 +2,11 @@ package com.cag.cagbackendapi.controllers
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
 import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
+import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockitokotlin2.*
@@ -43,11 +45,11 @@ class UserControllerTest {
     }
 
     @Test
-    fun registerUser_missingFirstNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndLastNameAndEmail_400BadRequest() {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto(first_name = null, last_name = null, email = null)
 
-        val badRequestException = BadRequestException(DetailedErrorMessages.NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenThrow(badRequestException)
@@ -80,6 +82,86 @@ class UserControllerTest {
 
         verify(validationService).validateAuthKey(testAuthKey)
         verifyZeroInteractions(userService)
+    }
+
+    @Test
+    fun updateUser_validInput_returns200(){
+        val testAuthKey = "testAuthKey"
+        val randomUUID = UUID.randomUUID()
+        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com" )
+        val resultUpdateUser = UserResponseDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.updateUser(updateUser)).thenReturn(resultUpdateUser)
+
+        userController.updateUser(testAuthKey, updateUser)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).updateUser(updateUser)
+        verifyNoMoreInteractions(validationService, userService)
+
+    }
+
+    @Test
+    fun updateUser_missingUserId_returns400(){
+        val testAuthKey = "testAuthKey"
+        val updateUser = UserDto(user_id = null, first_name = "depaul", last_name = "sports", email = "depaulsports@gmail.com")
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.updateUser(updateUser)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.updateUser(testAuthKey, updateUser)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+        verify(validationService).validateAuthKey(testAuthKey)
+    }
+
+    @Test
+    fun updateUser_missingAuthKey_401UnauthorizedRequest(){
+        val testAuthKey = ""
+        val randomUUID = UUID.randomUUID()
+        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com" )
+
+        val unauthorizedException = UnauthorizedException(DetailedErrorMessages.INVALID_UUID, null)
+
+        whenever(validationService.validateAuthKey(testAuthKey)).thenThrow(unauthorizedException)
+
+        val actual = assertThrows<UnauthorizedException> {
+            userController.updateUser(testAuthKey, updateUser)
+        }
+
+        assertEquals(actual.message, unauthorizedException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verifyZeroInteractions(userService)
+
+    }
+
+    @Test
+    fun updateUser_invalidUserId_returns404UserNotFound(){
+        val testAuthKey = "testAuthKey"
+        val randomUUID = UUID.randomUUID()
+        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email = "depaulsports@gmail.com")
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.updateUser(updateUser)).thenThrow(notFoundException)
+
+        val actual = assertThrows<NotFoundException> {
+            userController.updateUser(testAuthKey, updateUser)
+        }
+
+        assertEquals(actual.message, notFoundException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).updateUser(updateUser)
+        verifyNoMoreInteractions(validationService, userService)
+
     }
 
     @Test
