@@ -47,8 +47,8 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_emptyFirstNameAndLastName_400BadRequest() {
-        val emptyNameUser = UserDto(null, "", "", "testuser@aol.com", true, null, null, true)
+    fun registerUser_emptyFirstNameAndLastNameAndNot18_400BadRequest() {
+        val emptyNameUser = UserDto(null, "", "", "testuser@aol.com", true, null, null, null)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -59,7 +59,7 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.MUST_BE_18)
     }
 
     @Test

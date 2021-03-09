@@ -37,6 +37,10 @@ public class UserService implements UserServiceI {
             badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
         }
 
+        if (registerUserRequestDto.getAgreed_18() == null || !registerUserRequestDto.getAgreed_18()) {
+            badRequestMsg += DetailedErrorMessages.MUST_BE_18;
+        }
+
         if (!badRequestMsg.isEmpty()) {
             throw new BadRequestException(badRequestMsg, null);
         }
