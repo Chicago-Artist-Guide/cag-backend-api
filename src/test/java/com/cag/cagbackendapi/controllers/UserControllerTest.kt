@@ -10,7 +10,6 @@ import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockitokotlin2.*
-import lombok.extern.java.Log
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -32,7 +31,7 @@ class UserControllerTest {
     fun registerUser_validInput_returns201() {
         val testAuthKey = "testAuthKey"
         val requestUser = RegisterUserRequestDto("John", "Smith", "johnjohn@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenReturn(resultUser)
@@ -89,7 +88,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
         val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com" )
-        val resultUpdateUser = UserResponseDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com" )
+        val resultUpdateUser = UserResponseDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.updateUser(updateUser)).thenReturn(resultUpdateUser)
@@ -169,7 +168,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val userId = "123e4567-e89b-12d3-a456-426614174000"
         val userUUID = UUID.fromString(userId)
-        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com")
+        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.getByUserId(userId)).thenReturn(userData)
@@ -247,7 +246,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val userId = "123e4567-e89b-12d3-a456-426614174000"
         val userUUID = UUID.fromString(userId)
-        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com")
+        val userData = UserResponseDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.deleteUser(userId)).thenReturn(userData)

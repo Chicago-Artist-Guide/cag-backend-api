@@ -7,7 +7,7 @@ import java.util.*
 
 interface UserDaoI {
     fun saveUser(registerUserRequestDto: RegisterUserRequestDto): UserResponseDto
-    fun deleteUser(userUUID: UUID): UserResponseDto?
     fun updateUser(userDto: UserDto): UserResponseDto?
+    fun deleteUser(userUUID: UUID): UserResponseDto?
     fun getUser(userUUID: UUID): UserResponseDto?
 }

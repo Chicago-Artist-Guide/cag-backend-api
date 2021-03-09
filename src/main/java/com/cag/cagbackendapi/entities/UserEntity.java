@@ -3,7 +3,6 @@ package com.cag.cagbackendapi.entities;
 import com.cag.cagbackendapi.dtos.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -29,8 +28,10 @@ public class UserEntity {
     public String first_name;
     public String last_name;
     public String email;
+    public Boolean active_status;
+    public String session_id;
 
     public UserResponseDto toDto() {
-        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email);
+        return new UserResponseDto(this.userId, this.first_name, this.last_name, this.email, this.active_status, this.session_id);
     }
 }
