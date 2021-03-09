@@ -6,7 +6,6 @@ import com.cag.cagbackendapi.constants.LoggerMessages.LOG_UPDATE_USER
 import com.cag.cagbackendapi.daos.UserDaoI
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserDto
-import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.repositories.UserRepository
 import org.modelmapper.ModelMapper
@@ -26,14 +25,14 @@ class UserDao : UserDaoI {
     @Autowired
     private lateinit var modelMapper: ModelMapper
 
-    override fun saveUser(registerUserRequestDto: RegisterUserRequestDto): UserResponseDto {
+    override fun saveUser(registerUserRequestDto: RegisterUserRequestDto): UserDto {
         logger.info(LOG_SAVE_USER(registerUserRequestDto))
 
         val savedUserEntity = userRepository.save(userDtoToEntity(registerUserRequestDto))
         return savedUserEntity.toDto()
     }
 
-    override fun getUser(userUUID: UUID): UserResponseDto? {
+    override fun getUser(userUUID: UUID): UserDto? {
         logger.info(GET_USER(userUUID))
 
         val userEntity = userRepository.getByUserId(userUUID) ?: return null
@@ -44,7 +43,7 @@ class UserDao : UserDaoI {
         return modelMapper.map(registerUserRequestDto, UserEntity::class.java)
     }
 
-    override fun updateUser(userDto: UserDto): UserResponseDto? {
+    override fun updateUser(userDto: UserDto): UserDto? {
         logger.info(LOG_UPDATE_USER(userDto))
 
         val userEntity = userRepository.getByUserId(userDto.user_id) ?: return null

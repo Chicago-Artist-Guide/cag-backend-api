@@ -1,11 +1,9 @@
 package com.cag.cagbackendapi.services.user.impl;
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
-import com.cag.cagbackendapi.constants.RestErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
 import com.cag.cagbackendapi.dtos.UserDto;
-import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
@@ -24,7 +22,7 @@ public class UserService implements UserServiceI {
         this.userDao = userDao;
     }
 
-    public UserResponseDto registerUser(RegisterUserRequestDto registerUserRequestDto) {
+    public UserDto registerUser(RegisterUserRequestDto registerUserRequestDto) {
         var badRequestMsg = "";
 
         if (registerUserRequestDto.getFirst_name() == null || registerUserRequestDto.getFirst_name().isBlank()) {
@@ -46,7 +44,7 @@ public class UserService implements UserServiceI {
         return userDao.saveUser(registerUserRequestDto);
     }
 
-    public UserResponseDto updateUser(UserDto userRequestDto) {
+    public UserDto updateUser(UserDto userRequestDto) {
         var badRequestMsg = "";
 
         if (userRequestDto.getFirst_name() == null || userRequestDto.getFirst_name().isBlank()) {
@@ -78,7 +76,7 @@ public class UserService implements UserServiceI {
         return userResponseDto;
     }
 
-    public UserResponseDto getByUserId(String userId) {
+    public UserDto getByUserId(String userId) {
 
         if(userId == null || userId == "") {
             throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);

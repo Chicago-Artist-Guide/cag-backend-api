@@ -2,7 +2,6 @@ package com.cag.cagbackendapi.constants
 
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserDto
-import com.cag.cagbackendapi.dtos.UserResponseDto
 import java.util.*
 
 object RestErrorMessages {

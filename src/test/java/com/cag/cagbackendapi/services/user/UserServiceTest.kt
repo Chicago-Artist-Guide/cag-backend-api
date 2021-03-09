@@ -5,7 +5,6 @@ import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.UserDao
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserDto
-import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
@@ -30,8 +29,8 @@ class UserServiceTest {
     @Test
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
-        val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null)
+        val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com", true)
+        val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true)
 
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
 
@@ -46,7 +45,7 @@ class UserServiceTest {
     @Test
     fun registerUser_missingFirstNameAndLastNameAndEmail_BadRequest() {
         // assemble
-        val inputUser = RegisterUserRequestDto(null, null,null)
+        val inputUser = RegisterUserRequestDto(null, null,null, true)
         val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         // act
@@ -63,7 +62,7 @@ class UserServiceTest {
     @Test
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
-        val inputUser = RegisterUserRequestDto("test", "user", "testuser@aol.com")
+        val inputUser = RegisterUserRequestDto("test", "user", "testuser@aol.com", true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
         whenever(userDao.saveUser(inputUser)).thenThrow(internalServerError)
@@ -84,7 +83,7 @@ class UserServiceTest {
     fun getByUserId_validUser_success() {
         val userId = UUID.randomUUID()
 
-        val result = UserResponseDto(userId, "Test", "User", "test.user@gmail.com", true, null)
+        val result = UserDto(userId, "Test", "User", "test.user@gmail.com", true, null, null, true)
 
         whenever(userDao.getUser(userId)).thenReturn(result)
 
@@ -164,8 +163,8 @@ class UserServiceTest {
     fun updateUser_validUser_logsAndSucceeds() {
         //assemble
         val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com")
-        val resultUser = UserResponseDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null)
+        val updateUser = UserDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUser = UserDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         whenever(userDao.updateUser(updateUser)).thenReturn(resultUser)
         //act
@@ -180,7 +179,7 @@ class UserServiceTest {
     fun updateUser_missingFirstNameAndLastnameAndEmail_BadRequest(){
         //assemble
         val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "", last_name = null, email = "")
+        val updateUser = UserDto(user_id = userId, first_name = "", last_name = null, email = "", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         //act
@@ -196,7 +195,7 @@ class UserServiceTest {
     @Test
     fun updateUser_missingUserId_BadRequest(){
         //assemble
-        val updateUser = UserDto(user_id = null, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com")
+        val updateUser = UserDto(user_id = null, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
 
         //act
@@ -213,7 +212,7 @@ class UserServiceTest {
     fun updateUser_userNotFound_ExceptionRequest(){
         //assemble
         val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com")
+        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         whenever(userDao.updateUser(updateUser)).thenReturn(null)
@@ -234,7 +233,7 @@ class UserServiceTest {
     fun updateUser_validInputWithDatabaseDown_InternalServiceError(){
         // assemble
         val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com")
+        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", session_id = null, active_status = true, agreed_18 = true, img_url = null)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
         whenever(userDao.updateUser(updateUser)).thenThrow(internalServerError)
