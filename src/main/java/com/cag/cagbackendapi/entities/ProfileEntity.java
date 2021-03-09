@@ -30,7 +30,6 @@ public class ProfileEntity {
     private Boolean comfortable_playing_women;
     private Boolean comfortable_playing_neither;
     private Boolean comfortable_playing_transition;
-    private int height_feet;
     private int height_inches;
     private String agency;
     private String website_type_one;
