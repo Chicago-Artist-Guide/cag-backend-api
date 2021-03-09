@@ -54,9 +54,8 @@ class UserServiceTest {
             userService.registerUser(inputUser)
         }
 
-        assertEquals(badRequestException.message, actualException.message)
-
         // assert
+        assertEquals(badRequestException.message, actualException.message)
         verifyZeroInteractions(userDao)
     }
 
@@ -73,9 +72,8 @@ class UserServiceTest {
             userService.registerUser(inputUser)
         }
 
-        assertEquals(actualException.message, internalServerError.message)
-
         // assert
+        assertEquals(actualException.message, internalServerError.message)
         verify(userDao).saveUser(inputUser)
         verifyNoMoreInteractions(userDao)
     }
@@ -103,9 +101,7 @@ class UserServiceTest {
         val actualException = assertThrows<BadRequestException> {
             userService.getByUserId(userId)
         }
-
         assertEquals(badRequestException.message, actualException.message)
-
         verifyZeroInteractions(userDao)
     }
 
@@ -120,7 +116,6 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-
         verifyZeroInteractions(userDao)
     }
 
@@ -137,7 +132,6 @@ class UserServiceTest {
         }
 
         assertEquals(notFoundException.message, actualException.message)
-
         verify(userDao).getUser(userId)
         verifyZeroInteractions(userDao)
     }
@@ -155,7 +149,6 @@ class UserServiceTest {
         }
 
         assertEquals(actualException.message, internalServerError.message)
-
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
     }
@@ -244,10 +237,25 @@ class UserServiceTest {
             userService.updateUser(updateUser)
         }
 
+        // assert
         assertEquals(actualException.message, internalServerError.message)
+        verify(userDao).updateUser(updateUser)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_validUser_logsAndSucceeds() {
+        // assemble
+        val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com")
+        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null)
+
+        whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
+
+        // act
+        userService.registerUser(inputUser)
 
         // assert
-        verify(userDao).updateUser(updateUser)
+        verify(userDao).saveUser(inputUser)
         verifyNoMoreInteractions(userDao)
     }
 
