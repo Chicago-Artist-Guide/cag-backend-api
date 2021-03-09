@@ -3,7 +3,7 @@ package com.cag.cagbackendapi.services.user
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.UserDao
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
@@ -29,7 +29,7 @@ class UserServiceTest {
     @Test
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
-        val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com", true)
+        val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", true)
         val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true)
 
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
@@ -45,7 +45,7 @@ class UserServiceTest {
     @Test
     fun registerUser_missingFirstNameAndLastNameAndEmailAndAgreed18_BadRequest() {
         // assemble
-        val inputUser = RegisterUserRequestDto(null, null,null, false)
+        val inputUser = UserRegistrationDto(null, null,null, false)
         val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.MUST_BE_18, null)
 
         // act
@@ -62,7 +62,7 @@ class UserServiceTest {
     @Test
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
-        val inputUser = RegisterUserRequestDto("test", "user", "testuser@aol.com", true)
+        val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
         whenever(userDao.saveUser(inputUser)).thenThrow(internalServerError)

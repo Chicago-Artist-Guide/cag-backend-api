@@ -2,7 +2,7 @@ package com.cag.cagbackendapi.services.user.impl;
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
@@ -22,22 +22,22 @@ public class UserService implements UserServiceI {
         this.userDao = userDao;
     }
 
-    public UserDto registerUser(RegisterUserRequestDto registerUserRequestDto) {
+    public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
         var badRequestMsg = "";
 
-        if (registerUserRequestDto.getFirst_name() == null || registerUserRequestDto.getFirst_name().isBlank()) {
+        if (userRegistrationDto.getFirst_name() == null || userRegistrationDto.getFirst_name().isBlank()) {
             badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
         }
 
-        if (registerUserRequestDto.getLast_name() == null || registerUserRequestDto.getLast_name().isBlank()) {
+        if (userRegistrationDto.getLast_name() == null || userRegistrationDto.getLast_name().isBlank()) {
             badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
         }
 
-        if (registerUserRequestDto.getEmail() == null || registerUserRequestDto.getEmail().isBlank()) {
+        if (userRegistrationDto.getEmail() == null || userRegistrationDto.getEmail().isBlank()) {
             badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
         }
 
-        if (registerUserRequestDto.getAgreed_18() == null || !registerUserRequestDto.getAgreed_18()) {
+        if (userRegistrationDto.getAgreed_18() == null || !userRegistrationDto.getAgreed_18()) {
             badRequestMsg += DetailedErrorMessages.MUST_BE_18;
         }
 
@@ -45,7 +45,7 @@ public class UserService implements UserServiceI {
             throw new BadRequestException(badRequestMsg, null);
         }
 
-        return userDao.saveUser(registerUserRequestDto);
+        return userDao.saveUser(userRegistrationDto);
     }
 
     public UserDto updateUser(UserDto userRequestDto) {

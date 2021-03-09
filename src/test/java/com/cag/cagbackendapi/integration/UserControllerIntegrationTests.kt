@@ -2,7 +2,7 @@ package com.cag.cagbackendapi.integration
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
@@ -26,7 +26,7 @@ class UserControllerIntegrationTests {
 
     private val objectMapper = jacksonObjectMapper()
 
-    private val validRegisterUser = RegisterUserRequestDto("first name", "last name", "user", true)
+    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", true)
     private val validAuthKey = "mockAuthKey"
 
     @Test

@@ -1,6 +1,6 @@
 package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
@@ -27,10 +27,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserDto> registerUser(
             @RequestHeader("authKey") String authKey,
-            @RequestBody RegisterUserRequestDto registerUserRequestDto
+            @RequestBody UserRegistrationDto userRegistrationDto
     ) {
         this.validationService.validateAuthKey(authKey);
-        UserDto userResponseDto = this.userService.registerUser(registerUserRequestDto);
+        UserDto userResponseDto = this.userService.registerUser(userRegistrationDto);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }

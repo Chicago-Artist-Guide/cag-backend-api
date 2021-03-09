@@ -1,6 +1,6 @@
 package com.cag.cagbackendapi.constants
 
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
+import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import java.util.*
 
@@ -28,8 +28,8 @@ object DetailedErrorMessages {
 }
 
 object LoggerMessages {
-    fun LOG_SAVE_USER(registerUserRequest: RegisterUserRequestDto): String {
-        return "Save user: $registerUserRequest"
+    fun LOG_SAVE_USER(userRegistration: UserRegistrationDto): String {
+        return "Save user: $userRegistration"
     }
 
     fun LOG_UPDATE_USER(userDto: UserDto): String {
