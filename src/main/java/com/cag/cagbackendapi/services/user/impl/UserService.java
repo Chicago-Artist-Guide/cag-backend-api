@@ -102,26 +102,12 @@ public class UserService implements UserServiceI {
 
     @Override
     public UserResponseDto deleteUser(String userId) {
+
+        UUID userUUID;
+
         if (userId == "" || userId == null) {
             throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
         }
-
-        /*//error message for invalid auth key (401)
-        if( authKey == "" || authKey == null) {
-            throw new BadRequestException(DetailedErrorMessages.MISSING_AUTH_KEY, null);
-        }
-
-        //weird error (500)
-        if( INTERNAL_SERVER_ERROR ) {
-            throw new BadRequestException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
-        }
-
-        //valid auth/user database down (503)
-        if (SERVICE_UNAVAILABLE) {
-            throw new BadRequestException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
-        }*/
-
-        UUID userUUID;
 
         try {
             userUUID = UUID.fromString(userId);

@@ -246,16 +246,79 @@ class UserServiceTest {
     @Test
     fun deleteUser_validUser_logsAndSucceeds() {
         // assemble
+        val userId = UUID.randomUUID()
         val inputUser = RegisterUserRequestDto("testy", "tester", "testytester@aol.com")
-        val resultUser = UserResponseDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null)
+        val resultUser = UserResponseDto(userId, "testy", "tester", "testytester@aol.com", true, null)
 
-        whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
+        whenever(userDao.deleteUser(userId)).thenReturn(resultUser)
 
         // act
-        userService.registerUser(inputUser)
+        userService.deleteUser(userId.toString())
 
         // assert
-        verify(userDao).saveUser(inputUser)
+        verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_invalidId_badRequest() {
+        val userId = "invalidUserId"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.deleteUser(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_nullId_badRequest() {
+        val userId = null
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.deleteUser(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_userNotFound_notFoundRequest() {
+        val userId = UUID.randomUUID()
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        whenever(userDao.deleteUser(userId)).thenReturn(null)
+
+        val actualException = assertThrows<NotFoundException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(notFoundException.message, actualException.message)
+        verify(userDao).deleteUser(userId)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_validInputWithDatabaseDown_InternalServerError() {
+        val userId = UUID.randomUUID()
+
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(userDao.deleteUser(userId)).thenThrow(internalServerError)
+
+        val actualException = assertThrows<InternalServerErrorException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(actualException.message, internalServerError.message)
+        verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
     }
 
