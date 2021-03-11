@@ -303,18 +303,19 @@ class UserControllerTest {
     @Test
     fun deleteUser_invalidUserId_404UserNotFound(){
         val testAuthKey = "testAuthKey"
-        val userId = "nonUserUUID"
+        val userId = "invalidUserId"
 
-        val badRequestException = BadRequestException(DetailedErrorMessages.USER_NOT_FOUND, null)
+        //val badRequestException = BadRequestException(DetailedErrorMessages.USER_NOT_FOUND, null)
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
-        whenever(userService.deleteUser(userId)).thenThrow(badRequestException)
+        whenever(userService.deleteUser(userId)).thenThrow(notFoundException)
 
-        val actual = assertThrows<BadRequestException> {
+        val actual = assertThrows<NotFoundException> {
             userController.deleteUser(testAuthKey, userId)
         }
 
-        assertEquals(actual.message, badRequestException.message)
+        assertEquals(actual.message, notFoundException.message)
 
         verify(validationService).validateAuthKey(testAuthKey)
         verify(userService).deleteUser(userId)
