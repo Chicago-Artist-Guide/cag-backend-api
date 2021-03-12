@@ -1,16 +1,13 @@
 package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.dtos.RegisterUserRequestDto;
+import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
-import com.cag.cagbackendapi.dtos.UserResponseDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -28,24 +25,24 @@ public class UserController {
 
     @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserResponseDto> registerUser(
+    public ResponseEntity<UserDto> registerUser(
             @RequestHeader("authKey") String authKey,
-            @RequestBody RegisterUserRequestDto registerUserRequestDto
+            @RequestBody UserRegistrationDto userRegistrationDto
     ) {
         this.validationService.validateAuthKey(authKey);
-        UserResponseDto userResponseDto = this.userService.registerUser(registerUserRequestDto);
+        UserDto userResponseDto = this.userService.registerUser(userRegistrationDto);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value="/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserResponseDto> updateUser(
+    public ResponseEntity<UserDto> updateUser(
             @RequestHeader("authKey") String authKey,
             @RequestBody UserDto userRequestDto
     ){
         this.validationService.validateAuthKey(authKey);
-        UserResponseDto userResponseDto = this.userService.updateUser(userRequestDto);
+        UserDto userResponseDto = this.userService.updateUser(userRequestDto);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
@@ -53,12 +50,12 @@ public class UserController {
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserResponseDto> getByUserId(
+    public ResponseEntity<UserDto> getByUserId(
             @RequestHeader("authKey") String authKey,
             @PathVariable("userId") String userId
     ){
         this.validationService.validateAuthKey(authKey);
-        UserResponseDto userResponseDto = this.userService.getByUserId(userId);
+        UserDto userResponseDto = this.userService.getByUserId(userId);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
