@@ -48,9 +48,9 @@ class UserDao : UserDaoI {
 
         val userEntity = userRepository.getByUserId(userId) ?: return null
 
-        userEntity.first_name = userDto.first_name
-        userEntity.last_name = userDto.last_name
-        userEntity.email = userDto.email
+        userEntity.setFirstName(userDto.first_name)
+        userEntity.setLastName(userDto.last_name)
+        userEntity.setEmailJava(userDto.email)
 
         val userResponseEntity = userRepository.save(userEntity)
 
