@@ -162,29 +162,31 @@ class UserServiceTest {
     @Test
     fun updateUser_validUser_logsAndSucceeds() {
         //assemble
-        val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
-        val resultUser = UserDto(user_id = userId, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val userUuid = UUID.randomUUID()
+        val userId = userUuid.toString()
+        val updateUser = UserDto(user_id = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUser = UserDto(user_id = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
-        whenever(userDao.updateUser(updateUser)).thenReturn(resultUser)
+        whenever(userDao.updateUser(userUuid, updateUser)).thenReturn(resultUser)
         //act
-        userService.updateUser(updateUser)
+        userService.updateUser(userId, updateUser)
 
         //assert
-        verify(userDao).updateUser(updateUser)
+        verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
     }
 
     @Test
     fun updateUser_missingFirstNameAndLastnameAndEmail_BadRequest(){
         //assemble
-        val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "", last_name = null, email = "", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val userUuid = UUID.randomUUID()
+        val userId = userUuid.toString()
+        val updateUser = UserDto(user_id = userUuid, first_name = "", last_name = null, email = "", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
 
         //act
         val actualException = assertThrows<BadRequestException> {
-            userService.updateUser(updateUser)
+            userService.updateUser(userId, updateUser)
         }
 
         //assert
@@ -196,11 +198,11 @@ class UserServiceTest {
     fun updateUser_missingUserId_BadRequest(){
         //assemble
         val updateUser = UserDto(user_id = null, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
-        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
 
         //act
         val actualException = assertThrows<BadRequestException> {
-            userService.updateUser(updateUser)
+            userService.updateUser(null, updateUser)
         }
 
         //assert
@@ -211,20 +213,21 @@ class UserServiceTest {
     @Test
     fun updateUser_userNotFound_ExceptionRequest(){
         //assemble
-        val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val userUuid = UUID.randomUUID()
+        val userId = userUuid.toString()
+        val updateUser = UserDto(user_id = userUuid, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
-        whenever(userDao.updateUser(updateUser)).thenReturn(null)
+        whenever(userDao.updateUser(userUuid, updateUser)).thenReturn(null)
 
         //act
         val actualException = assertThrows<NotFoundException> {
-            userService.updateUser(updateUser)
+            userService.updateUser(userId, updateUser)
         }
 
         //assert
         assertEquals(notFoundException.message, actualException.message)
-        verify(userDao).updateUser(updateUser)
+        verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
     }
 
@@ -232,23 +235,22 @@ class UserServiceTest {
     @Test
     fun updateUser_validInputWithDatabaseDown_InternalServiceError(){
         // assemble
-        val userId = UUID.randomUUID()
-        val updateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", session_id = null, active_status = true, agreed_18 = true, img_url = null)
+        val userUuid = UUID.randomUUID()
+        val userId = userUuid.toString()
+        val updateUser = UserDto(user_id = userUuid, first_name = "Tony", last_name = "Stark", email = "tstark@gmail.com", session_id = null, active_status = true, agreed_18 = true, img_url = null)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
-        whenever(userDao.updateUser(updateUser)).thenThrow(internalServerError)
+        whenever(userDao.updateUser(userUuid, updateUser)).thenThrow(internalServerError)
 
         // act
         val actualException = assertThrows<InternalServerErrorException> {
-            userService.updateUser(updateUser)
+            userService.updateUser(userId, updateUser)
         }
 
         assertEquals(actualException.message, internalServerError.message)
 
         // assert
-        verify(userDao).updateUser(updateUser)
+        verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
     }
-
-
 }

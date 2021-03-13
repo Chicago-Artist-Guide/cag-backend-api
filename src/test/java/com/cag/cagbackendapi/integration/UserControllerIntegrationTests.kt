@@ -155,7 +155,7 @@ class UserControllerIntegrationTests {
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
 
-        val updateUserResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, String::class.java)
+        val updateUserResponse = testRestTemplate.exchange("/user/${validUpdateUser.user_id.toString()}", HttpMethod.PUT, request2, String::class.java)
         val updatedUser = objectMapper.readValue(updateUserResponse.body, UserDto::class.java)
 
         //test created user
@@ -176,7 +176,23 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun updateUser_missingUserId_400BadRequest() {
+    fun updateUser_invalidUserId_400BadRequest() {
+        val userId = "blah"
+        val invalidUpdateUser = UserDto(null, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(invalidUpdateUser, headers2)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.PUT, request2, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_USER_ID)
+    }
+
+    @Test
+    fun updateUser_missingUserId_404NotFound() {
         val invalidUpdateUser = UserDto(null, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
@@ -184,10 +200,8 @@ class UserControllerIntegrationTests {
 
         val errorDetailsResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, ErrorDetails::class.java)
 
-        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
-        assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_UUID)
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        //TODO add to this test once we have a better resource not found page
     }
 
     @Test
@@ -205,7 +219,7 @@ class UserControllerIntegrationTests {
         headers2.set("authKey", "invalidAuthKey")
         val request2 = HttpEntity(validUpdateUser, headers2)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/${userId.toString()}", HttpMethod.PUT, request2, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.UNAUTHORIZED, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
@@ -213,7 +227,6 @@ class UserControllerIntegrationTests {
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
     }
 
-    //getting a 200 error
     @Test
     fun updateUser_userNotFound_404NotFound(){
         val validUpdateUser = UserDto(user_id = UUID.randomUUID(), first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
@@ -221,13 +234,12 @@ class UserControllerIntegrationTests {
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/", HttpMethod.PUT, request2, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/${validUpdateUser.user_id.toString()}", HttpMethod.PUT, request2, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
-
     }
 
     @Test

@@ -22,7 +22,82 @@ public class UserService implements UserServiceI {
         this.userDao = userDao;
     }
 
+    @Override
     public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
+        validateUserRegistrationDto(userRegistrationDto);
+
+        return userDao.saveUser(userRegistrationDto);
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto userRequestDto) {
+        UUID userUUID = getUserUuidFromString(userId);
+
+        validateUserDto(userRequestDto);
+
+        var userResponseDto = userDao.updateUser(userUUID, userRequestDto);
+
+        if (userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    @Override
+    public UserDto getByUserId(String userId) {
+        UUID userUUID = getUserUuidFromString(userId);
+
+        var userResponseDto = userDao.getUser(userUUID);
+
+        if(userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    private void validateUserDto(UserDto userDto) {
+        var badRequestMsg = "";
+
+        if (userDto.getFirst_name() == null || userDto.getFirst_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
+        }
+
+        if (userDto.getLast_name() == null || userDto.getLast_name().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
+        }
+
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
+        }
+
+        if (userDto.getAgreed_18() == null || !userDto.getAgreed_18()) {
+            badRequestMsg += DetailedErrorMessages.MUST_BE_18;
+        }
+
+        if (!badRequestMsg.isEmpty()) {
+            throw new BadRequestException(badRequestMsg, null);
+        }
+    }
+
+    private UUID getUserUuidFromString(String userId) {
+        if(userId == null || userId.equals("")) {
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
+        }
+
+        UUID userUUID;
+
+        try {
+            userUUID = UUID.fromString(userId);
+        } catch(Exception ex){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
+        }
+
+        return userUUID;
+    }
+
+    private void validateUserRegistrationDto(UserRegistrationDto userRegistrationDto) {
         var badRequestMsg = "";
 
         if (userRegistrationDto.getFirst_name() == null || userRegistrationDto.getFirst_name().isBlank()) {
@@ -44,62 +119,5 @@ public class UserService implements UserServiceI {
         if (!badRequestMsg.isEmpty()) {
             throw new BadRequestException(badRequestMsg, null);
         }
-
-        return userDao.saveUser(userRegistrationDto);
-    }
-
-    public UserDto updateUser(UserDto userRequestDto) {
-        var badRequestMsg = "";
-
-        if (userRequestDto.getFirst_name() == null || userRequestDto.getFirst_name().isBlank()) {
-            badRequestMsg += DetailedErrorMessages.FIRST_NAME_REQUIRED;
-        }
-
-        if (userRequestDto.getLast_name() == null || userRequestDto.getLast_name().isBlank()) {
-            badRequestMsg += DetailedErrorMessages.LAST_NAME_REQUIRED;
-        }
-
-        if (userRequestDto.getEmail() == null || userRequestDto.getEmail().isBlank()) {
-            badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
-        }
-
-        if (!badRequestMsg.isEmpty()) {
-            throw new BadRequestException(badRequestMsg, null);
-        }
-
-        if(userRequestDto.getUser_id() == null){
-            throw new BadRequestException(DetailedErrorMessages.INVALID_UUID, null);
-        }
-
-        var userResponseDto = userDao.updateUser(userRequestDto);
-
-        if (userResponseDto == null){
-            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
-        }
-
-        return userResponseDto;
-    }
-
-    public UserDto getByUserId(String userId) {
-
-        if(userId == null || userId == "") {
-            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
-        }
-
-        UUID userUUID;
-
-        try {
-            userUUID = UUID.fromString(userId);
-        } catch(Exception ex){
-            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
-        }
-
-        var userResponseDto = userDao.getUser(userUUID);
-
-        if(userResponseDto == null) {
-            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
-        }
-
-        return userResponseDto;
     }
 }

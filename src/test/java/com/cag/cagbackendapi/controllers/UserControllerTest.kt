@@ -86,16 +86,17 @@ class UserControllerTest {
     fun updateUser_validInput_returns200(){
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
+        val randomUuidStr = randomUUID.toString()
         val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
         val resultUpdateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
-        whenever(userService.updateUser(updateUser)).thenReturn(resultUpdateUser)
+        whenever(userService.updateUser(randomUuidStr, updateUser)).thenReturn(resultUpdateUser)
 
-        userController.updateUser(testAuthKey, updateUser)
+        userController.updateUser(testAuthKey, updateUser, randomUuidStr)
 
         verify(validationService).validateAuthKey(testAuthKey)
-        verify(userService).updateUser(updateUser)
+        verify(userService).updateUser(randomUuidStr, updateUser)
         verifyNoMoreInteractions(validationService, userService)
 
     }
@@ -108,10 +109,10 @@ class UserControllerTest {
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
-        whenever(userService.updateUser(updateUser)).thenThrow(badRequestException)
+        whenever(userService.updateUser(null, updateUser)).thenThrow(badRequestException)
 
         val actual = assertThrows<BadRequestException> {
-            userController.updateUser(testAuthKey, updateUser)
+            userController.updateUser(testAuthKey, updateUser, null)
         }
 
         assertEquals(actual.message, badRequestException.message)
@@ -122,6 +123,7 @@ class UserControllerTest {
     fun updateUser_missingAuthKey_401UnauthorizedRequest(){
         val testAuthKey = ""
         val randomUUID = UUID.randomUUID()
+        val randomUuidStr = randomUUID.toString()
         val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         val unauthorizedException = UnauthorizedException(DetailedErrorMessages.INVALID_UUID, null)
@@ -129,7 +131,7 @@ class UserControllerTest {
         whenever(validationService.validateAuthKey(testAuthKey)).thenThrow(unauthorizedException)
 
         val actual = assertThrows<UnauthorizedException> {
-            userController.updateUser(testAuthKey, updateUser)
+            userController.updateUser(testAuthKey, updateUser, randomUuidStr)
         }
 
         assertEquals(actual.message, unauthorizedException.message)
@@ -143,21 +145,22 @@ class UserControllerTest {
     fun updateUser_invalidUserId_returns404UserNotFound(){
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
+        val randomUuidStr = randomUUID.toString()
         val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email = "depaulsports@gmail.com", active_status = true, img_url = null, agreed_18 = true, session_id = null)
 
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
-        whenever(userService.updateUser(updateUser)).thenThrow(notFoundException)
+        whenever(userService.updateUser(randomUuidStr, updateUser)).thenThrow(notFoundException)
 
         val actual = assertThrows<NotFoundException> {
-            userController.updateUser(testAuthKey, updateUser)
+            userController.updateUser(testAuthKey, updateUser, randomUuidStr)
         }
 
         assertEquals(actual.message, notFoundException.message)
 
         verify(validationService).validateAuthKey(testAuthKey)
-        verify(userService).updateUser(updateUser)
+        verify(userService).updateUser(randomUuidStr, updateUser)
         verifyNoMoreInteractions(validationService, userService)
 
     }

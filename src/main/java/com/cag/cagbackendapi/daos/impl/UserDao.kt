@@ -43,10 +43,10 @@ class UserDao : UserDaoI {
         return modelMapper.map(userRegistrationDto, UserEntity::class.java)
     }
 
-    override fun updateUser(userDto: UserDto): UserDto? {
+    override fun updateUser(userId: UUID, userDto: UserDto): UserDto? {
         logger.info(LOG_UPDATE_USER(userDto))
 
-        val userEntity = userRepository.getByUserId(userDto.user_id) ?: return null
+        val userEntity = userRepository.getByUserId(userId) ?: return null
 
         userEntity.first_name = userDto.first_name
         userEntity.last_name = userDto.last_name
