@@ -23,7 +23,7 @@ object DetailedErrorMessages {
     const val EMAIL_REQUIRED = "Email is required. "
     const val INVALID_USER_ID = "Invalid user ID. "
     const val USER_NOT_FOUND = "User not found. "
-    const val INVALID_UUID = "Invalid UserId. "
+    const val INVALID_UUID = "Invalid Id. "
     const val MUST_BE_18 = "You must be eighteen years or older to use Chicago Artist Guide. "
 }
 

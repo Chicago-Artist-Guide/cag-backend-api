@@ -35,18 +35,18 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping(value="/")
+    @PutMapping(value="/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDto> updateUser(
             @RequestHeader("authKey") String authKey,
-            @RequestBody UserDto userRequestDto
+            @RequestBody UserDto userRequestDto,
+            @PathVariable("userId") String userId
     ){
         this.validationService.validateAuthKey(authKey);
-        UserDto userResponseDto = this.userService.updateUser(userRequestDto);
+        UserDto userResponseDto = this.userService.updateUser(userId, userRequestDto);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
-
 
     @DeleteMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
