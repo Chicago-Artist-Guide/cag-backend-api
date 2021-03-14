@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
+import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
@@ -89,7 +90,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
         val resultUpdateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
@@ -106,7 +107,7 @@ class UserControllerTest {
     @Test
     fun updateUser_missingUserId_returns400(){
         val testAuthKey = "testAuthKey"
-        val updateUser = UserDto(user_id = null, first_name = "depaul", last_name = "sports", email = "depaulsports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
 
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
 
@@ -126,7 +127,7 @@ class UserControllerTest {
         val testAuthKey = ""
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
 
         val unauthorizedException = UnauthorizedException(DetailedErrorMessages.INVALID_UUID, null)
 
@@ -148,7 +149,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email = "depaulsports@gmail.com", active_status = true, img_url = null, agreed_18 = true, session_id = null)
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
 
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 

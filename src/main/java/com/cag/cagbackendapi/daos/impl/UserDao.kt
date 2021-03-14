@@ -7,6 +7,7 @@ import com.cag.cagbackendapi.constants.LoggerMessages.LOG_UPDATE_USER
 import com.cag.cagbackendapi.daos.UserDaoI
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.repositories.UserRepository
 import org.modelmapper.ModelMapper
@@ -40,18 +41,14 @@ class UserDao : UserDaoI {
         return userEntity.toDto()
     }
 
-    private fun userDtoToEntity(userRegistrationDto: UserRegistrationDto): UserEntity {
-        return modelMapper.map(userRegistrationDto, UserEntity::class.java)
-    }
-
-    override fun updateUser(userId: UUID, userDto: UserDto): UserDto? {
-        logger.info(LOG_UPDATE_USER(userDto))
+    override fun updateUser(userId: UUID, userUpdateDto: UserUpdateDto): UserDto? {
+        logger.info(LOG_UPDATE_USER(userUpdateDto))
 
         val userEntity = userRepository.getByUserId(userId) ?: return null
 
-        userEntity.setFirstName(userDto.first_name)
-        userEntity.setLastName(userDto.last_name)
-        userEntity.setEmailJava(userDto.email)
+        userEntity.setFirstName(userUpdateDto.first_name)
+        userEntity.setLastName(userUpdateDto.last_name)
+        userEntity.setEmailJava(userUpdateDto.email)
 
         val userResponseEntity = userRepository.save(userEntity)
 
@@ -65,5 +62,9 @@ class UserDao : UserDaoI {
         userRepository.deleteById(userUUID)
         return deleteUserEntity.toDto()
 
+    }
+
+    private fun userDtoToEntity(userRegistrationDto: UserRegistrationDto): UserEntity {
+        return modelMapper.map(userRegistrationDto, UserEntity::class.java)
     }
 }

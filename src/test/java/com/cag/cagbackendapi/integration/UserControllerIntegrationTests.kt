@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -150,12 +151,12 @@ class UserControllerIntegrationTests {
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
         val userId = createUser.user_id
 
-        val validUpdateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
 
-        val updateUserResponse = testRestTemplate.exchange("/user/${validUpdateUser.user_id.toString()}", HttpMethod.PUT, request2, String::class.java)
+        val updateUserResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.PUT, request2, String::class.java)
         val updatedUser = objectMapper.readValue(updateUserResponse.body, UserDto::class.java)
 
         //test created user
@@ -172,13 +173,13 @@ class UserControllerIntegrationTests {
         assertEquals(validUpdateUser.first_name, updatedUser.first_name)
         assertEquals(validUpdateUser.last_name, updatedUser.last_name)
         assertEquals(validUpdateUser.email, updatedUser.email)
-        assertNotNull(validUpdateUser.user_id)
+        assertNotNull(userId)
     }
 
     @Test
     fun updateUser_invalidUserId_400BadRequest() {
         val userId = "blah"
-        val invalidUpdateUser = UserDto(null, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(invalidUpdateUser, headers2)
@@ -193,7 +194,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_missingUserId_404NotFound() {
-        val invalidUpdateUser = UserDto(null, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(invalidUpdateUser, headers2)
@@ -214,7 +215,7 @@ class UserControllerIntegrationTests {
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
         val userId = createUser.user_id
 
-        val validUpdateUser = UserDto(user_id = userId, first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
         val headers2 = HttpHeaders()
         headers2.set("authKey", "invalidAuthKey")
         val request2 = HttpEntity(validUpdateUser, headers2)
@@ -229,12 +230,13 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_userNotFound_404NotFound(){
-        val validUpdateUser = UserDto(user_id = UUID.randomUUID(), first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val userId = UUID.randomUUID()
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/${validUpdateUser.user_id.toString()}", HttpMethod.PUT, request2, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.PUT, request2, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)

@@ -3,6 +3,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
@@ -42,12 +43,12 @@ public class UserService implements UserServiceI {
     }
 
     @Override
-    public UserDto updateUser(String userId, UserDto userRequestDto) {
+    public UserDto updateUser(String userId, UserUpdateDto userUpdateDto) {
         UUID userUUID = getUserUuidFromString(userId);
 
-        validateUserDto(userRequestDto);
+        validateUserUpdateDto(userUpdateDto);
 
-        var userResponseDto = userDao.updateUser(userUUID, userRequestDto);
+        var userResponseDto = userDao.updateUser(userUUID, userUpdateDto);
 
         if (userResponseDto == null) {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
@@ -69,7 +70,7 @@ public class UserService implements UserServiceI {
         return userResponseDto;
     }
 
-    private void validateUserDto(UserDto userDto) {
+    private void validateUserUpdateDto(UserUpdateDto userDto) {
         var badRequestMsg = "";
 
         if (userDto.getFirst_name() == null || userDto.getFirst_name().isBlank()) {
@@ -82,10 +83,6 @@ public class UserService implements UserServiceI {
 
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
             badRequestMsg += DetailedErrorMessages.EMAIL_REQUIRED;
-        }
-
-        if (userDto.getAgreed_18() == null || !userDto.getAgreed_18()) {
-            badRequestMsg += DetailedErrorMessages.MUST_BE_18;
         }
 
         if (!badRequestMsg.isEmpty()) {

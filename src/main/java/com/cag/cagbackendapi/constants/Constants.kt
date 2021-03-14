@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.constants
 
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserUpdateDto
 import java.util.*
 
 object RestErrorMessages {
@@ -31,7 +32,7 @@ object LoggerMessages {
     fun LOG_SAVE_USER(userRegistration: UserRegistrationDto): String {
         return "Save user: $userRegistration"
     }
-    fun LOG_UPDATE_USER(userDto: UserDto): String {
+    fun LOG_UPDATE_USER(userDto: UserUpdateDto): String {
         return "Update user: $userDto"
     }
     fun GET_USER(userId: UUID): String {
