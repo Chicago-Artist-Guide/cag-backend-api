@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.controllers;
 
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserDto> updateUser(
             @RequestHeader("authKey") String authKey,
-            @RequestBody UserDto userRequestDto,
+            @RequestBody UserUpdateDto userRequestDto,
             @PathVariable("userId") String userId
     ){
         this.validationService.validateAuthKey(authKey);
