@@ -31,7 +31,6 @@ object LoggerMessages {
     fun LOG_SAVE_USER(registerUserRequest: RegisterUserRequestDto): String {
         return "Save user: $registerUserRequest"
     }
-
     fun LOG_UPDATE_USER(userDto: UserDto): String {
         return "Update user: $userDto"
     }

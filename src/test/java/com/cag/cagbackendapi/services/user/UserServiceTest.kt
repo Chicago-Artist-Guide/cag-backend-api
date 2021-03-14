@@ -9,6 +9,7 @@ import com.cag.cagbackendapi.dtos.UserResponseDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
+import com.cag.cagbackendapi.errors.exceptions.ServiceUnavailableException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -322,5 +323,20 @@ class UserServiceTest {
         verifyNoMoreInteractions(userDao)
     }
 
+    @Test
+    fun deleteUser_validInputWithServiceUnavailable_ServiceUnavailableException() {
+        val userId = UUID.randomUUID()
 
+        val serviceUnavailableException = ServiceUnavailableException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+
+        whenever(userDao.deleteUser(userId)).thenThrow(serviceUnavailableException)
+
+        val actualException = assertThrows<ServiceUnavailableException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(actualException.message, serviceUnavailableException.message)
+        verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
 }

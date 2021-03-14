@@ -1,17 +1,17 @@
 package com.cag.cagbackendapi.controllers
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
+import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.RegisterUserRequestDto
 import com.cag.cagbackendapi.dtos.UserDto
-import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
 import com.cag.cagbackendapi.dtos.UserResponseDto
-import com.cag.cagbackendapi.errors.exceptions.BadRequestException
-import com.cag.cagbackendapi.errors.exceptions.NotFoundException
+import com.cag.cagbackendapi.errors.exceptions.*
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.cag.cagbackendapi.services.validation.impl.ValidationService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -298,14 +298,11 @@ class UserControllerTest {
         verifyZeroInteractions(userService)
     }
 
-
-    //REVIEW THIS TEST
     @Test
     fun deleteUser_invalidUserId_404UserNotFound(){
         val testAuthKey = "testAuthKey"
         val userId = "invalidUserId"
 
-        //val badRequestException = BadRequestException(DetailedErrorMessages.USER_NOT_FOUND, null)
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
@@ -320,5 +317,45 @@ class UserControllerTest {
         verify(validationService).validateAuthKey(testAuthKey)
         verify(userService).deleteUser(userId)
         verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun deleteUser_ServiceUnavailable503(){
+        val testAuthKey = "testAuthKey"
+        val userId = "valid UserID"
+        val serviceUnavailableException = ServiceUnavailableException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.deleteUser(userId)).thenThrow(serviceUnavailableException)
+
+        val actual = assertThrows<ServiceUnavailableException> {
+            userController.deleteUser(testAuthKey, userId)
+        }
+
+        assertEquals(actual.message, serviceUnavailableException.message)
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).deleteUser(userId)
+        verifyNoMoreInteractions(validationService, userService)
+
+    }
+
+    @Test
+    fun deleteUser_InternalServerError500(){
+        val testAuthKey = "testAuthKey"
+        val userId = "valid UserID"
+        val internalServerErrorException = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.deleteUser(userId)).thenThrow(internalServerErrorException)
+
+        val actual = assertThrows<InternalServerErrorException> {
+            userController.deleteUser(testAuthKey, userId)
+        }
+
+        assertEquals(actual.message, internalServerErrorException.message)
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).deleteUser(userId)
+        verifyNoMoreInteractions(validationService, userService)
+
     }
 }
