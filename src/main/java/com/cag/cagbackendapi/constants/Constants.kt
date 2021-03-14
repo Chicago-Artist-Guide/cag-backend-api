@@ -31,11 +31,13 @@ object LoggerMessages {
     fun LOG_SAVE_USER(userRegistration: UserRegistrationDto): String {
         return "Save user: $userRegistration"
     }
-
     fun LOG_UPDATE_USER(userDto: UserDto): String {
         return "Update user: $userDto"
     }
     fun GET_USER(userId: UUID): String {
         return "Get user: $userId"
+    }
+    fun DELETE_USER(userUUID: UUID): String {
+        return "Delete user: $userUUID"
     }
 }

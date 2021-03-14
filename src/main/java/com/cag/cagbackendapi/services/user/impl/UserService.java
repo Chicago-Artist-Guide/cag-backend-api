@@ -1,5 +1,4 @@
 package com.cag.cagbackendapi.services.user.impl;
-
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
@@ -30,6 +29,19 @@ public class UserService implements UserServiceI {
     }
 
     @Override
+    public UserDto getByUserId(String userId) {
+        UUID userUUID = getUserUuidFromString(userId);
+
+        var userResponseDto = userDao.getUser(userUUID);
+
+        if(userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    @Override
     public UserDto updateUser(String userId, UserDto userRequestDto) {
         UUID userUUID = getUserUuidFromString(userId);
 
@@ -45,12 +57,12 @@ public class UserService implements UserServiceI {
     }
 
     @Override
-    public UserDto getByUserId(String userId) {
+    public UserDto deleteUser(String userId) {
         UUID userUUID = getUserUuidFromString(userId);
 
-        var userResponseDto = userDao.getUser(userUUID);
+        UserDto userResponseDto = userDao.deleteUser(userUUID);
 
-        if(userResponseDto == null) {
+        if (userResponseDto == null) {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
         }
 

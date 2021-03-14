@@ -1,5 +1,6 @@
 package com.cag.cagbackendapi.daos.impl
 
+import com.cag.cagbackendapi.constants.LoggerMessages.DELETE_USER
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_USER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_USER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_UPDATE_USER
@@ -55,5 +56,14 @@ class UserDao : UserDaoI {
         val userResponseEntity = userRepository.save(userEntity)
 
         return userResponseEntity.toDto()
+    }
+
+    override fun deleteUser(userUUID: UUID): UserDto? {
+        logger.info(DELETE_USER(userUUID))
+
+        val deleteUserEntity = userRepository.getByUserId(userUUID) ?: return null
+        userRepository.deleteById(userUUID)
+        return deleteUserEntity.toDto()
+
     }
 }

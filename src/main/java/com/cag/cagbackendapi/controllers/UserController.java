@@ -48,6 +48,17 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserDto> deleteUser(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId
+
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        UserDto userResponseDto = this.userService.deleteUser(userId);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
 
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)

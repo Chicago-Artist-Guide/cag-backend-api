@@ -265,4 +265,75 @@ class UserControllerIntegrationTests {
         assertEquals(validRegisterUser.email, getUser.email)
         assertNotNull(getUser.user_id)
     }
+
+    @Test
+    fun deleteUser_validInput_200Success(){
+        //register User
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validRegisterUser, headers)
+
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+        val userId = createUser.user_id
+
+        //delete user from database
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(null,headers2)
+
+        val deletedUserResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.DELETE, request2, String::class.java)
+        val deletedUser = objectMapper.readValue(deletedUserResponse.body, UserDto::class.java)
+
+        assertNotNull(deletedUserResponse)
+        assertEquals(HttpStatus.OK, deletedUserResponse.statusCode)
+        assertEquals(validRegisterUser.first_name, deletedUser.first_name)
+        assertEquals(validRegisterUser.email, deletedUser.email)
+        assertNotNull(deletedUser.user_id)
+    }
+
+    @Test
+    fun deleteUser_missingUserId_400BadRequest() {
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(null,headers)
+
+        val userId = null
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.DELETE, request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_USER_ID)
+    }
+
+    @Test
+    fun deleteUser_missingAuthKey_401Unauthorized(){
+        val headers = HttpHeaders()
+        headers.set("authKey", "invalidAuthKey")
+        val request = HttpEntity(null,headers)
+
+        val userId = UUID.randomUUID()
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.DELETE, request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.UNAUTHORIZED, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.UNAUTHORIZED_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
+    }
+
+    @Test
+    fun deleteUser_userNotFound_404NotFound(){
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(null,headers)
+
+        val userId= UUID.randomUUID()
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId", HttpMethod.DELETE, request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
+    }
 }
