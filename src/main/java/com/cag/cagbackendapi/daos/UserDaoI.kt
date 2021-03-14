@@ -8,4 +8,6 @@ interface UserDaoI {
     fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto
     fun updateUser(userDto: UserDto): UserDto?
     fun getUser(userUUID: UUID): UserDto?
+    fun deleteUser(userUUID: UUID): UserDto?
+
 }

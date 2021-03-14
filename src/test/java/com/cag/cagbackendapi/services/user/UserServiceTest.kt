@@ -8,6 +8,7 @@ import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
+import com.cag.cagbackendapi.errors.exceptions.ServiceUnavailableException
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -53,9 +54,8 @@ class UserServiceTest {
             userService.registerUser(inputUser)
         }
 
-        assertEquals(badRequestException.message, actualException.message)
-
         // assert
+        assertEquals(badRequestException.message, actualException.message)
         verifyZeroInteractions(userDao)
     }
 
@@ -72,9 +72,8 @@ class UserServiceTest {
             userService.registerUser(inputUser)
         }
 
-        assertEquals(actualException.message, internalServerError.message)
-
         // assert
+        assertEquals(actualException.message, internalServerError.message)
         verify(userDao).saveUser(inputUser)
         verifyNoMoreInteractions(userDao)
     }
@@ -102,9 +101,7 @@ class UserServiceTest {
         val actualException = assertThrows<BadRequestException> {
             userService.getByUserId(userId)
         }
-
         assertEquals(badRequestException.message, actualException.message)
-
         verifyZeroInteractions(userDao)
     }
 
@@ -119,7 +116,6 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-
         verifyZeroInteractions(userDao)
     }
 
@@ -136,7 +132,6 @@ class UserServiceTest {
         }
 
         assertEquals(notFoundException.message, actualException.message)
-
         verify(userDao).getUser(userId)
         verifyZeroInteractions(userDao)
     }
@@ -154,7 +149,6 @@ class UserServiceTest {
         }
 
         assertEquals(actualException.message, internalServerError.message)
-
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
     }
@@ -243,12 +237,104 @@ class UserServiceTest {
             userService.updateUser(updateUser)
         }
 
-        assertEquals(actualException.message, internalServerError.message)
-
         // assert
+        assertEquals(actualException.message, internalServerError.message)
         verify(userDao).updateUser(updateUser)
         verifyNoMoreInteractions(userDao)
     }
 
+    @Test
+    fun deleteUser_validUser_logsAndSucceeds() {
+        // assemble
+        val userId = UUID.randomUUID()
+        val resultUser = UserDto(userId, "testy", "tester", "testytester@aol.com", true, null, null, true)
 
+        whenever(userDao.deleteUser(userId)).thenReturn(resultUser)
+
+        // act
+        userService.deleteUser(userId.toString())
+
+        // assert
+        verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_invalidId_badRequest() {
+        val userId = "invalidUserId"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.deleteUser(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_nullId_badRequest() {
+        val userId = null
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            userService.deleteUser(userId)
+        }
+
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_userNotFound_notFoundRequest() {
+        val userId = UUID.randomUUID()
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        whenever(userDao.deleteUser(userId)).thenReturn(null)
+
+        val actualException = assertThrows<NotFoundException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(notFoundException.message, actualException.message)
+        verify(userDao).deleteUser(userId)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_validInputWithDatabaseDown_InternalServerError() {
+        val userId = UUID.randomUUID()
+
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(userDao.deleteUser(userId)).thenThrow(internalServerError)
+
+        val actualException = assertThrows<InternalServerErrorException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(actualException.message, internalServerError.message)
+        verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun deleteUser_validInputWithServiceUnavailable_ServiceUnavailableException() {
+        val userId = UUID.randomUUID()
+
+        val serviceUnavailableException = ServiceUnavailableException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+
+        whenever(userDao.deleteUser(userId)).thenThrow(serviceUnavailableException)
+
+        val actualException = assertThrows<ServiceUnavailableException> {
+            userService.deleteUser(userId.toString())
+        }
+
+        assertEquals(actualException.message, serviceUnavailableException.message)
+        verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
 }

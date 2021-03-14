@@ -1,5 +1,4 @@
 package com.cag.cagbackendapi.services.user.impl;
-
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
@@ -100,6 +99,29 @@ public class UserService implements UserServiceI {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
         }
 
+        return userResponseDto;
+    }
+
+    @Override
+    public UserDto deleteUser(String userId) {
+
+        UUID userUUID;
+
+        if (userId == "" || userId == null) {
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null);
+        }
+
+        try {
+            userUUID = UUID.fromString(userId);
+        } catch(Exception ex){
+            throw new BadRequestException(DetailedErrorMessages.INVALID_USER_ID, ex);
+        }
+
+        UserDto userResponseDto = userDao.deleteUser(userUUID);
+
+        if (userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
         return userResponseDto;
     }
 }
