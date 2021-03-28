@@ -1,6 +1,3 @@
-server:
-  port: 9000
----
 spring:
   profiles: LOCAL, default, test
   authKey: mockAuthKey
@@ -17,52 +14,32 @@ spring:
       hibernate:
         ddl-auto: create
       properties:
-        hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 flyway:
   url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=public
   schemas: ["public"]
-  user: "axdarkeikdwxvm"
-  password: "b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49"
----
-spring:
-  profiles: DOCKER
-  authKey: mockAuthKey
-  datasource:
-    url: jdbc:postgresql://localhost:5432/cag_db?currentSchema=public
-    username: cag_admin
-    password: ${PSQL_PASSWORD:cag_pass}
-    initialization-mode: always
-    hikari:
-      minimum-idle: 2
-      maximum-pool-size: 4
-    jpa:
-      database: cag_db
-      hibernate:
-        ddl-auto: create
-      properties:
-        hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-flyway:
-  url: jdbc:postgresql://localhost:5432/cag_db?currentSchema=public
-  schemas: ["public"]
-  user: "cag_admin"
-  password: "cag_pass"
+  user: axdarkeikdwxvm
+  password: b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49
 ---
 spring:
   profiles: PROD
   authKey: mockAuthKey
   datasource:
-    url: tbd
-    username: cag_admin
-    password: ${PSQL_PASSWORD:cag_pass}
+    url: jdbc:postgresql://ec2-54-159-113-254.compute-1.amazonaws.com:5432/d1s2s8407s5lms?currentSchema=public
+    username: axdarkeikdwxvm
+    password: b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49
+    initialization-mode: always
     hikari:
       minimum-idle: 2
       maximum-pool-size: 4
     jpa:
-      database: cag_db
+      database: d1s2s8407s5lms
       hibernate:
         ddl-auto: create
       properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+flyway:
+  url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=public
+  schemas: ["public"]
+  user: axdarkeikdwxvm
+  password: b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49
