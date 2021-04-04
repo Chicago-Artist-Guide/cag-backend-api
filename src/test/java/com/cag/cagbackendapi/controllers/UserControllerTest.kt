@@ -32,8 +32,8 @@ class UserControllerTest {
     @Test
     fun registerUser_validInput_returns201()   {
         val testAuthKey = "testAuthKey"
-        val requestUser = UserRegistrationDto("John", "Smith", "johnjohn@aol.com", true)
-        val resultUser = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com", true, null, null, true)
+        val requestUser = UserRegistrationDto("John", "Smith", "johnjohn@aol.com", "password", true)
+        val resultUser = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com",  true, null, null, true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenReturn(resultUser)
@@ -46,11 +46,11 @@ class UserControllerTest {
     }
 
     @Test
-    fun registerUser_missingFirstNameAndLastNameAndEmail_400BadRequest() {
+    fun registerUser_missingFirstNameAndLastNameAndEmailAndPassword_400BadRequest() {
         val testAuthKey = "testAuthKey"
-        val requestUser = UserRegistrationDto(first_name = null, last_name = null, email = null, agreed_18 = true)
+        val requestUser = UserRegistrationDto(first_name = null, last_name = null, email = null, pass = null, agreed_18 = true)
 
-        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED, null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenThrow(badRequestException)
@@ -69,7 +69,7 @@ class UserControllerTest {
     @Test
     fun registerUser_missingAuthKey_401UnauthorizedRequest() {
         val testAuthKey = ""
-        val requestUser = UserRegistrationDto(first_name = "john", last_name = "smith", email = "jj@aol.com", agreed_18 = true)
+        val requestUser = UserRegistrationDto(first_name = "john", last_name = "smith", email = "jj@aol.com", pass = "password", agreed_18 = true)
 
         val unauthorizedException = UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null)
 

@@ -18,12 +18,14 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class UserServiceTest {
 
     private var userDao: UserDao = mock()
+    private var passwordEncoder: PasswordEncoder = mock()
 
     @InjectMocks
     private lateinit var userService: UserService
@@ -31,24 +33,28 @@ class UserServiceTest {
     @Test
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
-        val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", true)
+        val inputPass = "password"
+        val encodedPass = "encodedPass"
+        val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", inputPass, true)
         val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true)
 
+        whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
 
         // act
         userService.registerUser(inputUser)
 
         // assert
+        verify(passwordEncoder).encode(inputPass)
         verify(userDao).saveUser(inputUser)
         verifyNoMoreInteractions(userDao)
     }
 
     @Test
-    fun registerUser_missingFirstNameAndLastNameAndEmailAndAgreed18_BadRequest() {
+    fun registerUser_missingFirstNameAndLastNameAndEmailAndPasswordAndAgreed18_BadRequest() {
         // assemble
-        val inputUser = UserRegistrationDto(null, null,null, false)
-        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.MUST_BE_18, null)
+        val inputUser = UserRegistrationDto(null, null, null, null, false)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, null)
 
         // act
         val actualException = assertThrows<BadRequestException> {
@@ -57,15 +63,34 @@ class UserServiceTest {
 
         // assert
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao)
+        verifyZeroInteractions(userDao, passwordEncoder)
+    }
+
+    @Test
+    fun registerUser_emptyFirstNameAndLastNameAndEmailAndPassword_BadRequest() {
+        // assemble
+        val inputUser = UserRegistrationDto("", "", "", "", true)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED, null)
+
+        // act
+        val actualException = assertThrows<BadRequestException> {
+            userService.registerUser(inputUser)
+        }
+
+        // assert
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
-        val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", true)
+        val inputPass = "password"
+        val encodedPass = "encodedPass"
+        val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", inputPass,true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
+        whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
         whenever(userDao.saveUser(inputUser)).thenThrow(internalServerError)
 
         // act
@@ -75,8 +100,9 @@ class UserServiceTest {
 
         // assert
         assertEquals(actualException.message, internalServerError.message)
+        verify(passwordEncoder).encode(inputPass)
         verify(userDao).saveUser(inputUser)
-        verifyNoMoreInteractions(userDao)
+        verifyNoMoreInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -91,6 +117,7 @@ class UserServiceTest {
 
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -102,8 +129,9 @@ class UserServiceTest {
         val actualException = assertThrows<BadRequestException> {
             userService.getByUserId(userId)
         }
+
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao)
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -117,7 +145,8 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao)
+
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -134,7 +163,8 @@ class UserServiceTest {
 
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).getUser(userId)
-        verifyZeroInteractions(userDao)
+        verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -150,8 +180,10 @@ class UserServiceTest {
         }
 
         assertEquals(actualException.message, internalServerError.message)
+
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -169,6 +201,7 @@ class UserServiceTest {
         //assert
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -187,6 +220,7 @@ class UserServiceTest {
         //assert
         assertEquals(badRequestException.message, actualException.message)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -203,6 +237,7 @@ class UserServiceTest {
         //assert
         assertEquals(badRequestException.message, actualException.message)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -224,6 +259,7 @@ class UserServiceTest {
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
 
@@ -246,6 +282,7 @@ class UserServiceTest {
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -262,6 +299,7 @@ class UserServiceTest {
         // assert
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -275,7 +313,7 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao)
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -289,7 +327,7 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao)
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -306,7 +344,7 @@ class UserServiceTest {
 
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).deleteUser(userId)
-        verifyZeroInteractions(userDao)
+        verifyZeroInteractions(userDao, passwordEncoder)
     }
 
     @Test
@@ -324,6 +362,7 @@ class UserServiceTest {
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -341,5 +380,6 @@ class UserServiceTest {
         assertEquals(actualException.message, serviceUnavailableException.message)
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
+        verifyZeroInteractions(passwordEncoder)
     }
 }

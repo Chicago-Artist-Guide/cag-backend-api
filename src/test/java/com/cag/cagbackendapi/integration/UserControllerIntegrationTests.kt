@@ -27,7 +27,7 @@ class UserControllerIntegrationTests {
 
     private val objectMapper = jacksonObjectMapper()
 
-    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", true)
+    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true)
     private val validAuthKey = "mockAuthKey"
 
     @Test
@@ -48,8 +48,8 @@ class UserControllerIntegrationTests {
     }
 
     @Test
-    fun registerUser_emptyFirstNameAndLastNameAndNot18_400BadRequest() {
-        val emptyNameUser = UserDto(null, "", "", "testuser@aol.com", true, null, null, null)
+    fun registerUser_emptyFirstNameAndLastNameAndEmailAndPasswordAndNot18_400BadRequest() {
+        val emptyNameUser = UserRegistrationDto("", "", "", "", false)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -59,13 +59,29 @@ class UserControllerIntegrationTests {
 
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.MUST_BE_18)
+        assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
+        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, errorDetailsResponse?.body?.detailedMessage)
+    }
+
+    @Test
+    fun registerUser_nullFirstNameAndLastNameAndEmailAndPasswordAndNot18_400BadRequest() {
+        val emptyNameUser = UserRegistrationDto(null, null, null, null, false)
+
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(emptyNameUser, headers)
+
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
+        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, errorDetailsResponse?.body?.detailedMessage)
     }
 
     @Test
     fun registerUser_nullName_400BadRequest() {
-        val nullNameUser = UserDto(null, null, null,"testuser@aol.com", true, null, null, true)
+        val nullNameUser = UserRegistrationDto(null, null,"testuser@aol.com", "password", true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -81,7 +97,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_emptyEmail_400BadRequest() {
-        val emptyEmailUser = UserDto(null, "test", "user", "", true, null, null, true)
+        val emptyEmailUser = UserRegistrationDto("test", "user", "", "password", true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -97,7 +113,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullEmail_400BadRequest() {
-        val nullEmailUser = UserDto(null, "test", "user", null, true, null, null, true)
+        val nullEmailUser = UserRegistrationDto("test", "user", null, "password", true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -107,12 +123,12 @@ class UserControllerIntegrationTests {
 
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.EMAIL_REQUIRED)
+        assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
+        assertEquals(DetailedErrorMessages.EMAIL_REQUIRED, errorDetailsResponse?.body?.detailedMessage)
     }
 
     @Test
-    fun registerUser_nullEmailAndFirstNameAndLastName_400BadRequest() {
+    fun registerUser_nullEmailAndFirstNameAndLastNameAndPassword_400BadRequest() {
         val nullEmailUser = UserDto(null, null, null, null, true, null, null, true)
 
         val headers = HttpHeaders()
@@ -123,8 +139,8 @@ class UserControllerIntegrationTests {
 
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED)
+        assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
+        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED, errorDetailsResponse?.body?.detailedMessage)
     }
 
     @Test
