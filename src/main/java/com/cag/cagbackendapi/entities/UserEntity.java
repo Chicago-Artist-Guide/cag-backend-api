@@ -28,6 +28,7 @@ public class UserEntity {
     private String first_name;
     private String last_name;
     private String email;
+    private String pass;
     private Boolean active_status;
     private String session_id;
     private String img_url;
