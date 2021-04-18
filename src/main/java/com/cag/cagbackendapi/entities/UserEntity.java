@@ -29,7 +29,7 @@ public class UserEntity {
     private String last_name;
     private String email;
     private String pass;
-    private Boolean active_status;
+    private Boolean active_status = true;
     private String session_id;
     private String img_url;
     private Boolean agreed_18;
