@@ -1,10 +1,6 @@
 package com.cag.cagbackendapi.dtos
 
-import com.cag.cagbackendapi.entities.UserEntity
-import java.util.*
-
-data class ProfileDto(
-        var profile_id: UUID?,
+data class ProfileRegistrationDto(
         var pronouns: String?,
         var lgbtqplus_member: Boolean?,
         var gender_identity: String?,
@@ -18,6 +14,5 @@ data class ProfileDto(
         var website_link_two: String?,
         var website_type_one: String?,
         var website_type_two: String?,
-        var bio: String?,
-        var user: UserEntity? = null)
-
+        var bio: String?
+)

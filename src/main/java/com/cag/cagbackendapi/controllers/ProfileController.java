@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.controllers;
 
 
 import com.cag.cagbackendapi.dtos.ProfileDto;
+import com.cag.cagbackendapi.dtos.ProfileRegistrationDto;
 import com.cag.cagbackendapi.services.user.impl.ProfileService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ public class ProfileController {
     public ResponseEntity<ProfileDto> createProfile(
             @RequestHeader("authKey") String authKey,
             @PathVariable("userId") String userId,
-            @RequestBody ProfileDto profileDto
+            @RequestBody ProfileRegistrationDto profileRegistrationDto
     ) {
         this.validationService.validateAuthKey(authKey);
-        ProfileDto profileResponseDto = this.profileService.registerProfile(profileDto);
+        ProfileDto profileResponseDto = this.profileService.registerProfile(userId, profileRegistrationDto);
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.CREATED);
     }

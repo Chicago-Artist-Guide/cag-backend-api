@@ -1,5 +1,6 @@
 package com.cag.cagbackendapi.constants
 
+import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
@@ -41,5 +42,8 @@ object LoggerMessages {
     }
     fun DELETE_USER(userUUID: UUID): String {
         return "Delete user: $userUUID"
+    }
+    fun LOG_SAVE_PROFILE(profileRegistrationDto: ProfileRegistrationDto): String {
+        return "Save profile: $profileRegistrationDto"
     }
 }
