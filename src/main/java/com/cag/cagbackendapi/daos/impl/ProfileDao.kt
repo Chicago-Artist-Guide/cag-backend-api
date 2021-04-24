@@ -33,6 +33,7 @@ class ProfileDao : ProfileDaoI{
     override fun saveProfile(userId: UUID, profileRegistrationDto: ProfileRegistrationDto): ProfileDto {
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
+        //try to move to service level (throw exception)
         val user = userRepository.getByUserId(userId) ?: throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND)
 
         val profileDto = ProfileDto(
@@ -57,6 +58,11 @@ class ProfileDao : ProfileDaoI{
         val savedProfileEntity = profileRepository.save(profileDtoToEntity(profileDto))
         return savedProfileEntity.toDto()
     }
+
+    /*override fun getUserWithProfile(userId: UUID): ProfileDto? {
+        //return profileRepository.findByUserId(user_Id)[0].toDto()
+        return profileRepository.findByUserId(userId)[0].toDto()
+    }*/
 
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return modelMapper.map(profileDto, ProfileEntity::class.java)

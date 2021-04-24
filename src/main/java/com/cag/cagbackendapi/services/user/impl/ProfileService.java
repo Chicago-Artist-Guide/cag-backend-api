@@ -6,6 +6,7 @@ import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.ProfileDto;
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
+import com.cag.cagbackendapi.errors.exceptions.ConflictException;
 import com.cag.cagbackendapi.services.user.ProfileServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ public class ProfileService implements ProfileServiceI {
     @Override
     public ProfileDto registerProfile(String userId, ProfileRegistrationDto profileRegistrationDto) {
         UUID userUUID = getUserUuidFromString(userId);
+
+        /*if(profileDao.getUserWithProfile(userUUID) != null){
+            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE,null);
+        }*/
 
         return profileDao.saveProfile(userUUID, profileRegistrationDto);
     }
