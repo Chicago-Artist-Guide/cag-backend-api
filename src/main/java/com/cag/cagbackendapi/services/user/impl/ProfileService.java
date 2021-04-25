@@ -48,4 +48,13 @@ public class ProfileService implements ProfileServiceI {
 
         return userUUID;
     }
+
+    /*private void validateProfileRegistrationDto(ProfileRegistrationDto profileRegistrationDto){
+        var badRequestMsg = "";
+
+
+        if(!badRequestMsg.isEmpty()){
+            throw new BadRequestException(badRequestMsg,null);
+        }
+    }*/
 }

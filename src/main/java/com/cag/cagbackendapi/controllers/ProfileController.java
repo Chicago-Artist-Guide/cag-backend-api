@@ -11,12 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/user/{userId}/profile")
 @CrossOrigin
 public class ProfileController {
 
     private final ValidationService validationService;
     private final ProfileService profileService;
+
 
     @Autowired
     ProfileController(ProfileService profileService, ValidationService validationService) {
@@ -24,9 +25,9 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @PostMapping(value = "/{userId}/profile/register")
+    @PostMapping(value = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProfileDto> createProfile(
+    public ResponseEntity<ProfileDto> registerProfile(
             @RequestHeader("authKey") String authKey,
             @PathVariable("userId") String userId,
             @RequestBody ProfileRegistrationDto profileRegistrationDto
