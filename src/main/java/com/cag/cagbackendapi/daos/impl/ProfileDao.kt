@@ -59,10 +59,13 @@ class ProfileDao : ProfileDaoI{
         return savedProfileEntity.toDto()
     }
 
-    /*override fun getUserWithProfile(userId: UUID): ProfileDto? {
-        //return profileRepository.findByUserId(user_Id)[0].toDto()
-        return profileRepository.findByUserId(userId)[0].toDto()
-    }*/
+    override fun getUserWithProfile(userId: UUID): ProfileDto? {
+        return if(profileRepository.getByUserEntity_userId(userId).isEmpty()){
+            null
+        }else{
+            profileRepository.getByUserEntity_userId(userId)[0].toDto()
+        }
+    }
 
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return modelMapper.map(profileDto, ProfileEntity::class.java)

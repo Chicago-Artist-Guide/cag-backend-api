@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface ProfileRepository extends CrudRepository<ProfileEntity, UUID> {
-    //List<ProfileEntity> findByUserId(UUID userid);
-    //List<ProfileEntity> getByUserId(UUID user_id);
+    List<ProfileEntity> getByUserEntity_userId(UUID userId);
+
+
 }
