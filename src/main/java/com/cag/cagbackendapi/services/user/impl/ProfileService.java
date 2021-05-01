@@ -27,7 +27,7 @@ public class ProfileService implements ProfileServiceI {
         UUID userUUID = getUserUuidFromString(userId);
 
         if(profileDao.getUserWithProfile(userUUID) != null){
-            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE,null);
+            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
         }
 
         return profileDao.saveProfile(userUUID, profileRegistrationDto);

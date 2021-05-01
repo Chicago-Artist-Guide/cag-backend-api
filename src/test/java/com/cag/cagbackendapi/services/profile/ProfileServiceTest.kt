@@ -5,10 +5,7 @@ import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.ProfileDao
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
-import com.cag.cagbackendapi.errors.exceptions.BadRequestException
-import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
-import com.cag.cagbackendapi.errors.exceptions.NotFoundException
-import com.cag.cagbackendapi.errors.exceptions.ServiceUnavailableException
+import com.cag.cagbackendapi.errors.exceptions.*
 import com.cag.cagbackendapi.services.user.impl.ProfileService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions
@@ -111,6 +108,19 @@ class ProfileServiceTest {
 
     @Test
     fun registerProfile_existingProfile_conflictRequest(){
-        //Have to fix the conflict error query
+        val userIdUUID = UUID.randomUUID()
+        val userId = userIdUUID.toString()
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+
+        val conflictException = ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null)
+        whenever(profileDao.saveProfile(userIdUUID, userProfile)).thenThrow(conflictException)
+
+        val actualException = assertThrows<ConflictException> {
+            profileService.registerProfile(userId, userProfile)
+        }
+
+        Assertions.assertEquals(conflictException.message, actualException.message)
+        verify(profileDao).saveProfile(userIdUUID, userProfile)
     }
+
 }
