@@ -34,7 +34,7 @@ class ProfileServiceTest {
         profileService.registerProfile(userId, userProfile)
 
         verify(profileDao).saveProfile(userIdUUID, userProfile)
-        verifyNoMoreInteractions(profileDao)
+
     }
 
     @Test
