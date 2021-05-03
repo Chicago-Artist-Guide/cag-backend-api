@@ -30,6 +30,8 @@ public class ProfileService implements ProfileServiceI {
             throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
         }
 
+        validateProfileRegistrationDto(profileRegistrationDto);
+
         return profileDao.saveProfile(userUUID, profileRegistrationDto);
     }
 
@@ -49,12 +51,31 @@ public class ProfileService implements ProfileServiceI {
         return userUUID;
     }
 
-    /*private void validateProfileRegistrationDto(ProfileRegistrationDto profileRegistrationDto){
+    private void validateProfileRegistrationDto(ProfileRegistrationDto profileRegistrationDto){
         var badRequestMsg = "";
 
+        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.PRONOUN_REQUIRED;
+        }
+
+        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED;
+        }
+
+        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.GENDER_IDENTITY_REQUIRED;
+        }
+
+        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.HEIGHT_INCHES_REQUIRED;
+        }
+
+        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.BIO_REQUIRED;
+        }
 
         if(!badRequestMsg.isEmpty()){
             throw new BadRequestException(badRequestMsg,null);
         }
-    }*/
+    }
 }

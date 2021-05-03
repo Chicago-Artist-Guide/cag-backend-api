@@ -29,6 +29,11 @@ object DetailedErrorMessages {
     const val INVALID_UUID = "Invalid Id. "
     const val MUST_BE_18 = "You must be eighteen years or older to use Chicago Artist Guide. "
     const val USER_HAS_PROFILE = "This user already has a profile. "
+    const val PRONOUN_REQUIRED = "Pronoun identity is required. "
+    const val LGBTQPLUS_MEMBER_REQUIRED = "LGBTQ+ identity is required. "
+    const val GENDER_IDENTITY_REQUIRED = "Gender identity is required. "
+    const val HEIGHT_INCHES_REQUIRED = "Height is required. "
+    const val BIO_REQUIRED = "Bio is required. "
 }
 
 object LoggerMessages {

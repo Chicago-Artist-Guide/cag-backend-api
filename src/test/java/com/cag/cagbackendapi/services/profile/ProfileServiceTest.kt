@@ -5,6 +5,7 @@ import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.ProfileDao
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
+import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.exceptions.*
 import com.cag.cagbackendapi.services.user.impl.ProfileService
 import com.nhaarman.mockitokotlin2.*
@@ -122,5 +123,25 @@ class ProfileServiceTest {
         Assertions.assertEquals(conflictException.message, actualException.message)
         verify(profileDao).saveProfile(userIdUUID, userProfile)
     }
+
+    @Test
+    fun registerProfile_validateProfileDto(){
+        //assemble
+        val userIdUUID = UUID.randomUUID()
+        val userId = userIdUUID.toString()
+        val userProfile = ProfileRegistrationDto(pronouns = null, lgbtqplus_member = null, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = null, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "")
+        val badRequestException = BadRequestException(DetailedErrorMessages.PRONOUN_REQUIRED + DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED  + DetailedErrorMessages.GENDER_IDENTITY_REQUIRED + DetailedErrorMessages.HEIGHT_INCHES_REQUIRED + DetailedErrorMessages.BIO_REQUIRED,null)
+
+        //act
+        val actualException = assertThrows<BadRequestException> {
+            profileService.registerProfile(userId, userProfile)
+        }
+
+        //assert
+        Assertions.assertEquals(badRequestException.message, actualException.message)
+        verify(profileDao).getUserWithProfile(userIdUUID)
+        verifyNoMoreInteractions(profileDao)
+    }
+
 
 }
