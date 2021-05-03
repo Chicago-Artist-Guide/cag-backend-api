@@ -69,4 +69,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(value = { ConflictException.class })
+    protected ResponseEntity<ErrorDetails> handleConflictException(Exception ex, WebRequest request) {
+
+        logger.error(RestErrorMessages.CONFLICT_MESSAGE, ex);
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                RestErrorMessages.CONFLICT_MESSAGE,
+                ex.getLocalizedMessage());
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
 }
