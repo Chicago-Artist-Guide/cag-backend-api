@@ -167,7 +167,7 @@ class UserControllerIntegrationTests {
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
         val userId = createUser.user_id
 
-        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
@@ -195,7 +195,7 @@ class UserControllerIntegrationTests {
     @Test
     fun updateUser_invalidUserId_400BadRequest() {
         val userId = "blah"
-        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(invalidUpdateUser, headers2)
@@ -210,7 +210,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_missingUserId_404NotFound() {
-        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(invalidUpdateUser, headers2)
@@ -231,7 +231,7 @@ class UserControllerIntegrationTests {
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
         val userId = createUser.user_id
 
-        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", "invalidAuthKey")
         val request2 = HttpEntity(validUpdateUser, headers2)
@@ -247,7 +247,7 @@ class UserControllerIntegrationTests {
     @Test
     fun updateUser_userNotFound_404NotFound(){
         val userId = UUID.randomUUID()
-        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com", active_status = true)
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)

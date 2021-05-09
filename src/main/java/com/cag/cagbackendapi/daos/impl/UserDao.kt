@@ -49,6 +49,7 @@ class UserDao : UserDaoI {
         userEntity.setFirstName(userUpdateDto.first_name)
         userEntity.setLastName(userUpdateDto.last_name)
         userEntity.setEmailJava(userUpdateDto.email)
+        userEntity.setActiveStatus(userUpdateDto.active_status)
 
         val userResponseEntity = userRepository.save(userEntity)
 

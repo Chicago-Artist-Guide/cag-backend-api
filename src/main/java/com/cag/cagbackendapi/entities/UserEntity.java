@@ -1,6 +1,9 @@
 package com.cag.cagbackendapi.entities;
 
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,4 +52,6 @@ public class UserEntity {
     public void setEmailJava(String email) {
         this.email = email;
     }
+
+    public void setActiveStatus(Boolean active_status) { this.active_status = active_status; }
 }

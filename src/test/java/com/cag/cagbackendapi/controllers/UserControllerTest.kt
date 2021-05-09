@@ -90,7 +90,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true)
         val resultUpdateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
@@ -107,7 +107,7 @@ class UserControllerTest {
     @Test
     fun updateUser_missingUserId_returns400(){
         val testAuthKey = "testAuthKey"
-        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true)
 
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_UUID, null)
 
@@ -127,7 +127,7 @@ class UserControllerTest {
         val testAuthKey = ""
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true)
 
         val unauthorizedException = UnauthorizedException(DetailedErrorMessages.INVALID_UUID, null)
 
@@ -149,7 +149,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
-        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true)
 
         val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
