@@ -45,6 +45,6 @@ public class ProfileEntity {
     private UserEntity userEntity;
 
     public ProfileDto toDto(){
-        return new ProfileDto(this.profile_id, this.pronouns, this.lgbtqplus_member, this.gender_identity, this.comfortable_playing_man,this.comfortable_playing_women, this.comfortable_playing_neither,this.comfortable_playing_transition, this.height_inches, this.agency, this.website_link_one, this.website_link_two, this.website_type_one, this.website_type_two, this.bio, this.userEntity);
+        return new ProfileDto(this.profile_id, this.pronouns, this.lgbtqplus_member, this.gender_identity, this.comfortable_playing_man,this.comfortable_playing_women, this.comfortable_playing_neither,this.comfortable_playing_transition, this.height_inches, this.agency, this.website_link_one, this.website_link_two, this.website_type_one, this.website_type_two, this.bio, this.userEntity.toDto());
     }
 }

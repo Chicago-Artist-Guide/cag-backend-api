@@ -19,5 +19,5 @@ data class ProfileDto(
         var website_type_one: String?,
         var website_type_two: String?,
         var bio: String?,
-        var user: UserEntity? = null)
+        var user: UserDto? = null)
 

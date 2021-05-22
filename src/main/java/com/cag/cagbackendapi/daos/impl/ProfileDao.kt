@@ -52,7 +52,7 @@ class ProfileDao : ProfileDaoI{
                 website_type_one = profileRegistrationDto.website_type_one,
                 website_type_two = profileRegistrationDto.website_type_two,
                 bio = profileRegistrationDto.bio,
-                user = user
+                user = user.toDto()
         )
 
         val savedProfileEntity = profileRepository.save(profileDtoToEntity(profileDto))
