@@ -40,7 +40,7 @@ class ProfileControllerIntegrationTests {
     fun registerUser_validInput_201Success() {
         //create user headers
         val headers = HttpHeaders()
-        headers.set("mockAuthKey", validAuthKey)
+        headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
 
         //create user
@@ -50,7 +50,7 @@ class ProfileControllerIntegrationTests {
 
         //register profile headers
         val headers2 = HttpHeaders()
-        headers2.set("mockAuthKey", validAuthKey)
+        headers2.set("authKey", validAuthKey)
         headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
 
@@ -97,7 +97,7 @@ class ProfileControllerIntegrationTests {
 
         //register profile headers
         val headers2 = HttpHeaders()
-        headers2.set("AuthKey", "invalidAuthKey")
+        headers2.set("authKey", "invalidAuthKey")
         headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
 
@@ -123,7 +123,7 @@ class ProfileControllerIntegrationTests {
         //register profile headers
         val userId = null
         val headers2 = HttpHeaders()
-        headers2.set("AuthKey", validAuthKey)
+        headers2.set("authKey", validAuthKey)
         headers2.set("userId", null) //is this needed?
         val request2 = HttpEntity(userProfile, headers2)
 
