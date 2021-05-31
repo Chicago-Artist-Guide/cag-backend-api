@@ -10,11 +10,8 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "union_status_member")
-public class UnionStatusMemberEntity {
+data class UnionStatusMemberEntity (
     @Id
     @Type(type = "pg-uuid")
     @GeneratedValue(generator = "UUID")
@@ -22,13 +19,13 @@ public class UnionStatusMemberEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private UUID union_status_member_id;
+    var union_status_member_id: UUID?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_profile"))
-    private ProfileEntity profileEntity;
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_profile"))
+    var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_union_status"))
-    private UnionStatusEntity unionStatusEntity;
-}
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_union_status"))
+    var unionStatusEntity: UnionStatusEntity?
+)

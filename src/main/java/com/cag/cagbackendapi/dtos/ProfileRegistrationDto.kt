@@ -1,18 +1,18 @@
 package com.cag.cagbackendapi.dtos
 
 data class ProfileRegistrationDto(
-        var pronouns: String?,
-        var lgbtqplus_member: Boolean?,
-        var gender_identity: String?,
-        var comfortable_playing_man: Boolean?,
-        var comfortable_playing_women: Boolean?,
-        var comfortable_playing_neither: Boolean?,
-        var comfortable_playing_transition: Boolean?,
-        var height_inches: Int?,
-        var agency: String?,
-        var website_link_one: String?,
-        var website_link_two: String?,
-        var website_type_one: String?,
-        var website_type_two: String?,
-        var bio: String?
+        var pronouns: String? = null,
+        var lgbtqplus_member: Boolean? = null,
+        var gender_identity: String? = null,
+        var comfortable_playing_man: Boolean? = null,
+        var comfortable_playing_women: Boolean? = null,
+        var comfortable_playing_neither: Boolean? = null,
+        var comfortable_playing_transition: Boolean? = null,
+        var height_inches: Int? = null,
+        var agency: String? = null,
+        var website_link_one: String? = null,
+        var website_link_two: String? = null,
+        var website_type_one: String? = null,
+        var website_type_two: String? = null,
+        var bio: String? = null
 )

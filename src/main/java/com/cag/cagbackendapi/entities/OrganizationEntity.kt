@@ -6,18 +6,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "skill")
-public class SkillEntity {
+@Table(name = "organizations")
+data class OrganizationEntity (
     @Id
     @Type(type = "pg-uuid")
     @GeneratedValue(generator = "UUID")
@@ -25,6 +19,8 @@ public class SkillEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private UUID skill_id;
-    private String name;
-}
+    @Column(name = "org_id", updatable = false, nullable = false)
+    var orgId: UUID?,
+    var name: String?,
+    var address: String?
+)

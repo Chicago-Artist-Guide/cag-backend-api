@@ -11,7 +11,6 @@ import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,7 +45,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -61,7 +60,7 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the created profile
         assertNotNull(userProfileResponse)
@@ -93,7 +92,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -107,7 +106,7 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the error
         assertEquals(HttpStatus.UNAUTHORIZED, errorDetailsResponse.statusCode)
@@ -148,7 +147,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -173,7 +172,7 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the created profile
         assertNotNull(userProfileResponse)

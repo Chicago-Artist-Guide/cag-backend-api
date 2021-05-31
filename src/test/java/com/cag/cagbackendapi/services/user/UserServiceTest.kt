@@ -192,7 +192,7 @@ class UserServiceTest {
         val userUuid = UUID.randomUUID()
         val userId = userUuid.toString()
         val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
-        val resultUser = UserDto(user_id = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUser = UserDto(userId = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         whenever(userDao.updateUser(userUuid, updateUser)).thenReturn(resultUser)
         //act
