@@ -60,31 +60,37 @@ class ProfileDao : ProfileDaoI{
         return savedProfileEntity.toDto()
     }
 
-    override fun getUserWithProfile(userId: UUID): ProfileDto? {
+    /*override fun getUserWithProfile(userId: UUID): ProfileDto? {
         return if(profileRepository.getByUserEntity_userId(userId).isEmpty()){
             null
         }else{
             profileRepository.getByUserEntity_userId(userId)[0].toDto()
         }
+    }*/
+
+    override fun getUserWithProfile(userId: UUID): ProfileDto? {
+        return if(profileRepository.getByUserEntity_userId(userId) == null){
+            null
+        }else{
+            profileRepository.getByUserEntity_userId(userId).toDto()
+        }
     }
+        //return profileRepository.getByUserEntity_userId(userId).toDto() ?: null
 
-//    override fun getUserWithProfile(userId: UUID): ProfileDto? {
-//        return profileRepository.getByUserEntity_userId(userId).toDto() ?: null
-//    }
-
-//    override fun getProfile(userId: UUID): ProfileDto? {
-//        logger.info(GET_PROFILE(userId))
-//
-//        val profileEntity = profileRepository.getByUserEntity_userId(userId) ?: return null
-//        return profileEntity.toDto()
-//    }
 
     override fun getProfile(userId: UUID): ProfileDto? {
         logger.info(GET_PROFILE(userId))
 
-        val profileEntity = profileRepository.getByUserEntity_userId(userId)[0] ?: return null
+        val profileEntity = profileRepository.getByUserEntity_userId(userId) ?: return null
         return profileEntity.toDto()
     }
+
+/*    override fun getProfile(userId: UUID): ProfileDto? {
+        logger.info(GET_PROFILE(userId))
+
+        val profileEntity = profileRepository.getByUserEntity_userId(userId)[0] ?: return null
+        return profileEntity.toDto()
+    }*/
 
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return modelMapper.map(profileDto, ProfileEntity::class.java)
