@@ -37,6 +37,18 @@ public class ProfileController {
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.CREATED);
     }
+
+    @GetMapping(value = "")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ProfileDto> getProfile(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        ProfileDto profileResponseDto = this.profileService.getProfile(userId);
+
+        return new ResponseEntity<>(profileResponseDto, HttpStatus.OK);
+    }
 }
 
 

@@ -34,6 +34,7 @@ object DetailedErrorMessages {
     const val GENDER_IDENTITY_REQUIRED = "Gender identity is required. "
     const val HEIGHT_INCHES_REQUIRED = "Height is required. "
     const val BIO_REQUIRED = "Bio is required. "
+    const val PROFILE_NOT_FOUND = "Profile not found. "
 }
 
 object LoggerMessages {
@@ -51,5 +52,8 @@ object LoggerMessages {
     }
     fun LOG_SAVE_PROFILE(profileRegistrationDto: ProfileRegistrationDto): String {
         return "Save profile: $profileRegistrationDto"
+    }
+    fun GET_PROFILE(userId: UUID): String {
+        return "Get profile: $userId"
     }
 }

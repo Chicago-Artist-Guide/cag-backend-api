@@ -37,7 +37,7 @@ class ProfileControllerIntegrationTests {
     private val validAuthKey = "mockAuthKey"
 
     @Test
-    fun registerUser_validInput_201Success() {
+    fun registerProfile_validInput_201Success() {
         //create user headers
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -61,6 +61,9 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
+        Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
+        Assertions.assertEquals(validRegisterUser.email, createUser.email)
         assertNotNull(createUser.user_id)
 
         //check the created profile
@@ -155,6 +158,7 @@ class ProfileControllerIntegrationTests {
         headers2.set("authKey", validAuthKey)
         headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
+
 
         //create profile
         val userProfileResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, String::class.java)

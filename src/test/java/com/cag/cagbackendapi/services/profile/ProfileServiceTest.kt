@@ -5,6 +5,7 @@ import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.ProfileDao
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
+import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.exceptions.*
 import com.cag.cagbackendapi.services.user.impl.ProfileService
@@ -16,12 +17,14 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class ProfileServiceTest {
 
     private var profileDao: ProfileDao = mock()
+    private var passwordEncoder: PasswordEncoder = mock()
 
     @InjectMocks
     private lateinit var profileService: ProfileService
@@ -141,6 +144,84 @@ class ProfileServiceTest {
         Assertions.assertEquals(badRequestException.message, actualException.message)
         verify(profileDao).getUserWithProfile(userIdUUID)
         verifyNoMoreInteractions(profileDao)
+    }
+
+    @Test
+    fun getProfile_validUser_success() {
+        val userId = UUID.randomUUID()
+
+        val result = ProfileDto(userId, "Test", true, "", true, true, false, true, 0, "", "", "", "", "", "")
+
+        whenever(profileDao.getProfile(userId)).thenReturn(result)
+
+        profileService.getProfile(userId.toString())
+
+        verify(profileDao).getProfile(userId)
+        verifyNoMoreInteractions(profileDao, passwordEncoder)
+    }
+
+    @Test
+    fun getProfile_invalidId_badRequest() {
+        val userId = "sadUserId"
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            profileService.getProfile(userId)
+        }
+
+        Assertions.assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(profileDao, passwordEncoder)
+    }
+
+    @Test
+    fun getProfile_nullId_badRequest() {
+        val userId = ""
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            profileService.getProfile(userId)
+        }
+
+        Assertions.assertEquals(badRequestException.message, actualException.message)
+
+        verifyZeroInteractions(profileDao, passwordEncoder)
+    }
+
+    @Test
+    fun getProfile_profileNotFound_notFoundRequest() {
+        val userId = UUID.randomUUID()
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.PROFILE_NOT_FOUND, null)
+
+        whenever(profileDao.getProfile(userId)).thenReturn(null)
+
+        val actualException = assertThrows<NotFoundException> {
+            profileService.getProfile(userId.toString())
+        }
+
+        Assertions.assertEquals(notFoundException.message, actualException.message)
+        verify(profileDao).getProfile(userId)
+        verifyNoMoreInteractions(profileDao, passwordEncoder)
+    }
+
+    @Test
+    fun getByUserId_validInputWithDatabaseDown_InternalServerError() {
+        val userId = UUID.randomUUID()
+
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(profileDao.getProfile(userId)).thenThrow(internalServerError)
+
+        val actualException = assertThrows<InternalServerErrorException> {
+            profileService.getProfile(userId.toString())
+        }
+
+        Assertions.assertEquals(actualException.message, internalServerError.message)
+
+        verify(profileDao).getProfile(userId)
+        verifyNoMoreInteractions(profileDao, passwordEncoder)
     }
 
 

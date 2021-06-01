@@ -14,3 +14,8 @@ public interface ProfileRepository extends CrudRepository<ProfileEntity, UUID> {
 
 
 }
+
+//@Repository
+//public interface ProfileRepository extends CrudRepository<ProfileEntity, UUID> {
+//    ProfileEntity getByUserEntity_userId(UUID userId);
+//}
