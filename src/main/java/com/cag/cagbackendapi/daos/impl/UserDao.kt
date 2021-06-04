@@ -10,7 +10,7 @@ import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.repositories.UserRepository
-import org.modelmapper.ModelMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -25,7 +25,7 @@ class UserDao : UserDaoI {
     private lateinit var logger: Logger
 
     @Autowired
-    private lateinit var modelMapper: ModelMapper
+    private lateinit var objectMapper: ObjectMapper
 
     override fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto {
         logger.info(LOG_SAVE_USER(userRegistrationDto))
@@ -46,9 +46,9 @@ class UserDao : UserDaoI {
 
         val userEntity = userRepository.getByUserId(userId) ?: return null
 
-        userEntity.setFirstName(userUpdateDto.first_name)
-        userEntity.setLastName(userUpdateDto.last_name)
-        userEntity.setEmailJava(userUpdateDto.email)
+        userEntity.first_name = userUpdateDto.first_name
+        userEntity.last_name = userUpdateDto.last_name
+        userEntity.email = userUpdateDto.email
 
         val userResponseEntity = userRepository.save(userEntity)
 
@@ -61,10 +61,9 @@ class UserDao : UserDaoI {
         val deleteUserEntity = userRepository.getByUserId(userUUID) ?: return null
         userRepository.deleteById(userUUID)
         return deleteUserEntity.toDto()
-
     }
 
     private fun userDtoToEntity(userRegistrationDto: UserRegistrationDto): UserEntity {
-        return modelMapper.map(userRegistrationDto, UserEntity::class.java)
+        return objectMapper.convertValue(userRegistrationDto, UserEntity::class.java)
     }
 }

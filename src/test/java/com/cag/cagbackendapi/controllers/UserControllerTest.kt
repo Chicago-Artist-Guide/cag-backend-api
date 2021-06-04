@@ -91,7 +91,7 @@ class UserControllerTest {
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
         val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
-        val resultUpdateUser = UserDto(user_id = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUpdateUser = UserDto(userId = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.updateUser(randomUuidStr, updateUser)).thenReturn(resultUpdateUser)

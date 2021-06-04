@@ -31,5 +31,4 @@ data class ProfileRegistrationDto(
         var profile_photo_url: String? = null,
         var demographic_union_status: String? = null,
         var demographic_websites: List<String>? = null
-
 )
