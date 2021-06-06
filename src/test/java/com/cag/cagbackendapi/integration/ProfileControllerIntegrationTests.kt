@@ -61,14 +61,10 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-//<<<<<<< HEAD
         assertEquals(validRegisterUser.first_name, createUser.first_name)
         assertEquals(validRegisterUser.last_name, createUser.last_name)
         assertEquals(validRegisterUser.email, createUser.email)
         assertNotNull(createUser.userId)
-//=======
-//        assertNotNull(createUser.userId)
-//>>>>>>> 1bfc106782dde52e6623ea617df9da90d393c54d
 
         //check the created profile
         assertNotNull(userProfileResponse)
@@ -211,7 +207,6 @@ class ProfileControllerIntegrationTests {
         //register profile headers
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
-        headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
 
         //create profile
@@ -221,7 +216,6 @@ class ProfileControllerIntegrationTests {
         //get profile headers
         val headers3 = HttpHeaders()
         headers3.set("authKey", validAuthKey)
-        headers3.set("userId", userIdUUID.toString())
         val request3 = HttpEntity(null, headers3)
 
         //get profile
@@ -263,7 +257,6 @@ class ProfileControllerIntegrationTests {
         //get profile headers
         val headers3 = HttpHeaders()
         headers3.set("authKey", validAuthKey)
-        headers3.set("userId", userId)
         val request3 = HttpEntity(null, headers3)
 
         //create error message
@@ -292,7 +285,6 @@ class ProfileControllerIntegrationTests {
         //get profile headers
         val headers3 = HttpHeaders()
         headers3.set("authKey", validAuthKey)
-        headers3.set("userId", userIdUUID.toString())
         val request3 = HttpEntity(null, headers3)
 
         //create error message
