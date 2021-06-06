@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface UnionStatusRepository extends CrudRepository<UnionStatusEntity, UUID> {
-    List<UnionStatusEntity> getByName(String demographicUnionStatus);
+    UnionStatusEntity getByName(String demographicUnionStatus);
 }
