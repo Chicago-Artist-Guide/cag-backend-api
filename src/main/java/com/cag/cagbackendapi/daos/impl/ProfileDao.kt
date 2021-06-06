@@ -5,7 +5,11 @@ import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.entities.ProfileEntity
+import com.cag.cagbackendapi.entities.UnionStatusEntity
+import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
 import com.cag.cagbackendapi.repositories.ProfileRepository
+import com.cag.cagbackendapi.repositories.UnionStatusMemberRepository
+import com.cag.cagbackendapi.repositories.UnionStatusRepository
 import com.cag.cagbackendapi.repositories.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
@@ -14,12 +18,18 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class ProfileDao : ProfileDaoI{
+class ProfileDao : ProfileDaoI {
     @Autowired
     private lateinit var profileRepository: ProfileRepository
 
     @Autowired
     private lateinit var userRepository: UserRepository
+
+    @Autowired
+    private lateinit var unionStatusMemberRepository: UnionStatusMemberRepository
+
+    @Autowired
+    private lateinit var unionStatusRepository: UnionStatusRepository
 
     @Autowired
     private lateinit var logger: Logger
@@ -33,37 +43,62 @@ class ProfileDao : ProfileDaoI{
         //try to move to service level (throw exception)
         val user = userRepository.getByUserId(userId) //?: throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND)
 
+        //retrieves if existent or creates a new union Status Entity
+        val unionStatusEntity = getUnionStatusEntity(profileRegistrationDto.demographic_union_status)
+
         val profileEntity = ProfileEntity(
-            null,
-            profileRegistrationDto.pronouns,
-            profileRegistrationDto.lgbtqplus_member,
-            profileRegistrationDto.gender_identity,
-            profileRegistrationDto.comfortable_playing_man,
-            profileRegistrationDto.comfortable_playing_women,
-            profileRegistrationDto.comfortable_playing_neither,
-            profileRegistrationDto.comfortable_playing_transition,
-            profileRegistrationDto.height_inches!!,
-            profileRegistrationDto.agency,
-            profileRegistrationDto.website_link_one,
-            profileRegistrationDto.website_link_two,
-            profileRegistrationDto.website_type_one,
-            profileRegistrationDto.website_type_two,
-            profileRegistrationDto.bio,
-            user)
+                null,
+                profileRegistrationDto.pronouns,
+                profileRegistrationDto.lgbtqplus_member,
+                profileRegistrationDto.gender_identity,
+                profileRegistrationDto.comfortable_playing_man,
+                profileRegistrationDto.comfortable_playing_women,
+                profileRegistrationDto.comfortable_playing_neither,
+                profileRegistrationDto.comfortable_playing_transition,
+                profileRegistrationDto.height_inches!!,
+                profileRegistrationDto.agency,
+                profileRegistrationDto.website_link_one,
+                profileRegistrationDto.website_link_two,
+                profileRegistrationDto.website_type_one,
+                profileRegistrationDto.website_type_two,
+                profileRegistrationDto.bio,
+                user)
 
         val savedProfileEntity = profileRepository.save(profileEntity)
+
+        var unionStatusMemberEntity = UnionStatusMemberEntity(
+                null,
+                savedProfileEntity,
+                unionStatusEntity
+        )
+
+        unionStatusMemberRepository.save(unionStatusMemberEntity)
+
+
         return savedProfileEntity.toDto()
     }
 
     override fun getUserWithProfile(userId: UUID): ProfileDto? {
-        return if(profileRepository.getByUserEntity_userId(userId).isEmpty()){
+        return if (profileRepository.getByUserEntity_userId(userId).isEmpty()) {
             null
-        }else{
+        } else {
             profileRepository.getByUserEntity_userId(userId)[0].toDto()
         }
     }
 
+
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
     }
+
+    private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
+        if (unionStatusRepository.getByName(demographicUnionStatus).isNotEmpty()) {
+            return unionStatusRepository.getByName(demographicUnionStatus)[0]
+        } else {
+            var unionStatusEntity = UnionStatusEntity(null, demographicUnionStatus)
+            return unionStatusRepository.save(unionStatusEntity)
+        }
+
+    }
 }
+
