@@ -35,7 +35,7 @@ class ProfileControllerTest {
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
         val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
-        val userProfileResponse = ProfileDto(userIdUUID, pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfileResponse = ProfileDto(userIdUUID, pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", userEntity = null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(profileService.registerProfile(userId, userProfile)).thenReturn(userProfileResponse)
@@ -119,7 +119,7 @@ class ProfileControllerTest {
         val testAuthKey = "testAuthKey"
         val userUUID = UUID.randomUUID()
         val userId = userUUID.toString()
-        val userProfileData = ProfileDto(userUUID, pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfileData = ProfileDto(userUUID, pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", userEntity = null)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(profileService.getProfile(userId)).thenReturn(userProfileData)

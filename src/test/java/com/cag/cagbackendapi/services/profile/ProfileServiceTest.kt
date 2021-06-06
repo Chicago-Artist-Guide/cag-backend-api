@@ -150,7 +150,7 @@ class ProfileServiceTest {
     fun getProfile_validUser_success() {
         val userId = UUID.randomUUID()
 
-        val result = ProfileDto(userId, "Test", true, "", true, true, false, true, 0, "", "", "", "", "", "")
+        val result = ProfileDto(userId, "Test", true, "", true, true, false, true, 0, "", "", "", "", "", "", userEntity = null)
 
         whenever(profileDao.getProfile(userId)).thenReturn(result)
 

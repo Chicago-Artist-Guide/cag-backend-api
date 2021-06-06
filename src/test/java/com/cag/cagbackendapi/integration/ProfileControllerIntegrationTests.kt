@@ -32,7 +32,7 @@ class ProfileControllerIntegrationTests {
     private val objectMapper = jacksonObjectMapper()
 
     private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true)
-    private val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+    private val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
     private val validAuthKey = "mockAuthKey"
 
@@ -46,7 +46,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -61,10 +61,14 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
-        Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
-        Assertions.assertEquals(validRegisterUser.email, createUser.email)
-        assertNotNull(createUser.user_id)
+//<<<<<<< HEAD
+        assertEquals(validRegisterUser.first_name, createUser.first_name)
+        assertEquals(validRegisterUser.last_name, createUser.last_name)
+        assertEquals(validRegisterUser.email, createUser.email)
+        assertNotNull(createUser.userId)
+//=======
+//        assertNotNull(createUser.userId)
+//>>>>>>> 1bfc106782dde52e6623ea617df9da90d393c54d
 
         //check the created profile
         assertNotNull(userProfileResponse)
@@ -84,6 +88,7 @@ class ProfileControllerIntegrationTests {
         assertEquals(userProfile.website_type_one, createdProfile.website_type_one)
         assertEquals(userProfile.website_type_two, createdProfile.website_type_two)
         assertEquals(userProfile.bio, createdProfile.bio)
+
     }
 
     @Test
@@ -96,11 +101,11 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
-        headers2.set("AuthKey", "invalidAuthKey")
+        headers2.set("authKey", "invalidAuthKey")
         headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
 
@@ -110,7 +115,7 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the error
         assertEquals(HttpStatus.UNAUTHORIZED, errorDetailsResponse.statusCode)
@@ -126,7 +131,7 @@ class ProfileControllerIntegrationTests {
         //register profile headers
         val userId = null
         val headers2 = HttpHeaders()
-        headers2.set("AuthKey", validAuthKey)
+        headers2.set("authKey", validAuthKey)
         headers2.set("userId", null) //is this needed?
         val request2 = HttpEntity(userProfile, headers2)
 
@@ -151,7 +156,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -177,7 +182,7 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the created profile
         assertNotNull(userProfileResponse)
@@ -201,7 +206,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
         //register profile headers
         val headers2 = HttpHeaders()
@@ -229,7 +234,7 @@ class ProfileControllerIntegrationTests {
         Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
         Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
         Assertions.assertEquals(validRegisterUser.email, createUser.email)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //get the created profile
         assertNotNull(getProfileResponse)
@@ -281,7 +286,7 @@ class ProfileControllerIntegrationTests {
         //create user
         val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.user_id
+        val userIdUUID = createUser.userId
 
 
         //get profile headers
@@ -299,7 +304,7 @@ class ProfileControllerIntegrationTests {
         Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
         Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
         Assertions.assertEquals(validRegisterUser.email, createUser.email)
-        assertNotNull(createUser.user_id)
+        assertNotNull(createUser.userId)
 
         //check the error
         assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)

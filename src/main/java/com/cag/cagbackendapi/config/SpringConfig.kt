@@ -1,7 +1,8 @@
 package com.cag.cagbackendapi.config;
 
 import com.cag.cagbackendapi.CagBackendApiApplication;
-import org.modelmapper.ModelMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -11,25 +12,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-public class SpringConfig {
+open class SpringConfig {
 
     @Bean
-    public Logger logger() {
-        return LoggerFactory.getLogger(CagBackendApiApplication.class);
+    open fun logger(): Logger {
+        return LoggerFactory.getLogger(CagBackendApiApplication::class.java)
     }
 
     @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
+    open fun objectMapper(): ObjectMapper {
+        return jacksonObjectMapper()
     }
 
     @Bean //NOTE: Used to render swagger-ui
-    public InternalResourceViewResolver defaultViewResolver() {
-        return new InternalResourceViewResolver();
+    open fun defaultViewResolver(): InternalResourceViewResolver {
+        return InternalResourceViewResolver()
     }
 
     @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
+    open fun encoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 }
