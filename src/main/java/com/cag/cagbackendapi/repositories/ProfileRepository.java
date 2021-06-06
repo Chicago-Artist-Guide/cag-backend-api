@@ -9,12 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
-/*@Repository
-public interface ProfileRepository extends CrudRepository<ProfileEntity, UUID> {
-    List<ProfileEntity> getByUserEntity_userId(UUID userId);
-}*/
-
-
 @Repository
 public interface ProfileRepository extends CrudRepository<ProfileEntity, UUID> {
     ProfileEntity getByUserEntity_userId(UUID userId);

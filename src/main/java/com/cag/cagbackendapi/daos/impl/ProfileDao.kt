@@ -75,8 +75,6 @@ class ProfileDao : ProfileDaoI{
             profileRepository.getByUserEntity_userId(userId).toDto()
         }
     }
-        //return profileRepository.getByUserEntity_userId(userId).toDto() ?: null
-
 
     override fun getProfile(userId: UUID): ProfileDto? {
         logger.info(GET_PROFILE(userId))
@@ -84,13 +82,6 @@ class ProfileDao : ProfileDaoI{
         val profileEntity = profileRepository.getByUserEntity_userId(userId) ?: return null
         return profileEntity.toDto()
     }
-
-/*    override fun getProfile(userId: UUID): ProfileDto? {
-        logger.info(GET_PROFILE(userId))
-
-        val profileEntity = profileRepository.getByUserEntity_userId(userId)[0] ?: return null
-        return profileEntity.toDto()
-    }*/
 
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return modelMapper.map(profileDto, ProfileEntity::class.java)
