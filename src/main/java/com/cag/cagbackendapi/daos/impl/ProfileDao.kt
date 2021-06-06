@@ -98,12 +98,13 @@ class ProfileDao : ProfileDaoI {
         return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
     }
 
+    //user should not be able
     private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
-        if (unionStatusRepository.getByName(demographicUnionStatus).isNotEmpty()) {
-            return unionStatusRepository.getByName(demographicUnionStatus)[0]
+        return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
+            unionStatusRepository.getByName(demographicUnionStatus)
         } else {
             var unionStatusEntity = UnionStatusEntity(null, demographicUnionStatus)
-            return unionStatusRepository.save(unionStatusEntity)
+            unionStatusRepository.save(unionStatusEntity)
         }
 
     }
