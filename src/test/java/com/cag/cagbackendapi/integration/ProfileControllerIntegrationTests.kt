@@ -11,6 +11,7 @@ import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -36,7 +37,7 @@ class ProfileControllerIntegrationTests {
     private val validAuthKey = "mockAuthKey"
 
     @Test
-    fun registerUser_validInput_201Success() {
+    fun registerProfile_validInput_201Success() {
         //create user headers
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -60,6 +61,9 @@ class ProfileControllerIntegrationTests {
         //check the created user
         assertNotNull(createdUserResponse)
         assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        assertEquals(validRegisterUser.first_name, createUser.first_name)
+        assertEquals(validRegisterUser.last_name, createUser.last_name)
+        assertEquals(validRegisterUser.email, createUser.email)
         assertNotNull(createUser.userId)
 
         //check the created profile
@@ -156,6 +160,7 @@ class ProfileControllerIntegrationTests {
         headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(userProfile, headers2)
 
+
         //create profile
         val userProfileResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, String::class.java)
         val createdProfile = objectMapper.readValue(userProfileResponse.body, ProfileDto::class.java)
@@ -185,5 +190,118 @@ class ProfileControllerIntegrationTests {
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.CONFLICT_MESSAGE)
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_HAS_PROFILE)
+    }
+
+    @Test
+    fun getProfile_validInput_200Success() {
+        //create user headers
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validRegisterUser, headers)
+
+        //create user
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+        val userIdUUID = createUser.userId
+
+        //register profile headers
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(userProfile, headers2)
+
+        //create profile
+        val userProfileResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, String::class.java)
+        val createdProfile = objectMapper.readValue(userProfileResponse.body, ProfileDto::class.java)
+
+        //get profile headers
+        val headers3 = HttpHeaders()
+        headers3.set("authKey", validAuthKey)
+        val request3 = HttpEntity(null, headers3)
+
+        //get profile
+        val getProfileResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile", HttpMethod.GET, request3, String::class.java)
+        val getProfile = objectMapper.readValue(getProfileResponse.body, ProfileDto::class.java)
+
+        //check the created user
+        assertNotNull(createdUserResponse)
+        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
+        Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
+        Assertions.assertEquals(validRegisterUser.email, createUser.email)
+        assertNotNull(createUser.userId)
+
+        //get the created profile
+        assertNotNull(getProfileResponse)
+        assertEquals(HttpStatus.OK, getProfileResponse.statusCode)
+        assertNotNull(getProfile.profile_id)
+        assertEquals(userProfile.pronouns, getProfile.pronouns)
+        assertEquals(userProfile.lgbtqplus_member, getProfile.lgbtqplus_member)
+        assertEquals(userProfile.gender_identity, getProfile.gender_identity)
+        assertEquals(userProfile.comfortable_playing_man, getProfile.comfortable_playing_man)
+        assertEquals(userProfile.comfortable_playing_women, getProfile.comfortable_playing_women)
+        assertEquals(userProfile.comfortable_playing_neither, getProfile.comfortable_playing_neither)
+        assertEquals(userProfile.comfortable_playing_transition, getProfile.comfortable_playing_transition)
+        assertEquals(userProfile.height_inches, getProfile.height_inches)
+        assertEquals(userProfile.agency, getProfile.agency)
+        assertEquals(userProfile.website_link_one, getProfile.website_link_one)
+        assertEquals(userProfile.website_link_two, getProfile.website_link_two)
+        assertEquals(userProfile.website_type_one, getProfile.website_type_one)
+        assertEquals(userProfile.website_type_two, getProfile.website_type_two)
+        assertEquals(userProfile.bio, getProfile.bio)
+    }
+
+    @Test
+    fun getProfile_invalidUserId_400BadRequest() {
+        val userId = null
+
+        //get profile headers
+        val headers3 = HttpHeaders()
+        headers3.set("authKey", validAuthKey)
+        val request3 = HttpEntity(null, headers3)
+
+        //create error message
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$userId/profile", HttpMethod.GET, request3, ErrorDetails::class.java)
+
+        //check the error
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_USER_ID)
+    }
+
+    @Test
+    fun getProfile_noProfileForUser_404NotFound() {
+        //create user headers
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validRegisterUser, headers)
+
+        //create user
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+        val userIdUUID = createUser.userId
+
+
+        //get profile headers
+        val headers3 = HttpHeaders()
+        headers3.set("authKey", validAuthKey)
+        val request3 = HttpEntity(null, headers3)
+
+        //create error message
+        val errorDetailsResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile", HttpMethod.GET, request3, ErrorDetails::class.java)
+
+        //check the created user
+        assertNotNull(createdUserResponse)
+        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        Assertions.assertEquals(validRegisterUser.first_name, createUser.first_name)
+        Assertions.assertEquals(validRegisterUser.last_name, createUser.last_name)
+        Assertions.assertEquals(validRegisterUser.email, createUser.email)
+        assertNotNull(createUser.userId)
+
+        //check the error
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.PROFILE_NOT_FOUND)
     }
 }

@@ -1,5 +1,6 @@
 package com.cag.cagbackendapi.daos.impl
 
+import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
@@ -56,11 +57,18 @@ class ProfileDao : ProfileDaoI{
     }
 
     override fun getUserWithProfile(userId: UUID): ProfileDto? {
-        return if(profileRepository.getByUserEntity_userId(userId).isEmpty()){
+        return if(profileRepository.getByUserEntity_userId(userId) == null){
             null
         }else{
-            profileRepository.getByUserEntity_userId(userId)[0].toDto()
+            profileRepository.getByUserEntity_userId(userId).toDto()
         }
+    }
+
+    override fun getProfile(userId: UUID): ProfileDto? {
+        logger.info(GET_PROFILE(userId))
+
+        val profileEntity = profileRepository.getByUserEntity_userId(userId) ?: return null
+        return profileEntity.toDto()
     }
 
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {

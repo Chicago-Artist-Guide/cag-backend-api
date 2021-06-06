@@ -7,4 +7,5 @@ import java.util.*
 interface ProfileDaoI {
     fun saveProfile(userId: UUID, profileRegistrationDto: ProfileRegistrationDto): ProfileDto
     fun getUserWithProfile(userId: UUID): ProfileDto?
+    fun getProfile(userId: UUID): ProfileDto?
 }
