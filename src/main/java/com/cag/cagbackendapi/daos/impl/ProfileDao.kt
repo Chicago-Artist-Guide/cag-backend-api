@@ -44,9 +44,6 @@ class ProfileDao : ProfileDaoI {
         //try to move to service level (throw exception)
         val user = userRepository.getByUserId(userId) //?: throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND)
 
-        //retrieves if existent or creates a new union Status Entity
-        val unionStatusEntity = getUnionStatusEntity(profileRegistrationDto.demographic_union_status)
-
         val profileEntity = ProfileEntity(
                 null,
                 profileRegistrationDto.pronouns,
@@ -67,6 +64,9 @@ class ProfileDao : ProfileDaoI {
 
         val savedProfileEntity = profileRepository.save(profileEntity)
 
+        //retrieves if existent or creates a new union Status Entity
+        val unionStatusEntity = getUnionStatusEntity(profileRegistrationDto.demographic_union_status)
+
         var unionStatusMemberEntity = UnionStatusMemberEntity(
                 null,
                 savedProfileEntity,
@@ -74,7 +74,6 @@ class ProfileDao : ProfileDaoI {
         )
 
         unionStatusMemberRepository.save(unionStatusMemberEntity)
-
 
         return savedProfileEntity.toDto()
     }
@@ -87,6 +86,7 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+<<<<<<< HEAD
     override fun getProfile(userId: UUID): ProfileDto? {
         logger.info(GET_PROFILE(userId))
 
@@ -94,11 +94,13 @@ class ProfileDao : ProfileDaoI {
         return profileEntity.toDto()
     }
 
+=======
+>>>>>>> clean up
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
     }
 
-    //user should not be able
+    //user should not be able to create a new
     private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
         return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
             unionStatusRepository.getByName(demographicUnionStatus)
