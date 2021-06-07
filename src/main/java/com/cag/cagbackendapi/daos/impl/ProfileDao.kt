@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.daos.impl
 
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
@@ -64,16 +65,11 @@ class ProfileDao : ProfileDaoI {
 
         val savedProfileEntity = profileRepository.save(profileEntity)
 
-        //retrieves if existent or creates a new union Status Entity
+        //retrieves union status entity from union status member table. Also writes if it doesn't exist.
         val unionStatusEntity = getUnionStatusEntity(profileRegistrationDto.demographic_union_status)
 
-        var unionStatusMemberEntity = UnionStatusMemberEntity(
-                null,
-                savedProfileEntity,
-                unionStatusEntity
-        )
-
-        unionStatusMemberRepository.save(unionStatusMemberEntity)
+        //create & save union status member entity to union status member table
+        saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity)
 
         return savedProfileEntity.toDto()
     }
@@ -86,7 +82,6 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
-<<<<<<< HEAD
     override fun getProfile(userId: UUID): ProfileDto? {
         logger.info(GET_PROFILE(userId))
 
@@ -94,8 +89,6 @@ class ProfileDao : ProfileDaoI {
         return profileEntity.toDto()
     }
 
-=======
->>>>>>> clean up
     private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
         return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
     }
@@ -108,6 +101,16 @@ class ProfileDao : ProfileDaoI {
             var unionStatusEntity = UnionStatusEntity(null, demographicUnionStatus)
             unionStatusRepository.save(unionStatusEntity)
         }
+    }
 
+    private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
+        var unionStatusMemberEntity = UnionStatusMemberEntity(
+                null,
+                savedProfileEntity,
+                unionStatusEntity
+        )
+
+        logger.info(LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity))
+        unionStatusMemberRepository.save(unionStatusMemberEntity)
     }
 }
