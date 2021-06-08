@@ -35,8 +35,8 @@ class UserServiceTest {
         // assemble
         val inputPass = "password"
         val encodedPass = "encodedPass"
-        val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", inputPass, true)
-        val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true)
+        val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", inputPass, true, true)
+        val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true, true)
 
         whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
@@ -51,10 +51,10 @@ class UserServiceTest {
     }
 
     @Test
-    fun registerUser_missingFirstNameAndLastNameAndEmailAndPasswordAndAgreed18_BadRequest() {
+    fun registerUser_missingFirstNameAndLastNameAndEmailAndPasswordAndAgreed18AndPrivacyAgreement_BadRequest() {
         // assemble
-        val inputUser = UserRegistrationDto(null, null, null, null, false)
-        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, null)
+        val inputUser = UserRegistrationDto(null, null, null, null, false, false)
+        val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18 + DetailedErrorMessages.MUST_AGREE_PRIVACY, null)
 
         // act
         val actualException = assertThrows<BadRequestException> {
@@ -69,7 +69,7 @@ class UserServiceTest {
     @Test
     fun registerUser_emptyFirstNameAndLastNameAndEmailAndPassword_BadRequest() {
         // assemble
-        val inputUser = UserRegistrationDto("", "", "", "", true)
+        val inputUser = UserRegistrationDto("", "", "", "", true, true)
         val badRequestException = BadRequestException(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED, null)
 
         // act
@@ -87,7 +87,7 @@ class UserServiceTest {
         // assemble
         val inputPass = "password"
         val encodedPass = "encodedPass"
-        val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", inputPass,true)
+        val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", inputPass,true, true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
         whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
@@ -109,7 +109,7 @@ class UserServiceTest {
     fun getByUserId_validUser_success() {
         val userId = UUID.randomUUID()
 
-        val result = UserDto(userId, "Test", "User", "test.user@gmail.com", true, null, null, true)
+        val result = UserDto(userId, "Test", "User", "test.user@gmail.com", true, null, null, true, true)
 
         whenever(userDao.getUser(userId)).thenReturn(result)
 
@@ -192,7 +192,7 @@ class UserServiceTest {
         val userUuid = UUID.randomUUID()
         val userId = userUuid.toString()
         val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
-        val resultUser = UserDto(userId = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUser = UserDto(userId = userUuid, first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true, agreed_privacy = true)
 
         whenever(userDao.updateUser(userUuid, updateUser)).thenReturn(resultUser)
         //act
@@ -289,7 +289,7 @@ class UserServiceTest {
     fun deleteUser_validUser_logsAndSucceeds() {
         // assemble
         val userId = UUID.randomUUID()
-        val resultUser = UserDto(userId, "testy", "tester", "testytester@aol.com", true, null, null, true)
+        val resultUser = UserDto(userId, "testy", "tester", "testytester@aol.com", true, null, null, true, true)
 
         whenever(userDao.deleteUser(userId)).thenReturn(resultUser)
 

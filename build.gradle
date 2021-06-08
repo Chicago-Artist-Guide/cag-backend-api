@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.cag.cagbackendapi"
-version = "1.0.0"
+version = "1.0.1"
 sourceCompatibility = "11" //NOTE: We're using java 11 with kotlin in the project (But kotlin is still compiled using java 8 which is okay because java 11 doesn't provide any benefits for kotlin)
 
 repositories {

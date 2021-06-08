@@ -30,6 +30,7 @@ object DetailedErrorMessages {
     const val USER_NOT_FOUND = "User not found. "
     const val INVALID_UUID = "Invalid Id. "
     const val MUST_BE_18 = "You must be eighteen years or older to use Chicago Artist Guide. "
+    const val MUST_AGREE_PRIVACY = "You must accept our Privacy Agreement to use Chicago Artist Guide. "
     const val USER_HAS_PROFILE = "This user already has a profile. "
     const val PRONOUN_REQUIRED = "Pronoun identity is required. "
     const val LGBTQPLUS_MEMBER_REQUIRED = "LGBTQ+ identity is required. "
@@ -38,7 +39,7 @@ object DetailedErrorMessages {
     const val BIO_REQUIRED = "Bio is required. "
     const val PROFILE_NOT_FOUND = "Profile not found. "
     const val UNION_STATUS_MEMBER_REQUIRED = "Union status is required. "
-    const val UNION_STATUS_NOT_SUPPORTED = "Union Status not Supported. "
+    const val UNION_STATUS_NOT_SUPPORTED = "Union Status not supported. "
 }
 
 object LoggerMessages {

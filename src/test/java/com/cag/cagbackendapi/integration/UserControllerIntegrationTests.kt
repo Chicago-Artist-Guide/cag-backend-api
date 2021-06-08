@@ -27,7 +27,7 @@ class UserControllerIntegrationTests {
 
     private val objectMapper = jacksonObjectMapper()
 
-    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true)
+    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true, true)
     private val validAuthKey = "mockAuthKey"
 
     @Test
@@ -60,12 +60,12 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
-        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, errorDetailsResponse?.body?.detailedMessage)
+        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18 + DetailedErrorMessages.MUST_AGREE_PRIVACY, errorDetailsResponse?.body?.detailedMessage)
     }
 
     @Test
-    fun registerUser_nullFirstNameAndLastNameAndEmailAndPasswordAndNot18_400BadRequest() {
-        val emptyNameUser = UserRegistrationDto(null, null, null, null, false)
+    fun registerUser_nullFirstNameAndLastNameAndEmailAndPasswordAndNot18NoPrivacy_400BadRequest() {
+        val emptyNameUser = UserRegistrationDto(null, null, null, null, false, false)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -76,12 +76,12 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(RestErrorMessages.BAD_REQUEST_MESSAGE, errorDetailsResponse?.body?.restErrorMessage)
-        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18, errorDetailsResponse?.body?.detailedMessage)
+        assertEquals(DetailedErrorMessages.FIRST_NAME_REQUIRED + DetailedErrorMessages.LAST_NAME_REQUIRED + DetailedErrorMessages.EMAIL_REQUIRED + DetailedErrorMessages.PASSWORD_REQUIRED + DetailedErrorMessages.MUST_BE_18 + DetailedErrorMessages.MUST_AGREE_PRIVACY, errorDetailsResponse?.body?.detailedMessage)
     }
 
     @Test
     fun registerUser_nullName_400BadRequest() {
-        val nullNameUser = UserRegistrationDto(null, null,"testuser@aol.com", "password", true)
+        val nullNameUser = UserRegistrationDto(null, null,"testuser@aol.com", "password", true, true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -97,7 +97,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_emptyEmail_400BadRequest() {
-        val emptyEmailUser = UserRegistrationDto("test", "user", "", "password", true)
+        val emptyEmailUser = UserRegistrationDto("test", "user", "", "password", true, true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -113,7 +113,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullEmail_400BadRequest() {
-        val nullEmailUser = UserRegistrationDto("test", "user", null, "password", true)
+        val nullEmailUser = UserRegistrationDto("test", "user", null, "password", true, true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
@@ -129,7 +129,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_nullEmailAndFirstNameAndLastNameAndPassword_400BadRequest() {
-        val nullEmailUser = UserRegistrationDto(null, null, null, null, true)
+        val nullEmailUser = UserRegistrationDto(null, null, null, null, true, true)
 
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
