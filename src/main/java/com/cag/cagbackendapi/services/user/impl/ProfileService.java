@@ -72,20 +72,24 @@ public class ProfileService implements ProfileServiceI {
             badRequestMsg += DetailedErrorMessages.PRONOUN_REQUIRED;
         }
 
-        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+        if (profileRegistrationDto.getLgbtqplus_member() == null) {
             badRequestMsg += DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED;
         }
 
-        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+        if (profileRegistrationDto.getGender_identity() == null || profileRegistrationDto.getGender_identity().isBlank()) {
             badRequestMsg += DetailedErrorMessages.GENDER_IDENTITY_REQUIRED;
         }
 
-        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+        if (profileRegistrationDto.getHeight_inches() == null ) {
             badRequestMsg += DetailedErrorMessages.HEIGHT_INCHES_REQUIRED;
         }
 
-        if (profileRegistrationDto.getPronouns() == null || profileRegistrationDto.getPronouns().isBlank()) {
+        if (profileRegistrationDto.getBio() == null || profileRegistrationDto.getBio().isBlank()) {
             badRequestMsg += DetailedErrorMessages.BIO_REQUIRED;
+        }
+
+        if (profileRegistrationDto.getDemographic_union_status() == null || profileRegistrationDto.getDemographic_union_status().isBlank()) {
+            badRequestMsg += DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED;
         }
 
         if(!badRequestMsg.isEmpty()){

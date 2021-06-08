@@ -4,6 +4,8 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
+import com.cag.cagbackendapi.entities.UnionStatusEntity
+import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
 import java.util.*
 
 object RestErrorMessages {
@@ -36,6 +38,8 @@ object DetailedErrorMessages {
     const val HEIGHT_INCHES_REQUIRED = "Height is required. "
     const val BIO_REQUIRED = "Bio is required. "
     const val PROFILE_NOT_FOUND = "Profile not found. "
+    const val UNION_STATUS_MEMBER_REQUIRED = "Union status is required. "
+    const val UNION_STATUS_NOT_SUPPORTED = "Union Status not Supported. "
 }
 
 object LoggerMessages {
@@ -56,5 +60,8 @@ object LoggerMessages {
     }
     fun GET_PROFILE(userId: UUID): String {
         return "Get profile: $userId"
+    }
+    fun LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity: UnionStatusMemberEntity): String {
+        return "Save Union Status Member: $unionStatusMemberEntity"
     }
 }
