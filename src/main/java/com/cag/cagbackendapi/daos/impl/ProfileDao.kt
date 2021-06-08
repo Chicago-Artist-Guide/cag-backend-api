@@ -10,7 +10,6 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.entities.ProfileEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
-import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.repositories.ProfileRepository
 import com.cag.cagbackendapi.repositories.UnionStatusMemberRepository
@@ -20,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.util.*
 
 @Service
@@ -97,15 +95,6 @@ class ProfileDao : ProfileDaoI {
         return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
     }
 
-    //user should not be able to create a new
-    /*private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
-        return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
-            unionStatusRepository.getByName(demographicUnionStatus)
-        } else {
-            var unionStatusEntity = UnionStatusEntity(null, demographicUnionStatus)
-            unionStatusRepository.save(unionStatusEntity)
-        }
-    }*/
     private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
         return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
             unionStatusRepository.getByName(demographicUnionStatus)
@@ -113,7 +102,6 @@ class ProfileDao : ProfileDaoI {
             throw NotFoundException(DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED, null)
         }
     }
-
 
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
         var unionStatusMemberEntity = UnionStatusMemberEntity(
