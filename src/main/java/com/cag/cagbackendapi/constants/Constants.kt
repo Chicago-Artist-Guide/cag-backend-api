@@ -37,6 +37,8 @@ object DetailedErrorMessages {
     const val HEIGHT_INCHES_REQUIRED = "Height is required. "
     const val BIO_REQUIRED = "Bio is required. "
     const val PROFILE_NOT_FOUND = "Profile not found. "
+    const val UNION_STATUS_MEMBER_REQUIRED = "Union status is required. "
+    const val UNION_STATUS_NOT_SUPPORTED = "Union Status not Supported. "
 }
 
 object LoggerMessages {
