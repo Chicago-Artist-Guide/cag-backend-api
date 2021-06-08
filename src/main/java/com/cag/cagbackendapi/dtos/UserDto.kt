@@ -10,4 +10,5 @@ data class UserDto(
     var active_status: Boolean?,
     var session_id: String?,
     var img_url: String?,
-    var agreed_18: Boolean?)
+    var agreed_18: Boolean?,
+    var agreed_privacy: Boolean?)

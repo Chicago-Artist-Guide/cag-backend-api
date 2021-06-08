@@ -135,6 +135,10 @@ public class UserService implements UserServiceI {
             badRequestMsg += DetailedErrorMessages.MUST_BE_18;
         }
 
+        if (userRegistrationDto.getAgreed_privacy() == null || !userRegistrationDto.getAgreed_privacy()) {
+            badRequestMsg += DetailedErrorMessages.MUST_AGREE_PRIVACY;
+        }
+
         if (!badRequestMsg.isEmpty()) {
             throw new BadRequestException(badRequestMsg, null);
         }

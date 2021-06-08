@@ -32,8 +32,8 @@ class UserControllerTest {
     @Test
     fun registerUser_validInput_returns201()   {
         val testAuthKey = "testAuthKey"
-        val requestUser = UserRegistrationDto("John", "Smith", "johnjohn@aol.com", "password", true)
-        val resultUser = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com",  true, null, null, true)
+        val requestUser = UserRegistrationDto("John", "Smith", "johnjohn@aol.com", "password", true, true)
+        val resultUser = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com",  true, null, null, true, true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.registerUser(requestUser)).thenReturn(resultUser)
@@ -91,7 +91,7 @@ class UserControllerTest {
         val randomUUID = UUID.randomUUID()
         val randomUuidStr = randomUUID.toString()
         val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
-        val resultUpdateUser = UserDto(userId = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true)
+        val resultUpdateUser = UserDto(userId = randomUUID, first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true, agreed_privacy = true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.updateUser(randomUuidStr, updateUser)).thenReturn(resultUpdateUser)
@@ -173,7 +173,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val userId = "123e4567-e89b-12d3-a456-426614174000"
         val userUUID = UUID.fromString(userId)
-        val userData = UserDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null, null, true)
+        val userData = UserDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null, null, true, true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.getByUserId(userId)).thenReturn(userData)
@@ -251,7 +251,7 @@ class UserControllerTest {
         val testAuthKey = "testAuthKey"
         val userId = "123e4567-e89b-12d3-a456-426614174000"
         val userUUID = UUID.fromString(userId)
-        val userData = UserDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null, null, true)
+        val userData = UserDto(userUUID, "John", "Smith", "johnjohn@aol.com", true, null, null, true, true)
 
         doNothing().whenever(validationService).validateAuthKey(testAuthKey)
         whenever(userService.deleteUser(userId)).thenReturn(userData)

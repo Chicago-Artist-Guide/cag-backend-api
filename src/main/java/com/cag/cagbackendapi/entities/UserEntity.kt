@@ -26,7 +26,8 @@ data class UserEntity (
     var active_status: Boolean?,
     var session_id: String?,
     var img_url: String?,
-    var agreed_18: Boolean?) {
+    var agreed_18: Boolean?,
+    var agreed_privacy: Boolean?) {
     fun toDto(): UserDto {
         return UserDto(
             this.userId,
@@ -36,6 +37,7 @@ data class UserEntity (
             this.active_status,
             this.session_id,
             this.img_url,
-            this.agreed_18);
+            this.agreed_18,
+            this.agreed_privacy);
     }
 }
