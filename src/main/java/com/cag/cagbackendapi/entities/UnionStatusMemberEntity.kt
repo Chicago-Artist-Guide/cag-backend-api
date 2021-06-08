@@ -22,10 +22,10 @@ data class UnionStatusMemberEntity (
     var union_status_member_id: UUID?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_profile"))
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_union_status"))
+    @JoinColumn(name = "union_status_id", referencedColumnName = "union_status_id")
     var unionStatusEntity: UnionStatusEntity?
 )
