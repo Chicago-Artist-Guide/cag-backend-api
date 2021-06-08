@@ -33,18 +33,17 @@ class ProfileServiceTest {
     fun registerProfile_Succeeds(){
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         profileService.registerProfile(userId, userProfile)
 
         verify(profileDao).saveProfile(userIdUUID, userProfile)
-
     }
 
     @Test
     fun registerProfile_nullUserId_badRequest(){
         val userId = null
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
 
@@ -60,7 +59,7 @@ class ProfileServiceTest {
     @Test
     fun registerProfile_invalidUserId_badRequest(){
         val userId = "invalidUserId"
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
 
@@ -76,7 +75,7 @@ class ProfileServiceTest {
     @Test
     fun registerProfile_validInputWithDatabaseDown_InternalServerError() {
         val userIdUUID = UUID.randomUUID()
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
@@ -95,7 +94,7 @@ class ProfileServiceTest {
     @Test
     fun registerProfile_validInputWithServiceUnavailable_ServiceUnavailableException() {
         val userIdUUID = UUID.randomUUID()
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         val serviceUnavailableException = ServiceUnavailableException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
         whenever(profileDao.saveProfile(userIdUUID, userProfile)).thenThrow(serviceUnavailableException)
@@ -107,14 +106,13 @@ class ProfileServiceTest {
         Assertions.assertEquals(actualException.message, serviceUnavailableException.message)
         verify(profileDao).saveProfile(userIdUUID, userProfile)
         verifyNoMoreInteractions(profileDao)
-
     }
 
     @Test
     fun registerProfile_existingProfile_conflictRequest(){
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
-        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio")
+        val userProfile = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = "United Actors of America", demographic_websites = listOf("www.myPersonalProfile.com"))
 
         val conflictException = ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null)
         whenever(profileDao.saveProfile(userIdUUID, userProfile)).thenThrow(conflictException)
@@ -132,8 +130,8 @@ class ProfileServiceTest {
         //assemble
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
-        val userProfile = ProfileRegistrationDto(pronouns = null, lgbtqplus_member = null, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = null, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "")
-        val badRequestException = BadRequestException(DetailedErrorMessages.PRONOUN_REQUIRED + DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED  + DetailedErrorMessages.GENDER_IDENTITY_REQUIRED + DetailedErrorMessages.HEIGHT_INCHES_REQUIRED + DetailedErrorMessages.BIO_REQUIRED,null)
+        val userProfile = ProfileRegistrationDto(pronouns = null, lgbtqplus_member = null, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = null, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "", demographic_union_status = null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.PRONOUN_REQUIRED + DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED  + DetailedErrorMessages.GENDER_IDENTITY_REQUIRED + DetailedErrorMessages.HEIGHT_INCHES_REQUIRED + DetailedErrorMessages.BIO_REQUIRED + DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED, null)
 
         //act
         val actualException = assertThrows<BadRequestException> {
@@ -150,7 +148,7 @@ class ProfileServiceTest {
     fun getProfile_validUser_success() {
         val userId = UUID.randomUUID()
 
-        val result = ProfileDto(userId, "Test", true, "", true, true, false, true, 0, "", "", "", "", "", "", userEntity = null)
+        val result = ProfileDto(userId, "Test", true, "male", true, true, false, true, 0, "", "", "", "", "", "", userEntity = null)
 
         whenever(profileDao.getProfile(userId)).thenReturn(result)
 
@@ -224,5 +222,20 @@ class ProfileServiceTest {
         verifyNoMoreInteractions(profileDao, passwordEncoder)
     }
 
+    @Test
+    fun registerProfile_nullUnionStatus(){
+        val userIdUUID = UUID.randomUUID()
+        val userId = userIdUUID.toString()
+        val userProfileNullUnionStatus = ProfileRegistrationDto(pronouns = "he/him", lgbtqplus_member = false, gender_identity = "male", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = 88, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "this is my bio", landing_perform_type_on_stage = true, landing_perform_type_off_stage = false, actor_info_1_ethnicities = listOf("Hispanic"), actor_info_2_age_ranges = listOf(0,2), actor_info_2_gender_roles = listOf("male"), off_stage_roles_general = listOf("peter pan"), off_stage_roles_production = listOf("producer"),off_stage_roles_scenic = listOf("stage-hand"), off_stage_roles_lighting = listOf("light manger 1", "light manager 1"), off_stage_roles_hair_makeup_costumes = listOf("cosmetologist", "lead cosmetologist"), off_stage_roles_sound = listOf("sound tech 1"), profile_photo_url = "www.awsPhotoURL.com", demographic_union_status = null, demographic_websites = listOf("www.myPersonalProfile.com"))
 
+        val badRequestException = BadRequestException(DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED, null)
+
+        val actualException = assertThrows<BadRequestException> {
+            profileService.registerProfile(userId, userProfileNullUnionStatus)
+        }
+
+        Assertions.assertEquals(badRequestException.message, actualException.message)
+        verify(profileDao).getUserWithProfile(userIdUUID)
+        verifyNoMoreInteractions(profileDao, passwordEncoder)
+    }
 }

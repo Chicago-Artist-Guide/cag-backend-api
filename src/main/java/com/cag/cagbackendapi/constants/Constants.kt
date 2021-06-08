@@ -63,7 +63,4 @@ object LoggerMessages {
     fun LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity: UnionStatusMemberEntity): String {
         return "Save Union Status Member: $unionStatusMemberEntity"
     }
-    /*fun LOG_SAVE_UNION_STATUS(unionStatusEntity: UnionStatusEntity): String {
-        return "Save Union Status Member: $unionStatusEntity"
-    }*/
 }
