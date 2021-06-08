@@ -6,6 +6,7 @@ import com.cag.cagbackendapi.dtos.UserDto;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
+import com.cag.cagbackendapi.errors.exceptions.ConflictException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,24 @@ public class UserService implements UserServiceI {
     public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
         validateUserRegistrationDto(userRegistrationDto);
 
+        checkForDuplicateEmail(userRegistrationDto.getEmail());
+
         String encodedPassword = passwordEncoder.encode(userRegistrationDto.getPass());
         userRegistrationDto.setPass(encodedPassword);
 
         return userDao.saveUser(userRegistrationDto);
+    }
+
+    private void checkForDuplicateEmail(String email) {
+        if (userDao.getUserByEmail(email)!= null){
+            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
+        }
+
+        /*return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
+            unionStatusRepository.getByName(demographicUnionStatus)
+        } else {
+            throw NotFoundException(DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED, null)
+        }*/
     }
 
     @Override
