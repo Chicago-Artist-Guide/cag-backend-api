@@ -30,7 +30,7 @@ public class UserService implements UserServiceI {
     public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
         validateUserRegistrationDto(userRegistrationDto);
 
-        checkForDuplicateEmail(userRegistrationDto.getEmail());
+        checkRegisterUserDuplicateEmail(userRegistrationDto.getEmail());
 
         String encodedPassword = passwordEncoder.encode(userRegistrationDto.getPass());
         userRegistrationDto.setPass(encodedPassword);
@@ -38,16 +38,10 @@ public class UserService implements UserServiceI {
         return userDao.saveUser(userRegistrationDto);
     }
 
-    private void checkForDuplicateEmail(String email) {
+    private void checkRegisterUserDuplicateEmail(String email) {
         if (userDao.getUserByEmail(email)!= null){
-            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
+            throw new ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null);
         }
-
-        /*return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
-            unionStatusRepository.getByName(demographicUnionStatus)
-        } else {
-            throw NotFoundException(DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED, null)
-        }*/
     }
 
     @Override
@@ -69,6 +63,8 @@ public class UserService implements UserServiceI {
 
         validateUserUpdateDto(userUpdateDto);
 
+        checkUpdateUserDuplicateEmail(userUpdateDto, userUUID);
+
         var userResponseDto = userDao.updateUser(userUUID, userUpdateDto);
 
         if (userResponseDto == null) {
@@ -76,6 +72,19 @@ public class UserService implements UserServiceI {
         }
 
         return userResponseDto;
+    }
+
+    private void checkUpdateUserDuplicateEmail(UserUpdateDto userUpdateDto, UUID userUUID) {
+        assert userUpdateDto.getEmail()!= null;
+
+        //checks if email already exist. If it does, then check if it's the same user as the email owner
+        if (userDao.getUserByEmail(userUpdateDto.getEmail()) != null) {
+            UserDto existentUserDto = userDao.getUserByEmail(userUpdateDto.getEmail());
+            assert existentUserDto != null;
+            if (!existentUserDto.getUserId().equals(userUUID)){
+                throw new ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null);
+            }
+        }
     }
 
     @Override
