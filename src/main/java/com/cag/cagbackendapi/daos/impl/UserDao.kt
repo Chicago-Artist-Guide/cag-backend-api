@@ -30,7 +30,20 @@ class UserDao : UserDaoI {
     override fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto {
         logger.info(LOG_SAVE_USER(userRegistrationDto))
 
-        val savedUserEntity = userRepository.save(userDtoToEntity(userRegistrationDto))
+        val userEntity = UserEntity(
+            userId = null,
+            first_name = userRegistrationDto.first_name,
+            last_name = userRegistrationDto.last_name,
+            email = userRegistrationDto.email,
+            pass = userRegistrationDto.pass,
+            active_status = true,
+            session_id = null,
+            img_url = null,
+            agreed_18 = userRegistrationDto.agreed_18,
+            agreed_privacy = userRegistrationDto.agreed_privacy
+        )
+
+        val savedUserEntity = userRepository.save(userEntity)
         return savedUserEntity.toDto()
     }
 
@@ -61,9 +74,5 @@ class UserDao : UserDaoI {
         val deleteUserEntity = userRepository.getByUserId(userUUID) ?: return null
         userRepository.deleteById(userUUID)
         return deleteUserEntity.toDto()
-    }
-
-    private fun userDtoToEntity(userRegistrationDto: UserRegistrationDto): UserEntity {
-        return objectMapper.convertValue(userRegistrationDto, UserEntity::class.java)
     }
 }
