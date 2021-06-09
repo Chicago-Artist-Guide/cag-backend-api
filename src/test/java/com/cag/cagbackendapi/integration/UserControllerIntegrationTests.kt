@@ -32,6 +32,8 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_validInput_201Success() {
+        val expectedActiveStatus = true
+
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -44,6 +46,9 @@ class UserControllerIntegrationTests {
         assertEquals(validRegisterUser.first_name, createUser.first_name)
         assertEquals(validRegisterUser.last_name, createUser.last_name)
         assertEquals(validRegisterUser.email, createUser.email)
+        assertEquals(expectedActiveStatus, createUser.active_status)
+        assertEquals(validRegisterUser.agreed_privacy, createUser.agreed_privacy)
+        assertEquals(validRegisterUser.agreed_18, createUser.agreed_18)
         assertNotNull(createUser.userId)
     }
 
@@ -263,6 +268,8 @@ class UserControllerIntegrationTests {
 
     @Test
     fun getUser_validInput_200Success() {
+        val expectedActiveStatus = true
+
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -282,6 +289,9 @@ class UserControllerIntegrationTests {
         assertEquals(HttpStatus.OK, getUserResponse.statusCode)
         assertEquals(validRegisterUser.first_name, getUser.first_name)
         assertEquals(validRegisterUser.email, getUser.email)
+        assertEquals(expectedActiveStatus, createUser.active_status)
+        assertEquals(validRegisterUser.agreed_privacy, createUser.agreed_privacy)
+        assertEquals(validRegisterUser.agreed_18, createUser.agreed_18)
         assertNotNull(getUser.userId)
     }
 
