@@ -10,7 +10,7 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.entities.ProfileEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
-import com.cag.cagbackendapi.errors.exceptions.NotFoundException
+import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.repositories.ProfileRepository
 import com.cag.cagbackendapi.repositories.UnionStatusMemberRepository
 import com.cag.cagbackendapi.repositories.UnionStatusRepository
@@ -41,8 +41,20 @@ class ProfileDao : ProfileDaoI {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
+    private var badRequestMsg: String = ""
+
     override fun saveProfile(userId: UUID, profileRegistrationDto: ProfileRegistrationDto): ProfileDto {
+        clearBadRequestMsg()
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
+
+        val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
+        // validate ageIncrementEntity
+        // validate ethnicityEntity
+        // validate skillEntity
+
+        if (badRequestMsg.isNotEmpty()) {
+            throw BadRequestException(badRequestMsg, null)
+        }
 
         //try to move to service level (throw exception)
         val user = userRepository.getByUserId(userId) //?: throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND)
@@ -67,11 +79,8 @@ class ProfileDao : ProfileDaoI {
 
         val savedProfileEntity = profileRepository.save(profileEntity)
 
-        //retrieves union status entity from union status member table. Also writes if it doesn't exist.
-        val unionStatusEntity = getUnionStatusEntity(profileRegistrationDto.demographic_union_status)
-
         //create & save union status member entity to union status member table
-        saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity)
+        saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
 
         return savedProfileEntity.toDto()
     }
@@ -91,20 +100,8 @@ class ProfileDao : ProfileDaoI {
         return profileEntity.toDto()
     }
 
-    private fun profileDtoToEntity(profileDto: ProfileDto): ProfileEntity {
-        return objectMapper.convertValue(profileDto, ProfileEntity::class.java) //.map(profileDto, ProfileEntity::class.java)
-    }
-
-    private fun getUnionStatusEntity(demographicUnionStatus: String?): UnionStatusEntity {
-        return if (unionStatusRepository.getByName(demographicUnionStatus) != null ) {
-            unionStatusRepository.getByName(demographicUnionStatus)
-        } else {
-            throw NotFoundException(DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED, null)
-        }
-    }
-
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
-        var unionStatusMemberEntity = UnionStatusMemberEntity(
+        val unionStatusMemberEntity = UnionStatusMemberEntity(
                 null,
                 savedProfileEntity,
                 unionStatusEntity
@@ -112,5 +109,19 @@ class ProfileDao : ProfileDaoI {
 
         logger.info(LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity))
         unionStatusMemberRepository.save(unionStatusMemberEntity)
+    }
+
+    private fun validateUnionStatus(unionStatusName: String?): UnionStatusEntity? {
+        val unionStatusEntity = unionStatusRepository.getByName(unionStatusName)
+
+        if (unionStatusEntity == null) {
+            badRequestMsg += DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED
+        }
+
+        return unionStatusEntity
+    }
+
+    private fun clearBadRequestMsg() {
+        badRequestMsg = ""
     }
 }
