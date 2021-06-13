@@ -9,7 +9,6 @@ import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -66,7 +65,11 @@ class ProfileControllerIntegrationTests {
         assertEquals(validRegisterUser.first_name, createUser.first_name)
         assertEquals(validRegisterUser.last_name, createUser.last_name)
         assertEquals(validRegisterUser.email, createUser.email)
+        assertEquals(validRegisterUser.agreed_18, createUser.agreed_18)
+        assertEquals(validRegisterUser.agreed_privacy, createUser.agreed_privacy)
+        assertEquals(true, createUser.active_status)
         assertNotNull(createUser.userId)
+        assertNotNull(createUser.session_id)
 
         //check the created profile
         assertNotNull(userProfileResponse)
