@@ -25,7 +25,6 @@ import java.util.*
 class UserServiceTest {
 
     private var userDao: UserDao = mock()
-    private var passwordEncoder: PasswordEncoder = mock()
 
     @InjectMocks
     private lateinit var userService: UserService
@@ -38,14 +37,12 @@ class UserServiceTest {
         val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", inputPass, true, true)
         val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true, true)
 
-        whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
         whenever(userDao.saveUser(inputUser)).thenReturn(resultUser)
 
         // act
         userService.registerUser(inputUser)
 
         // assert
-        verify(passwordEncoder).encode(inputPass)
         verify(userDao).saveUser(inputUser)
         verifyNoMoreInteractions(userDao)
     }
@@ -63,7 +60,7 @@ class UserServiceTest {
 
         // assert
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -79,7 +76,7 @@ class UserServiceTest {
 
         // assert
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -90,7 +87,6 @@ class UserServiceTest {
         val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", inputPass,true, true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
-        whenever(passwordEncoder.encode(inputPass)).thenReturn(encodedPass)
         whenever(userDao.saveUser(inputUser)).thenThrow(internalServerError)
 
         // act
@@ -100,9 +96,8 @@ class UserServiceTest {
 
         // assert
         assertEquals(actualException.message, internalServerError.message)
-        verify(passwordEncoder).encode(inputPass)
         verify(userDao).saveUser(inputUser)
-        verifyNoMoreInteractions(userDao, passwordEncoder)
+        verifyNoMoreInteractions(userDao)
     }
 
     @Test
@@ -117,7 +112,6 @@ class UserServiceTest {
 
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -131,7 +125,7 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -146,7 +140,7 @@ class UserServiceTest {
 
         assertEquals(badRequestException.message, actualException.message)
 
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -164,7 +158,6 @@ class UserServiceTest {
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -183,7 +176,6 @@ class UserServiceTest {
 
         verify(userDao).getUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -201,7 +193,6 @@ class UserServiceTest {
         //assert
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -220,7 +211,6 @@ class UserServiceTest {
         //assert
         assertEquals(badRequestException.message, actualException.message)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -237,7 +227,6 @@ class UserServiceTest {
         //assert
         assertEquals(badRequestException.message, actualException.message)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -259,7 +248,6 @@ class UserServiceTest {
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
 
@@ -282,7 +270,6 @@ class UserServiceTest {
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).updateUser(userUuid, updateUser)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -299,7 +286,6 @@ class UserServiceTest {
         // assert
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -313,7 +299,7 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -327,7 +313,7 @@ class UserServiceTest {
         }
 
         assertEquals(badRequestException.message, actualException.message)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -344,7 +330,7 @@ class UserServiceTest {
 
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).deleteUser(userId)
-        verifyZeroInteractions(userDao, passwordEncoder)
+        verifyZeroInteractions(userDao)
     }
 
     @Test
@@ -362,7 +348,6 @@ class UserServiceTest {
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 
     @Test
@@ -380,6 +365,5 @@ class UserServiceTest {
         assertEquals(actualException.message, serviceUnavailableException.message)
         verify(userDao).deleteUser(userId)
         verifyNoMoreInteractions(userDao)
-        verifyZeroInteractions(passwordEncoder)
     }
 }
