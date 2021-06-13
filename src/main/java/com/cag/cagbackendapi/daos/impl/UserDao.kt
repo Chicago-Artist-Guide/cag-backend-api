@@ -24,9 +24,6 @@ class UserDao : UserDaoI {
     @Autowired
     private lateinit var logger: Logger
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
     override fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto {
         logger.info(LOG_SAVE_USER(userRegistrationDto))
 
@@ -37,7 +34,7 @@ class UserDao : UserDaoI {
             email = userRegistrationDto.email,
             pass = userRegistrationDto.pass,
             active_status = true,
-            session_id = null,
+            session_id = UUID.randomUUID().toString(),
             img_url = null,
             agreed_18 = userRegistrationDto.agreed_18,
             agreed_privacy = userRegistrationDto.agreed_privacy

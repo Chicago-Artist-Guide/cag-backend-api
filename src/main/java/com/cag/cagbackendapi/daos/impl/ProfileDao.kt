@@ -11,6 +11,7 @@ import com.cag.cagbackendapi.entities.ProfileEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
+import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.repositories.ProfileRepository
 import com.cag.cagbackendapi.repositories.UnionStatusMemberRepository
 import com.cag.cagbackendapi.repositories.UnionStatusRepository
@@ -38,9 +39,6 @@ class ProfileDao : ProfileDaoI {
     @Autowired
     private lateinit var logger: Logger
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
     private var badRequestMsg: String = ""
 
     override fun saveProfile(userId: UUID, profileRegistrationDto: ProfileRegistrationDto): ProfileDto {
@@ -56,8 +54,8 @@ class ProfileDao : ProfileDaoI {
             throw BadRequestException(badRequestMsg, null)
         }
 
-        //try to move to service level (throw exception)
-        val user = userRepository.getByUserId(userId) //?: throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND)
+        val user = userRepository.getByUserId(userId) ?:
+            throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         val profileEntity = ProfileEntity(
                 null,
@@ -86,10 +84,12 @@ class ProfileDao : ProfileDaoI {
     }
 
     override fun getUserWithProfile(userId: UUID): ProfileDto? {
-        return if(profileRepository.getByUserEntity_userId(userId) == null){
-            null
-        }else{
-            profileRepository.getByUserEntity_userId(userId).toDto()
+        val profile = profileRepository.getByUserEntity_userId(userId)
+
+        if (profile == null) {
+            return null
+        } else {
+            return profile.toDto()
         }
     }
 
