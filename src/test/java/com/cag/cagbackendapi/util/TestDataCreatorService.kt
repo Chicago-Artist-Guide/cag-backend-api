@@ -16,12 +16,12 @@ class TestDataCreatorService {
     @Autowired
     private lateinit var profileDao: ProfileDao
 
-    fun createValidUser(): UserDto {
+    fun createValidUser(password: String): UserDto {
         val userRegistrationDto = UserRegistrationDto(
             first_name = "Larry",
             last_name = "Tester",
             email = "LarryTester@aol.com",
-            pass = "password",
+            pass = password,
             agreed_18 = true,
             agreed_privacy = true
         )

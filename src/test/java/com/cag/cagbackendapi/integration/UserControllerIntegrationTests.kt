@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
@@ -172,16 +173,15 @@ class UserControllerIntegrationTests {
         val expectedActiveStatus = true
         val larryTestUserPassword = "password"
 
-        val larryTestUser = testDataCreatorService.createValidUser()
+        val larryTestUser = testDataCreatorService.createValidUser(larryTestUserPassword)
+        val userLoginDto = UserLoginDto(larryTestUser.userId.toString(), larryTestUserPassword)
 
         val loginUserHeaders = HttpHeaders()
         loginUserHeaders.set("authKey", validAuthKey)
-        loginUserHeaders.set("userId", larryTestUser.userId.toString())
-        loginUserHeaders.set("pass", larryTestUserPassword)
 
-        val loginRequest = HttpEntity(null, loginUserHeaders)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
 
-        val loginUserResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, String::class.java)
+        val loginUserResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, String::class.java)
         val loggedInUser = objectMapper.readValue(loginUserResponse.body, UserDto::class.java)
 
         assertNotNull(loginUserResponse)
@@ -201,12 +201,11 @@ class UserControllerIntegrationTests {
     fun loginUser_emptyPassword_400BadRequest() {
         val loginUserHeaders = HttpHeaders()
         loginUserHeaders.set("authKey", validAuthKey)
-        loginUserHeaders.set("userId", UUID.randomUUID().toString())
-        loginUserHeaders.set("pass", "")
+        val userLoginDto = UserLoginDto(UUID.randomUUID().toString(), "")
 
-        val loginRequest = HttpEntity(null, loginUserHeaders)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
@@ -220,12 +219,11 @@ class UserControllerIntegrationTests {
 
         val loginUserHeaders = HttpHeaders()
         loginUserHeaders.set("authKey", validAuthKey)
-        loginUserHeaders.set("userId", "")
-        loginUserHeaders.set("pass", pass)
 
-        val loginRequest = HttpEntity(null, loginUserHeaders)
+        val userLoginDto = UserLoginDto("", pass)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
@@ -237,12 +235,11 @@ class UserControllerIntegrationTests {
     fun loginUser_nonExistingUser_404NotFound() {
         val loginUserHeaders = HttpHeaders()
         loginUserHeaders.set("authKey", validAuthKey)
-        loginUserHeaders.set("userId", UUID.randomUUID().toString())
-        loginUserHeaders.set("pass", "pass")
+        val userLoginDto = UserLoginDto(UUID.randomUUID().toString(), "pass")
 
-        val loginRequest = HttpEntity(null, loginUserHeaders)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
 
-        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
 
         assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)

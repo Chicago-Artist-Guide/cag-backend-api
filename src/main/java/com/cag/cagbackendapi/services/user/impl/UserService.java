@@ -3,6 +3,7 @@ package com.cag.cagbackendapi.services.user.impl;
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.UserLoginDto;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
@@ -43,14 +44,14 @@ public class UserService implements UserServiceI {
     }
 
     @Override
-    public UserDto loginUser(String userId, String pass) {
-        UUID userUUID = getUserUuidFromString(userId);
+    public UserDto loginUser(UserLoginDto userLoginDto) {
+        UUID userUUID = getUserUuidFromString(userLoginDto.getUser_id());
 
-        if (pass == null || pass.isBlank()) {
+        if (userLoginDto.getPass() == null || userLoginDto.getPass().isBlank()) {
             throw new BadRequestException(DetailedErrorMessages.PASSWORD_REQUIRED, null);
         }
 
-        var userResponseDto = userDao.loginAndGetUser(userUUID, pass);
+        var userResponseDto = userDao.loginAndGetUser(userUUID, userLoginDto.getPass());
 
         if(userResponseDto == null) {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);

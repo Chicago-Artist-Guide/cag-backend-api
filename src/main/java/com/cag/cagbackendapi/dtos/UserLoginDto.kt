@@ -1,5 +1,5 @@
 package com.cag.cagbackendapi.dtos
 
 data class UserLoginDto(
-    val userId: String? = null,
-    val pass: String? = null)
+    var user_id: String? = null,
+    var pass: String? = null)

@@ -33,7 +33,6 @@ class UserServiceTest {
     fun registerUser_validUser_logsAndSucceeds() {
         // assemble
         val inputPass = "password"
-        val encodedPass = "encodedPass"
         val inputUser = UserRegistrationDto("testy", "tester", "testytester@aol.com", inputPass, true, true)
         val resultUser = UserDto(UUID.randomUUID(), "testy", "tester", "testytester@aol.com", true, null, null, true, true)
 
@@ -83,7 +82,6 @@ class UserServiceTest {
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
         val inputPass = "password"
-        val encodedPass = "encodedPass"
         val inputUser = UserRegistrationDto("test", "user", "testuser@aol.com", inputPass,true, true)
         val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
 
