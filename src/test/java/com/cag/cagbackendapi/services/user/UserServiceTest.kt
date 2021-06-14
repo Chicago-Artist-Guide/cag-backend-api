@@ -366,7 +366,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun loginUser_validUser_logsAndSucceeds() {
+    fun loginUser_validUser_200logsAndSucceeds() {
         // assemble
         val inputUserId = UUID.randomUUID()
         val inputPass = "password"
@@ -384,7 +384,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun loginUser_invalidUserId_BadRequest() {
+    fun loginUser_invalidUserId_400BadRequest() {
         // assemble
         val inputUser = UserLoginDto(null, "password")
         val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
@@ -400,7 +400,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun loginUser_missingPassword_BadRequest() {
+    fun loginUser_missingPassword_400BadRequest() {
         // assemble
         val inputUser = UserLoginDto(UUID.randomUUID().toString(), "")
         val badRequestException = BadRequestException(DetailedErrorMessages.PASSWORD_REQUIRED, null)
@@ -413,6 +413,28 @@ class UserServiceTest {
         // assert
         assertEquals(badRequestException.message, actualException.message)
         verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_incorrectPassword_400BadRequest() {
+        // assemble
+        val userUUID = UUID.randomUUID()
+        val wrongPass = "wrongPass"
+        val inputUser = UserLoginDto(userUUID.toString(), wrongPass)
+        val badRequestException = BadRequestException(DetailedErrorMessages.INCORRECT_PASSWORD, null)
+
+        whenever(userDao.loginAndGetUser(userUUID, wrongPass)).thenThrow(badRequestException)
+
+        // act
+        val actualException = assertThrows<BadRequestException> {
+            userService.loginUser(inputUser)
+        }
+
+        // assert
+        assertEquals(badRequestException.message, actualException.message)
+
+        verify(userDao).loginAndGetUser(userUUID, wrongPass)
+        verifyNoMoreInteractions(userDao)
     }
 
     @Test

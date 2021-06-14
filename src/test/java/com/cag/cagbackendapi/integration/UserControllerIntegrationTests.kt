@@ -214,6 +214,26 @@ class UserControllerIntegrationTests {
     }
 
     @Test
+    fun loginUser_incorrectPassword_400BadRequest() {
+        val larryTestUserPassword = "password"
+        val wrongPass = "wrongPass"
+
+        val larryTestUser = testDataCreatorService.createValidUser(larryTestUserPassword)
+        val userLoginDto = UserLoginDto(larryTestUser.userId.toString(), wrongPass)
+
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INCORRECT_PASSWORD)
+    }
+
+    @Test
     fun loginUser_invalidUserId_400BadRequest() {
         val pass = "pass"
 

@@ -429,6 +429,29 @@ class UserControllerTest {
     }
 
     @Test
+    fun loginUser_wrongPassword_400BadRequest(){
+        val testAuthKey = "testAuthKey"
+        val userId = "userId"
+        val password = "wrongPass"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INCORRECT_PASSWORD, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
     fun loginUser_invalidAuthKey_401Unauthorized(){
         val testAuthKey = "testAuthKey"
         val userId = "test user"
