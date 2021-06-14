@@ -54,7 +54,7 @@ object LoggerMessages {
         return "Get user: $userId"
     }
     fun LOGIN_USER(userId: UUID): String {
-        return "Get user: $userId"
+        return "Login user: $userId"
     }
     fun DELETE_USER(userUUID: UUID): String {
         return "Delete user: $userUUID"
