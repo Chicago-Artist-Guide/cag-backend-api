@@ -4,11 +4,11 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
-import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.cag.cagbackendapi.util.TestDataCreatorService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,9 +24,13 @@ import java.util.*
 class UserControllerIntegrationTests {
 
     @Autowired
-    lateinit var testRestTemplate: TestRestTemplate
+    private lateinit var testRestTemplate: TestRestTemplate
 
-    private val objectMapper = jacksonObjectMapper()
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var testDataCreatorService: TestDataCreatorService
 
     private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true, true)
     private val validAuthKey = "mockAuthKey"
@@ -166,71 +170,85 @@ class UserControllerIntegrationTests {
     @Test
     fun loginUser_validInput_200Success() {
         val expectedActiveStatus = true
+        val larryTestUserPassword = "password"
 
-        val registerUserHeaders = HttpHeaders()
-        registerUserHeaders.set("authKey", validAuthKey)
-        val registerRequest = HttpEntity(validRegisterUser, registerUserHeaders)
-
-        val createdUserResponse = testRestTemplate.postForEntity("/user/register", registerRequest, String::class.java)
-        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-
-        assertNotNull(createdUserResponse)
-        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertEquals(validRegisterUser.first_name, createUser.first_name)
-        assertEquals(validRegisterUser.last_name, createUser.last_name)
-        assertEquals(validRegisterUser.email, createUser.email)
-        assertEquals(expectedActiveStatus, createUser.active_status)
-        assertEquals(validRegisterUser.agreed_privacy, createUser.agreed_privacy)
-        assertEquals(validRegisterUser.agreed_18, createUser.agreed_18)
-        assertNotNull(createUser.userId)
+        val larryTestUser = testDataCreatorService.createValidUser()
 
         val loginUserHeaders = HttpHeaders()
         loginUserHeaders.set("authKey", validAuthKey)
-        loginUserHeaders.set("userId", createUser.userId.toString())
-        loginUserHeaders.set("pass", validRegisterUser.pass)
+        loginUserHeaders.set("userId", larryTestUser.userId.toString())
+        loginUserHeaders.set("pass", larryTestUserPassword)
 
-        val loginRequest = HttpEntity(null, registerUserHeaders)
+        val loginRequest = HttpEntity(null, loginUserHeaders)
 
         val loginUserResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, String::class.java)
         val loggedInUser = objectMapper.readValue(loginUserResponse.body, UserDto::class.java)
 
         assertNotNull(loginUserResponse)
         assertEquals(HttpStatus.OK, loginUserResponse.statusCode)
-        assertEquals(validRegisterUser.first_name, loggedInUser.first_name)
-        assertEquals(validRegisterUser.last_name, loggedInUser.last_name)
-        assertEquals(validRegisterUser.email, loggedInUser.email)
+        assertEquals(larryTestUser.first_name, loggedInUser.first_name)
+        assertEquals(larryTestUser.last_name, loggedInUser.last_name)
+        assertEquals(larryTestUser.email, loggedInUser.email)
         assertEquals(expectedActiveStatus, loggedInUser.active_status)
-        assertEquals(validRegisterUser.agreed_privacy, loggedInUser.agreed_privacy)
-        assertEquals(validRegisterUser.agreed_18, loggedInUser.agreed_18)
+        assertEquals(larryTestUser.agreed_privacy, loggedInUser.agreed_privacy)
+        assertEquals(larryTestUser.agreed_18, loggedInUser.agreed_18)
         assertNotNull(loggedInUser.userId)
+
+        testDataCreatorService.deleteUser(larryTestUser.userId!!)
     }
 
-//    @Test
-//    fun loginUser_validInputTwo_200Success() {
-//        val expectedActiveStatus = true
-//
-//        val headers = HttpHeaders()
-//        headers.set("authKey", validAuthKey)
-//        val registerRequest = HttpEntity(validRegisterUser, headers)
-//
-//        // curl -X GET "http://localhost:9000/user/login" -H "accept: */*" -H "authKey: mockAuthKey" -H "Content-Type: application/json" -d "{\"userId\":\"4c9ecd1e-120a-421a-ba80-0c7d569ebf67\",\"pass\":\"string\"}"
-//
-//        val userLoginDto = UserLoginDto("4c9ecd1e-120a-421a-ba80-0c7d569ebf67", "string")
-//        val loginRequest = HttpEntity(userLoginDto, headers)
-//
-//        val loginUserResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, String::class.java)
-//        val loggedInUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-//
-//        assertNotNull(loginUserResponse)
-//        assertEquals(HttpStatus.OK, loginUserResponse.statusCode)
-//        assertEquals(validRegisterUser.first_name, loggedInUser.first_name)
-//        assertEquals(validRegisterUser.last_name, loggedInUser.last_name)
-//        assertEquals(validRegisterUser.email, loggedInUser.email)
-//        assertEquals(expectedActiveStatus, loggedInUser.active_status)
-//        assertEquals(validRegisterUser.agreed_privacy, loggedInUser.agreed_privacy)
-//        assertEquals(validRegisterUser.agreed_18, loggedInUser.agreed_18)
-//        assertNotNull(loggedInUser.userId)
-//    }
+    @Test
+    fun loginUser_emptyPassword_400BadRequest() {
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        loginUserHeaders.set("userId", UUID.randomUUID().toString())
+        loginUserHeaders.set("pass", "")
+
+        val loginRequest = HttpEntity(null, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.PASSWORD_REQUIRED)
+    }
+
+    @Test
+    fun loginUser_invalidUserId_400BadRequest() {
+        val pass = "pass"
+
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        loginUserHeaders.set("userId", "")
+        loginUserHeaders.set("pass", pass)
+
+        val loginRequest = HttpEntity(null, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_USER_ID)
+    }
+
+    @Test
+    fun loginUser_nonExistingUser_404NotFound() {
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        loginUserHeaders.set("userId", UUID.randomUUID().toString())
+        loginUserHeaders.set("pass", "pass")
+
+        val loginRequest = HttpEntity(null, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.GET, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
+    }
 
     @Test
     fun updateUser_validInput_200Success() {

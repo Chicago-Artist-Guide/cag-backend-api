@@ -361,6 +361,5 @@ class UserControllerTest {
         verify(validationService).validateAuthKey(testAuthKey)
         verify(userService).deleteUser(userId)
         verifyNoMoreInteractions(validationService, userService)
-
     }
 }
