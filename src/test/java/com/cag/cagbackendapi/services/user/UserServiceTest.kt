@@ -5,6 +5,7 @@ import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.daos.impl.UserDao
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -362,6 +362,99 @@ class UserServiceTest {
 
         assertEquals(actualException.message, serviceUnavailableException.message)
         verify(userDao).deleteUser(userId)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_validUser_logsAndSucceeds() {
+        // assemble
+        val inputUserId = UUID.randomUUID()
+        val inputPass = "password"
+        val inputUser = UserLoginDto(inputUserId.toString(), inputPass)
+        val resultUser = UserDto(inputUserId, "testy", "tester", "testytester@aol.com", true, null, null, true, true)
+
+        whenever(userDao.loginAndGetUser(inputUserId, inputUser.pass!!)).thenReturn(resultUser)
+
+        // act
+        userService.loginUser(inputUser)
+
+        // assert
+        verify(userDao).loginAndGetUser(inputUserId, inputUser.pass!!)
+        verifyNoMoreInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_invalidUserId_BadRequest() {
+        // assemble
+        val inputUser = UserLoginDto(null, "password")
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        // act
+        val actualException = assertThrows<BadRequestException> {
+            userService.loginUser(inputUser)
+        }
+
+        // assert
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_missingPassword_BadRequest() {
+        // assemble
+        val inputUser = UserLoginDto(UUID.randomUUID().toString(), "")
+        val badRequestException = BadRequestException(DetailedErrorMessages.PASSWORD_REQUIRED, null)
+
+        // act
+        val actualException = assertThrows<BadRequestException> {
+            userService.loginUser(inputUser)
+        }
+
+        // assert
+        assertEquals(badRequestException.message, actualException.message)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_nonExistingUser_404NotFound() {
+        // assemble
+        val userUUID = UUID.randomUUID()
+        val userPassword = "password"
+        val inputUser = UserLoginDto(userUUID.toString(), userPassword)
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        whenever(userDao.loginAndGetUser(userUUID, userPassword)).thenThrow(notFoundException)
+
+        // act
+        val actualException = assertThrows<NotFoundException> {
+            userService.loginUser(inputUser)
+        }
+
+        // assert
+        assertEquals(notFoundException.message, actualException.message)
+
+        verify(userDao).loginAndGetUser(userUUID, userPassword)
+        verifyZeroInteractions(userDao)
+    }
+
+    @Test
+    fun loginUser_validInputWithDatabaseDown_InternalServerError() {
+        // assemble
+        val userUUID = UUID.randomUUID()
+        val userPassword = "password"
+        val inputUser = UserLoginDto(userUUID.toString(), userPassword)
+        val internalServerError = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        whenever(userDao.loginAndGetUser(userUUID, userPassword)).thenThrow(internalServerError)
+
+        // act
+        val actualException = assertThrows<InternalServerErrorException> {
+            userService.loginUser(inputUser)
+        }
+
+        // assert
+        assertEquals(actualException.message, internalServerError.message)
+        verify(userDao).loginAndGetUser(userUUID, userPassword)
         verifyNoMoreInteractions(userDao)
     }
 }
