@@ -13,6 +13,7 @@ import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.entities.UserEntity
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.repositories.UserRepository
+import com.cag.cagbackendapi.services.uuid.impl.UuidService
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -30,6 +31,9 @@ class UserDao : UserDaoI {
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
 
+    @Autowired
+    private lateinit var uuidService: UuidService
+
     override fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto {
         val encodedPassword = passwordEncoder.encode(userRegistrationDto.pass)
         userRegistrationDto.pass = encodedPassword
@@ -43,7 +47,7 @@ class UserDao : UserDaoI {
             email = userRegistrationDto.email,
             pass = userRegistrationDto.pass,
             active_status = true,
-            session_id = UUID.randomUUID().toString(),
+            session_id = uuidService.generateRandomUUID().toString(),
             img_url = null,
             agreed_18 = userRegistrationDto.agreed_18,
             agreed_privacy = userRegistrationDto.agreed_privacy
