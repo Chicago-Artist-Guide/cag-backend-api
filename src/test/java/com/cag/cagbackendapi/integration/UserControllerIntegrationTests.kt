@@ -7,6 +7,7 @@ import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
+import com.cag.cagbackendapi.utilities.impl.ProfileUtilities
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -25,13 +26,15 @@ class UserControllerIntegrationTests {
     @Autowired
     lateinit var testRestTemplate: TestRestTemplate
 
+
     private val objectMapper = jacksonObjectMapper()
 
-    private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true, true)
+    //val validRegisterUser = UserRegistrationDto("first name", "last name", profileUtilities.randomEmail(), "password", true, true)
     private val validAuthKey = "mockAuthKey"
 
     @Test
     fun registerUser_validInput_201Success() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -145,6 +148,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun registerUser_badAuthKey_401Unauthorized() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
         headers.set("authKey", "wrongAuthKey")
         val request = HttpEntity(validRegisterUser, headers)
@@ -159,6 +163,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_validInput_200Success() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -167,7 +172,7 @@ class UserControllerIntegrationTests {
         val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
         val userId = createUser.userId
 
-        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email=ProfileUtilities.randomEmail())
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
@@ -210,8 +215,8 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_missingUserId_404NotFound() {
-        val nonExistingUserId = "ee62bb8e-3945-4a67-a898-afae826ba833"
-        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val nonExistingUserId = UUID.randomUUID().toString()
+        val invalidUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email= ProfileUtilities.randomEmail())
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(invalidUpdateUser, headers2)
@@ -224,6 +229,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun updateUser_invalidAuthKey_401Unauthorized() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -248,7 +254,7 @@ class UserControllerIntegrationTests {
     @Test
     fun updateUser_userNotFound_404NotFound(){
         val userId = UUID.randomUUID()
-        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email="tstark@gmail.com")
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email=ProfileUtilities.randomEmail())
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
         val request2 = HttpEntity(validUpdateUser, headers2)
@@ -263,6 +269,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun getUser_validInput_200Success() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
         val request = HttpEntity(validRegisterUser, headers)
@@ -287,6 +294,7 @@ class UserControllerIntegrationTests {
 
     @Test
     fun deleteUser_validInput_200Success(){
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
         //register User
         val headers = HttpHeaders()
         headers.set("authKey", validAuthKey)
