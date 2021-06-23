@@ -162,6 +162,35 @@ class UserControllerIntegrationTests {
     }
 
     @Test
+    fun registerUser_existingEmail_409Conflict() {
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validRegisterUser, headers)
+
+        //create user
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+
+        //try to create user again with same email
+        val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+
+        //ensure user is created correctly
+        assertNotNull(createdUserResponse)
+        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        assertEquals(validRegisterUser.first_name, createUser.first_name)
+        assertEquals(validRegisterUser.last_name, createUser.last_name)
+        assertEquals(validRegisterUser.email, createUser.email)
+        assertNotNull(createUser.userId)
+
+        //check the error
+        assertEquals(HttpStatus.CONFLICT, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.CONFLICT_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.EMAIL_ALREADY_EXISTS)
+    }
+
+    @Test
     fun updateUser_validInput_200Success() {
         val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
@@ -290,6 +319,54 @@ class UserControllerIntegrationTests {
         assertEquals(validRegisterUser.first_name, getUser.first_name)
         assertEquals(validRegisterUser.email, getUser.email)
         assertNotNull(getUser.userId)
+    }
+
+    @Test
+    fun updateUser_existingEmail_409Conflict() {
+        //create an existing user
+        val validRegisterUser = ProfileUtilities.validRegisterUser()
+        val headers = HttpHeaders()
+        headers.set("authKey", validAuthKey)
+        val request = HttpEntity(validRegisterUser, headers)
+
+        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
+        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
+        val createUserEmail = createUser.email
+
+        //create a new user
+        val validRegisterUser2 = ProfileUtilities.validRegisterUser()
+        val headers2 = HttpHeaders()
+        headers2.set("authKey", validAuthKey)
+        val request2 = HttpEntity(validRegisterUser2, headers2)
+
+        //create user
+        val createdUserResponse2 = testRestTemplate.postForEntity("/user/register", request2, String::class.java)
+        val createUser2 = objectMapper.readValue(createdUserResponse2.body, UserDto::class.java)
+        val createUserId = createUser2.userId
+
+        val validUpdateUser = UserUpdateDto(first_name = "Tony", last_name = "Stark", email=createUserEmail)
+
+        //try to create user again with same email
+        //val errorDetailsResponse = testRestTemplate.postForEntity("/user/register", request, ErrorDetails::class.java)
+        val headers3 = HttpHeaders()
+        headers3.set("authKey", validAuthKey)
+        val request3 = HttpEntity(validUpdateUser, headers3)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/$createUserId", HttpMethod.PUT, request3, ErrorDetails::class.java)
+
+        //ensure user is created correctly
+        assertNotNull(createdUserResponse)
+        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
+        assertEquals(validRegisterUser.first_name, createUser.first_name)
+        assertEquals(validRegisterUser.last_name, createUser.last_name)
+        assertEquals(validRegisterUser.email, createUser.email)
+        assertNotNull(createUser.userId)
+
+        //check the error
+        assertEquals(HttpStatus.CONFLICT, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.CONFLICT_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.EMAIL_ALREADY_EXISTS)
     }
 
     @Test
