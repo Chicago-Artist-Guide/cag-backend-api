@@ -4,10 +4,12 @@ import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.cag.cagbackendapi.util.TestDataCreatorService
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,9 +25,13 @@ import java.util.*
 class UserControllerIntegrationTests {
 
     @Autowired
-    lateinit var testRestTemplate: TestRestTemplate
+    private lateinit var testRestTemplate: TestRestTemplate
 
-    private val objectMapper = jacksonObjectMapper()
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var testDataCreatorService: TestDataCreatorService
 
     private val validRegisterUser = UserRegistrationDto("first name", "last name", "user", "password", true, true)
     private val validAuthKey = "mockAuthKey"
@@ -160,6 +166,105 @@ class UserControllerIntegrationTests {
         assertNotNull(errorDetailsResponse?.body?.time)
         assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.UNAUTHORIZED_MESSAGE)
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.WRONG_AUTH_KEY)
+    }
+
+    @Test
+    fun loginUser_validInput_200Success() {
+        val expectedActiveStatus = true
+        val larryTestUserPassword = "password"
+
+        val larryTestUser = testDataCreatorService.createValidUser(larryTestUserPassword)
+        val userLoginDto = UserLoginDto(larryTestUser.userId.toString(), larryTestUserPassword)
+
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val loginUserResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, String::class.java)
+        val loggedInUser = objectMapper.readValue(loginUserResponse.body, UserDto::class.java)
+
+        assertNotNull(loginUserResponse)
+        assertEquals(HttpStatus.OK, loginUserResponse.statusCode)
+        assertEquals(larryTestUser.first_name, loggedInUser.first_name)
+        assertEquals(larryTestUser.last_name, loggedInUser.last_name)
+        assertEquals(larryTestUser.email, loggedInUser.email)
+        assertEquals(expectedActiveStatus, loggedInUser.active_status)
+        assertEquals(larryTestUser.agreed_privacy, loggedInUser.agreed_privacy)
+        assertEquals(larryTestUser.agreed_18, loggedInUser.agreed_18)
+        assertNotNull(loggedInUser.userId)
+
+        testDataCreatorService.deleteUser(larryTestUser.userId!!)
+    }
+
+    @Test
+    fun loginUser_emptyPassword_400BadRequest() {
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        val userLoginDto = UserLoginDto(UUID.randomUUID().toString(), "")
+
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.PASSWORD_REQUIRED)
+    }
+
+    @Test
+    fun loginUser_incorrectPassword_400BadRequest() {
+        val larryTestUserPassword = "password"
+        val wrongPass = "wrongPass"
+
+        val larryTestUser = testDataCreatorService.createValidUser(larryTestUserPassword)
+        val userLoginDto = UserLoginDto(larryTestUser.userId.toString(), wrongPass)
+
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INCORRECT_PASSWORD)
+    }
+
+    @Test
+    fun loginUser_invalidUserId_400BadRequest() {
+        val pass = "pass"
+
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+
+        val userLoginDto = UserLoginDto("", pass)
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.INVALID_USER_ID)
+    }
+
+    @Test
+    fun loginUser_nonExistingUser_404NotFound() {
+        val loginUserHeaders = HttpHeaders()
+        loginUserHeaders.set("authKey", validAuthKey)
+        val userLoginDto = UserLoginDto(UUID.randomUUID().toString(), "pass")
+
+        val loginRequest = HttpEntity(userLoginDto, loginUserHeaders)
+
+        val errorDetailsResponse = testRestTemplate.exchange("/user/login", HttpMethod.POST, loginRequest, ErrorDetails::class.java)
+
+        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        assertNotNull(errorDetailsResponse?.body?.time)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.USER_NOT_FOUND)
     }
 
     @Test

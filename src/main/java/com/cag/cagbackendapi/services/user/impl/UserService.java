@@ -3,34 +3,29 @@ package com.cag.cagbackendapi.services.user.impl;
 import com.cag.cagbackendapi.constants.DetailedErrorMessages;
 import com.cag.cagbackendapi.daos.impl.UserDao;
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.UserLoginDto;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class UserService implements UserServiceI {
-    private final PasswordEncoder passwordEncoder;
     private final UserDao userDao;
 
     @Autowired
-    public UserService(PasswordEncoder passwordEncoder, UserDao userDao) {
-        this.passwordEncoder = passwordEncoder;
+    public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
     public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
         validateUserRegistrationDto(userRegistrationDto);
-
-        String encodedPassword = passwordEncoder.encode(userRegistrationDto.getPass());
-        userRegistrationDto.setPass(encodedPassword);
 
         return userDao.saveUser(userRegistrationDto);
     }
@@ -40,6 +35,23 @@ public class UserService implements UserServiceI {
         UUID userUUID = getUserUuidFromString(userId);
 
         var userResponseDto = userDao.getUser(userUUID);
+
+        if(userResponseDto == null) {
+            throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);
+        }
+
+        return userResponseDto;
+    }
+
+    @Override
+    public UserDto loginUser(UserLoginDto userLoginDto) {
+        UUID userUUID = getUserUuidFromString(userLoginDto.getUser_id());
+
+        if (userLoginDto.getPass() == null || userLoginDto.getPass().isBlank()) {
+            throw new BadRequestException(DetailedErrorMessages.PASSWORD_REQUIRED, null);
+        }
+
+        var userResponseDto = userDao.loginAndGetUser(userUUID, userLoginDto.getPass());
 
         if(userResponseDto == null) {
             throw new NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null);

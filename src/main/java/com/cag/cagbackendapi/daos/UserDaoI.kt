@@ -9,6 +9,6 @@ interface UserDaoI {
     fun saveUser(userRegistrationDto: UserRegistrationDto): UserDto
     fun updateUser(userId: UUID, userUpdateDto: UserUpdateDto): UserDto?
     fun getUser(userUUID: UUID): UserDto?
+    fun loginAndGetUser(userUUID: UUID, pass: String): UserDto?
     fun deleteUser(userUUID: UUID): UserDto?
-
 }

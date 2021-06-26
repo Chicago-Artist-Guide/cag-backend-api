@@ -28,6 +28,7 @@ object DetailedErrorMessages {
     const val PASSWORD_REQUIRED = "Password is required. "
     const val INVALID_USER_ID = "Invalid user ID. "
     const val USER_NOT_FOUND = "User not found. "
+    const val INCORRECT_PASSWORD = "Incorrect password. "
     const val INVALID_UUID = "Invalid Id. "
     const val MUST_BE_18 = "You must be eighteen years or older to use Chicago Artist Guide. "
     const val MUST_AGREE_PRIVACY = "You must accept our Privacy Agreement to use Chicago Artist Guide. "
@@ -51,6 +52,9 @@ object LoggerMessages {
     }
     fun GET_USER(userId: UUID): String {
         return "Get user: $userId"
+    }
+    fun LOGIN_USER(userId: UUID): String {
+        return "Login user: $userId"
     }
     fun DELETE_USER(userUUID: UUID): String {
         return "Delete user: $userUUID"

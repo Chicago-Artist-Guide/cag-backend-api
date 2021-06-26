@@ -3,6 +3,7 @@ package com.cag.cagbackendapi.controllers
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.RestErrorMessages
 import com.cag.cagbackendapi.dtos.UserDto
+import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.errors.exceptions.UnauthorizedException
@@ -361,6 +362,181 @@ class UserControllerTest {
         verify(validationService).validateAuthKey(testAuthKey)
         verify(userService).deleteUser(userId)
         verifyNoMoreInteractions(validationService, userService)
+    }
 
+    @Test
+    fun loginUser_validInput_200OK() {
+        val testAuthKey = "testAuthKey"
+        val userId = "123e4567-e89b-12d3-a456-426614174000"
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+        val userDto = UserDto(UUID.randomUUID(), "John", "Smith", "johnjohn@aol.com", true, null, null, true, true)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenReturn(userDto)
+
+        userController.loginUser(testAuthKey, userLoginDto)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun loginUser_missingUserId_400BadRequest(){
+        val testAuthKey = "testAuthKey"
+        val userId = null
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INVALID_USER_ID, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun loginUser_missingPassword_400BadRequest(){
+        val testAuthKey = "testAuthKey"
+        val userId = "userId"
+        val password = ""
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.PASSWORD_REQUIRED, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun loginUser_wrongPassword_400BadRequest(){
+        val testAuthKey = "testAuthKey"
+        val userId = "userId"
+        val password = "wrongPass"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val badRequestException = BadRequestException(DetailedErrorMessages.INCORRECT_PASSWORD, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(badRequestException)
+
+        val actual = assertThrows<BadRequestException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, badRequestException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun loginUser_invalidAuthKey_401Unauthorized(){
+        val testAuthKey = "testAuthKey"
+        val userId = "test user"
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val unauthorizedException = UnauthorizedException(DetailedErrorMessages.MISSING_AUTH_KEY, null)
+
+        whenever(validationService.validateAuthKey(testAuthKey)).thenThrow(unauthorizedException)
+
+        val actual = assertThrows<UnauthorizedException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, unauthorizedException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verifyZeroInteractions(userService)
+    }
+
+    @Test
+    fun loginUser_invalidUserId_404UserNotFound(){
+        val testAuthKey = "testAuthKey"
+        val userId = "invalidUserId"
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val notFoundException = NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(notFoundException)
+
+        val actual = assertThrows<NotFoundException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, notFoundException.message)
+
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+    }
+
+    @Test
+    fun loginUser_ServiceUnavailable503(){
+        val testAuthKey = "testAuthKey"
+        val userId = "valid UserID"
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val serviceUnavailableException = ServiceUnavailableException(RestErrorMessages.SERVICE_UNAVAILABLE_MESSAGE, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(serviceUnavailableException)
+
+        val actual = assertThrows<ServiceUnavailableException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, serviceUnavailableException.message)
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
+
+    }
+
+    @Test
+    fun loginUser_InternalServerError500(){
+        val testAuthKey = "testAuthKey"
+        val userId = "valid UserID"
+        val password = "password"
+        val userLoginDto = UserLoginDto(userId, password)
+
+        val internalServerErrorException = InternalServerErrorException(RestErrorMessages.INTERNAL_SERVER_ERROR_MESSAGE, null)
+
+        doNothing().whenever(validationService).validateAuthKey(testAuthKey)
+        whenever(userService.loginUser(userLoginDto)).thenThrow(internalServerErrorException)
+
+        val actual = assertThrows<InternalServerErrorException> {
+            userController.loginUser(testAuthKey, userLoginDto)
+        }
+
+        assertEquals(actual.message, internalServerErrorException.message)
+        verify(validationService).validateAuthKey(testAuthKey)
+        verify(userService).loginUser(userLoginDto)
+        verifyNoMoreInteractions(validationService, userService)
     }
 }
