@@ -111,7 +111,6 @@ class UserServiceTest {
         verify(userDao).saveUser(inputUser)
         inputUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
-        inputUser.email?.let { verify(userDao).getUserByEmail(it) }
     }
 
     @Test
