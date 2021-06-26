@@ -1,6 +1,5 @@
 package com.cag.cagbackendapi.dtos
 
-import com.cag.cagbackendapi.entities.UserEntity
 import java.util.*
 
 data class ProfileDto(

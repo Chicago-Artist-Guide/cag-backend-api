@@ -1,4 +1,4 @@
-package com.cag.cagbackendapi.dtos;
+package com.cag.cagbackendapi.dtos
 
 data class UserRegistrationDto(
     var first_name: String? = null,

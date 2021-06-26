@@ -10,7 +10,6 @@ import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.cag.cagbackendapi.utilities.impl.ProfileUtilities
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -68,7 +67,11 @@ class ProfileControllerIntegrationTests {
         assertEquals(validRegisterUser.first_name, createUser.first_name)
         assertEquals(validRegisterUser.last_name, createUser.last_name)
         assertEquals(validRegisterUser.email, createUser.email)
+        assertEquals(validRegisterUser.agreed_18, createUser.agreed_18)
+        assertEquals(validRegisterUser.agreed_privacy, createUser.agreed_privacy)
+        assertEquals(true, createUser.active_status)
         assertNotNull(createUser.userId)
+        assertNotNull(createUser.session_id)
 
         //check the created profile
         assertNotNull(userProfileResponse)
@@ -163,23 +166,14 @@ class ProfileControllerIntegrationTests {
         //register profile headers
         val headers2 = HttpHeaders()
         headers2.set("authKey", validAuthKey)
-        headers2.set("userId", userIdUUID.toString())
         val request2 = HttpEntity(validRegisterProfile, headers2)
-
 
         //create profile
         val userProfileResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, String::class.java)
         val createdProfile = objectMapper.readValue(userProfileResponse.body, ProfileDto::class.java)
 
-        //register profile headers2
-        val headers3 = HttpHeaders()
-        headers3.set("authKey", validAuthKey)
-        headers3.set("userId", userIdUUID.toString())
-        val request3 = HttpEntity(validRegisterProfile, headers3)
-
         //Error create duplicate profile
-        val errorDetailsResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request3, ErrorDetails::class.java)
-
+        val errorDetailsResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, ErrorDetails::class.java)
 
         //check the created user
         assertNotNull(createdUserResponse)
@@ -313,7 +307,7 @@ class ProfileControllerIntegrationTests {
     }
 
     @Test
-    fun registerProfile_invalidUnionStatus_404UnionNotValid() {
+    fun registerProfile_invalidUnionStatus_400InvalidUnion() {
         //create user headers
         val validRegisterUser = ProfileUtilities.validRegisterUser()
         val headers = HttpHeaders()
@@ -343,9 +337,9 @@ class ProfileControllerIntegrationTests {
         assertNotNull(createUser.userId)
 
         //check the error
-        assertEquals(HttpStatus.NOT_FOUND, errorDetailsResponse.statusCode)
+        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
         assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.NOT_FOUND_MESSAGE)
+        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
         assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED)
     }
 

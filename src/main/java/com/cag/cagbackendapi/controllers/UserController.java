@@ -1,7 +1,8 @@
 package com.cag.cagbackendapi.controllers;
 
-import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserDto;
+import com.cag.cagbackendapi.dtos.UserLoginDto;
+import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.services.user.impl.UserService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
@@ -69,6 +70,18 @@ public class UserController {
     ){
         this.validationService.validateAuthKey(authKey);
         UserDto userResponseDto = this.userService.getByUserId(userId);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/login")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserDto> loginUser(
+            @RequestHeader("authKey") String authKey,
+            @RequestBody UserLoginDto userLoginDto
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        UserDto userResponseDto = this.userService.loginUser(userLoginDto);
 
         return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
     }
