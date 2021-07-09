@@ -78,6 +78,13 @@ class UserDao : UserDaoI {
         return userEntity.toDto()
     }
 
+    fun getUserByEmail(email: String): UserDto? {
+        //logger.info(GET_USER(email))
+
+        val userEntity = userRepository.getByEmail(email) ?: return null
+        return userEntity.toDto()
+    }
+
     override fun updateUser(userId: UUID, userUpdateDto: UserUpdateDto): UserDto? {
         logger.info(LOG_UPDATE_USER(userUpdateDto))
 

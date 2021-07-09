@@ -16,20 +16,36 @@ class TestDataCreatorService {
     @Autowired
     private lateinit var profileDao: ProfileDao
 
-    fun createValidUser(password: String): UserDto {
+    fun createAndSaveValidRegisterUser(password: String): UserDto {
         val userRegistrationDto = UserRegistrationDto(
             first_name = "Larry",
             last_name = "Tester",
-            email = "LarryTester@aol.com",
+            email = randomEmail(),
             pass = password,
             agreed_18 = true,
             agreed_privacy = true
         )
-
         return userDao.saveUser(userRegistrationDto)
     }
 
     fun deleteUser(userUUID: UUID): UserDto? {
         return userDao.deleteUser(userUUID)
+    }
+
+    fun randomEmail(): String {
+        val randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        val sb = StringBuilder()
+        val rnd = Random()
+        while (sb.length < 10) { // length of the random string.
+            val index = (rnd.nextFloat() * randomChars.length).toInt()
+            sb.append(randomChars[index])
+        }
+        sb.append("@gmail.com")
+        return sb.toString()
+    }
+
+    fun createValidRegisterUser(): UserRegistrationDto {
+        val randomUserEmail = randomEmail()
+        return UserRegistrationDto("first name", "last name", randomUserEmail, "password", true, true)
     }
 }

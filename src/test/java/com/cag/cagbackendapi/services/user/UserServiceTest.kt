@@ -7,10 +7,7 @@ import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserLoginDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
-import com.cag.cagbackendapi.errors.exceptions.BadRequestException
-import com.cag.cagbackendapi.errors.exceptions.InternalServerErrorException
-import com.cag.cagbackendapi.errors.exceptions.NotFoundException
-import com.cag.cagbackendapi.errors.exceptions.ServiceUnavailableException
+import com.cag.cagbackendapi.errors.exceptions.*
 import com.cag.cagbackendapi.services.user.impl.UserService
 import com.nhaarman.mockitokotlin2.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -43,6 +40,7 @@ class UserServiceTest {
 
         // assert
         verify(userDao).saveUser(inputUser)
+        inputUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
     }
 
@@ -79,6 +77,22 @@ class UserServiceTest {
     }
 
     @Test
+    fun registerUser_emailAlreadyExists_ConflictError() {
+        // assemble
+        val inputUser = UserRegistrationDto("Test", "User", "testUser6@gmail.com", "testPassword", true, true)
+        val conflictException = ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null)
+        whenever(userDao.saveUser(inputUser)).thenThrow(conflictException)
+
+        // act
+        val actualException = assertThrows<ConflictException> {
+            userService.registerUser(inputUser)
+        }
+
+        // assert
+        assertEquals(conflictException.message, actualException.message)
+    }
+
+    @Test
     fun registerUser_validInputWithDatabaseDown_InternalServerError() {
         // assemble
         val inputPass = "password"
@@ -95,6 +109,7 @@ class UserServiceTest {
         // assert
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).saveUser(inputUser)
+        inputUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
     }
 
@@ -190,6 +205,7 @@ class UserServiceTest {
 
         //assert
         verify(userDao).updateUser(userUuid, updateUser)
+        updateUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
     }
 
@@ -245,9 +261,29 @@ class UserServiceTest {
         //assert
         assertEquals(notFoundException.message, actualException.message)
         verify(userDao).updateUser(userUuid, updateUser)
+        updateUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
     }
 
+    @Test
+    fun updateUser_emailAlreadyExists_ConflictError() {
+        //assemble
+        val userUuid = UUID.randomUUID()
+        val userId = userUuid.toString()
+        val updateUser = UserUpdateDto(first_name = "DePaul", last_name = "sports", email="depaulSports@gmail.com")
+        val resultUser = UserDto(userId = UUID.randomUUID(), first_name = "Captain", last_name = "America", email = "capamerica@gmail.com", active_status = true, session_id = null, img_url = null, agreed_18 = true, agreed_privacy = true)
+
+        val conflictException = ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null)
+
+        whenever(updateUser.email?.let { userDao.getUserByEmail(it) }).thenReturn(resultUser)
+        // actual
+
+        val actualException = assertThrows<ConflictException> {
+            userService.updateUser(userId, updateUser)
+        }
+
+        assertEquals(conflictException.message, actualException.message)
+    }
 
     @Test
     fun updateUser_validInputWithDatabaseDown_InternalServiceError(){
@@ -267,6 +303,7 @@ class UserServiceTest {
         // assert
         assertEquals(actualException.message, internalServerError.message)
         verify(userDao).updateUser(userUuid, updateUser)
+        updateUser.email?.let { verify(userDao).getUserByEmail(it) }
         verifyNoMoreInteractions(userDao)
     }
 

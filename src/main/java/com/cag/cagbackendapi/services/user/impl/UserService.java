@@ -7,6 +7,7 @@ import com.cag.cagbackendapi.dtos.UserLoginDto;
 import com.cag.cagbackendapi.dtos.UserRegistrationDto;
 import com.cag.cagbackendapi.dtos.UserUpdateDto;
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException;
+import com.cag.cagbackendapi.errors.exceptions.ConflictException;
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,14 @@ public class UserService implements UserServiceI {
     public UserDto registerUser(UserRegistrationDto userRegistrationDto) {
         validateUserRegistrationDto(userRegistrationDto);
 
+        checkRegisterUserDuplicateEmail(userRegistrationDto.getEmail());
         return userDao.saveUser(userRegistrationDto);
+    }
+
+    private void checkRegisterUserDuplicateEmail(String email) {
+        if (userDao.getUserByEmail(email)!= null){
+            throw new ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null);
+        }
     }
 
     @Override
@@ -66,6 +74,8 @@ public class UserService implements UserServiceI {
 
         validateUserUpdateDto(userUpdateDto);
 
+        checkUpdateUserDuplicateEmail(userUpdateDto, userUUID);
+
         var userResponseDto = userDao.updateUser(userUUID, userUpdateDto);
 
         if (userResponseDto == null) {
@@ -73,6 +83,19 @@ public class UserService implements UserServiceI {
         }
 
         return userResponseDto;
+    }
+
+    private void checkUpdateUserDuplicateEmail(UserUpdateDto userUpdateDto, UUID userUUID) {
+        assert userUpdateDto.getEmail()!= null;
+
+        //checks if email already exist. If it does, then check if it's the same user as the email owner
+        if (userDao.getUserByEmail(userUpdateDto.getEmail()) != null) {
+            UserDto existentUserDto = userDao.getUserByEmail(userUpdateDto.getEmail());
+            assert existentUserDto != null;
+            if (!existentUserDto.getUserId().equals(userUUID)){
+                throw new ConflictException(DetailedErrorMessages.EMAIL_ALREADY_EXISTS, null);
+            }
+        }
     }
 
     @Override
