@@ -2,15 +2,15 @@ spring:
   profiles: LOCAL, default, test
   authKey: mockAuthKey
   datasource:
-    url: jdbc:postgresql://ec2-54-159-113-254.compute-1.amazonaws.com:5432/d1s2s8407s5lms?currentSchema=public
-    username: axdarkeikdwxvm
-    password: b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49
+    url: jdbc:postgresql://ec2-3-224-7-166.compute-1.amazonaws.com:5432/dcdfpn9dcvbsd6?currentSchema=public
+    username: hylghinflgmyrx
+    password: 789f50f441f03b18e3900a9cfe5d1e5a57b851ab4a0f0e0119fb2baf9ef5c219
     initialization-mode: always
     hikari:
       minimum-idle: 2
       maximum-pool-size: 4
     jpa:
-      database: d1s2s8407s5lms
+      database: dcdfpn9dcvbsd6
       hibernate:
         ddl-auto: create
       properties:
@@ -18,8 +18,8 @@ spring:
 flyway:
   url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=public
   schemas: ["public"]
-  user: axdarkeikdwxvm
-  password: b9d7b014718e89ea3d2cad53522f73c25e8c511f6bdc006c9ddc5baf1f8aee49
+  user: hylghinflgmyrx
+  password: 789f50f441f03b18e3900a9cfe5d1e5a57b851ab4a0f0e0119fb2baf9ef5c219
 ---
 spring:
   profiles: PROD
