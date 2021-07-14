@@ -16,7 +16,7 @@ spring:
       properties:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 flyway:
-  url: jdbc:postgresql://192.168.99.100:5432/cag_db?currentSchema=public
+  url: jdbc:postgresql://192.168.99.100:5432/cag_dev_db?currentSchema=public
   schemas: ["public"]
   user: hylghinflgmyrx
   password: 789f50f441f03b18e3900a9cfe5d1e5a57b851ab4a0f0e0119fb2baf9ef5c219
