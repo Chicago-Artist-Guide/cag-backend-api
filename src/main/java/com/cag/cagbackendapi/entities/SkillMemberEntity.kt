@@ -18,10 +18,10 @@ data class SkillMemberEntity (
     var skill_member_id: UUID?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_profile"))
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_skill"))
+    @JoinColumn(name = "skill_id", referencedColumnName = "skill_id")
     var skillEntity: SkillEntity?
 )
