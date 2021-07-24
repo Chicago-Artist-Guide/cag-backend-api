@@ -7,15 +7,10 @@ import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMB
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
-import com.cag.cagbackendapi.entities.ProfileEntity
-import com.cag.cagbackendapi.entities.UnionStatusEntity
-import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
+import com.cag.cagbackendapi.entities.*
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
-import com.cag.cagbackendapi.repositories.ProfileRepository
-import com.cag.cagbackendapi.repositories.UnionStatusMemberRepository
-import com.cag.cagbackendapi.repositories.UnionStatusRepository
-import com.cag.cagbackendapi.repositories.UserRepository
+import com.cag.cagbackendapi.repositories.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +29,13 @@ class ProfileDao : ProfileDaoI {
     private lateinit var unionStatusMemberRepository: UnionStatusMemberRepository
 
     @Autowired
+    private lateinit var skillMemberRepository: SkillMemberRepository
+
+    @Autowired
     private lateinit var unionStatusRepository: UnionStatusRepository
+
+    @Autowired
+    private lateinit var skillRepository: SkillRepository
 
     @Autowired
     private lateinit var logger: Logger
@@ -80,6 +81,10 @@ class ProfileDao : ProfileDaoI {
         //create & save union status member entity to union status member table
         saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
 
+        if(profileRegistrationDto.actor_skills != null) {
+            saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
+        }
+
         return savedProfileEntity.toDto()
     }
 
@@ -98,6 +103,21 @@ class ProfileDao : ProfileDaoI {
 
         val profileEntity = profileRepository.getByUserEntity_userId(userId) ?: return null
         return profileEntity.toDto()
+    }
+
+    override fun saveUserSkills(savedProfileEntity: ProfileEntity?, actorSkills: List<String>?) {
+        if (actorSkills != null) {
+            for (i in actorSkills){
+                val skillEntity = getUserSkill(i.toLowerCase())
+
+                val skillMemberEntity = SkillMemberEntity(
+                        null,
+                        savedProfileEntity,
+                        skillEntity
+                )
+                skillMemberRepository.save(skillMemberEntity)
+            }
+        }
     }
 
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
@@ -119,6 +139,15 @@ class ProfileDao : ProfileDaoI {
         }
 
         return unionStatusEntity
+    }
+
+    private fun getUserSkill(userSkill: String?): SkillEntity {
+        return if (skillRepository.getByName(userSkill) != null ) {
+            skillRepository.getByName(userSkill)
+        } else {
+            val userSkillEntity = SkillEntity(null, userSkill)
+            skillRepository.save(userSkillEntity)
+        }
     }
 
     private fun clearBadRequestMsg() {
