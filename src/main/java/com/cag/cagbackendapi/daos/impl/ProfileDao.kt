@@ -3,6 +3,7 @@ package com.cag.cagbackendapi.daos.impl
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_SKILL_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
@@ -78,9 +79,10 @@ class ProfileDao : ProfileDaoI {
 
         val savedProfileEntity = profileRepository.save(profileEntity)
 
-        //create & save union status member entity to union status member table
+        //check & save union status member entity to union status member table
         saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
 
+        //check for existing skill and create if not found
         if(profileRegistrationDto.actor_skills != null) {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
@@ -116,6 +118,7 @@ class ProfileDao : ProfileDaoI {
                         skillEntity
                 )
                 skillMemberRepository.save(skillMemberEntity)
+                logger.info(LOG_SAVE_SKILL_MEMBER(skillMemberEntity))
             }
         }
     }
