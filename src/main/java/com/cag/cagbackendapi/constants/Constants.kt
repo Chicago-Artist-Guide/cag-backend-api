@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
+import com.cag.cagbackendapi.entities.SkillMemberEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
 import java.util.*
@@ -68,5 +69,9 @@ object LoggerMessages {
     }
     fun LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity: UnionStatusMemberEntity): String {
         return "Save Union Status Member: $unionStatusMemberEntity"
+    }
+
+    fun LOG_SAVE_SKILL_MEMBER(skillMemberEntity: SkillMemberEntity): String {
+        return "Save Skill Member: $skillMemberEntity"
     }
 }
