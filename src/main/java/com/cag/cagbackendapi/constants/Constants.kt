@@ -7,6 +7,7 @@ import com.cag.cagbackendapi.dtos.UserUpdateDto
 import com.cag.cagbackendapi.entities.SkillMemberEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
+import com.cag.cagbackendapi.entities.EthnicityMemberEntity
 import java.util.*
 
 object RestErrorMessages {
@@ -73,5 +74,9 @@ object LoggerMessages {
 
     fun LOG_SAVE_SKILL_MEMBER(skillMemberEntity: SkillMemberEntity): String {
         return "Save Skill Member: $skillMemberEntity"
+    }
+
+    fun LOG_SAVE_ETHNICITY_MEMBER (ethnicityMemberEntity: EthnicityMemberEntity): String {
+        return "Save Ethnicity Member: $ethnicityMemberEntity"
     }
 }
