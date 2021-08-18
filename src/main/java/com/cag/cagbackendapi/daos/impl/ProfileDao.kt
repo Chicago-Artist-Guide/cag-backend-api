@@ -34,7 +34,7 @@ class ProfileDao : ProfileDaoI {
     private lateinit var skillMemberRepository: SkillMemberRepository
 
     @Autowired
-    private lateinit var ethnicityMemberRepositoryM: EthnicityMemberRepository
+    private lateinit var ethnicityMemberRepository: EthnicityMemberRepository
 
     @Autowired
     private lateinit var unionStatusRepository: UnionStatusRepository
@@ -94,6 +94,11 @@ class ProfileDao : ProfileDaoI {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
 
+        //check for existing skill and create if not found
+        if(profileRegistrationDto.actor_ethnicity != null) {
+            saveUserEthnicities(savedProfileEntity, profileRegistrationDto.actor_ethnicity!!)
+        }
+
         return savedProfileEntity.toDto()
     }
 
@@ -130,6 +135,22 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+    override fun saveUserEthnicities(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?) {
+        if (actorEthnicity != null) {
+            for (i in actorEthnicity){
+                val ethnicityEntity = getUserEthnicity(i.toLowerCase())
+
+                val skillMemberEntity = SkillMemberEntity(
+                        ethnicity_member_id:null,
+                        savedProfileEntity,
+                        ethnicityEntity
+                )
+                ethnicityMemberRepository.MemberRepository.save(ethnicityMemberEntity)
+                logger.info(LOG_SAVE_ETHNICITY_MEMBER(ethnicityMemberEntity))
+            }
+        }
+    }
+
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
         val unionStatusMemberEntity = UnionStatusMemberEntity(
                 null,
@@ -157,6 +178,15 @@ class ProfileDao : ProfileDaoI {
         } else {
             val userSkillEntity = SkillEntity(null, userSkill)
             skillRepository.save(userSkillEntity)
+        }
+    }
+
+    private fun getUserEthnicity(userEthnicity: String?): EthnicityEntity {
+        return if (ethnicityRepository.getByName(userEthnicity) != null ) {
+            ethnicityRepository.getByName(userEthnicity)
+        } else {
+            val userEthnicityEntity = EthnicityEntity(null, userEthnicity)
+            ethnicityRepository.save(userEthnicityEntity)
         }
     }
 
