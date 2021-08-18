@@ -5,6 +5,7 @@ import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_SKILL_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_ETHNICITY_MEMBER
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
@@ -33,10 +34,16 @@ class ProfileDao : ProfileDaoI {
     private lateinit var skillMemberRepository: SkillMemberRepository
 
     @Autowired
+    private lateinit var ethnicityMemberRepositoryM: EthnicityMemberRepository
+
+    @Autowired
     private lateinit var unionStatusRepository: UnionStatusRepository
 
     @Autowired
     private lateinit var skillRepository: SkillRepository
+
+    @Autowired
+    private lateinit var ethnicityRepository: EthnicityRepository
 
     @Autowired
     private lateinit var logger: Logger
