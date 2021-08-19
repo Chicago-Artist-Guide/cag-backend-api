@@ -13,7 +13,6 @@ import com.cag.cagbackendapi.entities.*
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
 import com.cag.cagbackendapi.repositories.*
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -135,17 +134,18 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+
     override fun saveUserEthnicities(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?) {
         if (actorEthnicity != null) {
             for (i in actorEthnicity){
                 val ethnicityEntity = getUserEthnicity(i.toLowerCase())
 
-                val skillMemberEntity = SkillMemberEntity(
-                        ethnicity_member_id:null,
+                val ethnicityMemberEntity = EthnicityMemberEntity(
+                        null,
                         savedProfileEntity,
                         ethnicityEntity
                 )
-                ethnicityMemberRepository.MemberRepository.save(ethnicityMemberEntity)
+                ethnicityMemberRepository.save(ethnicityMemberEntity)
                 logger.info(LOG_SAVE_ETHNICITY_MEMBER(ethnicityMemberEntity))
             }
         }

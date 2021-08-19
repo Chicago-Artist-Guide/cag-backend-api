@@ -12,8 +12,3 @@ import java.util.UUID;
 public interface SkillRepository extends CrudRepository<SkillEntity, UUID> {
     SkillEntity getByName(String userSkill);
 }
-@Repository
-public interface EthnicityRepository extends CrudRepository<EthnicityEntity, UUID> {
-    EthnicityEntity getByName(String ethnicitySkill);
-}
-

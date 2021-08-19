@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface EthnicityRepository extends CrudRepository<EthnicityEntity, UUID> { }
+public interface EthnicityRepository extends CrudRepository<EthnicityEntity, UUID> {
+    EthnicityEntity getByName(String userEthnicity);
+}

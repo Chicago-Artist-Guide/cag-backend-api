@@ -28,6 +28,7 @@ data class ProfileRegistrationDto(
         var off_stage_roles_sound: List<String>? = null,
         var off_stage_roles_hair_makeup_costumes: List<String>? = null,
         var actor_skills: List<String>? = null,
+        var actor_ethnicity: List<String>? = null,
         var ethnicity_skills: List<String>? = null,
 
         var profile_photo_url: String? = null,
