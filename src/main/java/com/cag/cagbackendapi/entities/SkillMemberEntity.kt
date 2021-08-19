@@ -23,5 +23,5 @@ data class SkillMemberEntity(
 
         @ManyToOne
         @JoinColumn(name = "skill_id", referencedColumnName = "skill_id")
-        var skillEntity: SkillEntity
+        var skillEntity: SkillEntity?
 )

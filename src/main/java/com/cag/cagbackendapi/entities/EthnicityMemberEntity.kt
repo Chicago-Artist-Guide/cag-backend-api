@@ -22,6 +22,6 @@ data class EthnicityMemberEntity (
     var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", referencedColumnName = "ethnicity_id")
+    @JoinColumn(name = "ethnicity_id", referencedColumnName = "ethnicity_id")
     var ethnicityEntity: EthnicityEntity?
 )
