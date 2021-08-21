@@ -19,5 +19,5 @@ data class AgeIncrementEntity(
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     var age_increment_id: UUID?,
-    var youngest_age: Int?,
-    var oldest_age: Int?)
+    var name: String?
+)

@@ -2,6 +2,7 @@ package com.cag.cagbackendapi.daos.impl
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_AGE_INCREMENT_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_SKILL_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
@@ -39,6 +40,12 @@ class ProfileDao : ProfileDaoI {
     private lateinit var skillRepository: SkillRepository
 
     @Autowired
+    private lateinit var ageIncrementMemberRepository: AgeIncrementMemberRepository
+
+    @Autowired
+    private lateinit var ageIncrementRepository: AgeIncrementRepository
+
+    @Autowired
     private lateinit var logger: Logger
 
     private var badRequestMsg: String = ""
@@ -48,7 +55,8 @@ class ProfileDao : ProfileDaoI {
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
         val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
-        // validate ageIncrementEntity
+        val ageIncrementEntity = validateAgeIncrement(profileRegistrationDto.age_increment)
+
         // validate ethnicityEntity
         // validate skillEntity
 
@@ -86,6 +94,8 @@ class ProfileDao : ProfileDaoI {
         if(profileRegistrationDto.actor_skills != null) {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
+
+        saveAgeIncrementMemberEntity(savedProfileEntity, ageIncrementEntity!!)
 
         return savedProfileEntity.toDto()
     }
@@ -151,6 +161,27 @@ class ProfileDao : ProfileDaoI {
             val userSkillEntity = SkillEntity(null, userSkill)
             skillRepository.save(userSkillEntity)
         }
+    }
+
+    private fun saveAgeIncrementMemberEntity(savedProfileEntity: ProfileEntity, ageIncrementEntity: AgeIncrementEntity){
+        val ageIncrementMemberEntity = AgeIncrementMemberEntity(
+            null,
+            savedProfileEntity,
+            ageIncrementEntity
+        )
+
+        logger.info(LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity))
+        ageIncrementMemberRepository.save(ageIncrementMemberEntity)
+    }
+
+    private fun validateAgeIncrement(ageIncrementName: List<String>?): AgeIncrementEntity? {
+        val ageIncrementEntity = ageIncrementRepository.getByName(ageIncrementName)
+
+        if (ageIncrementEntity == null) {
+            badRequestMsg += DetailedErrorMessages.AGE_INCREMENT_NOT_SUPPORTED
+        }
+
+        return ageIncrementEntity
     }
 
     private fun clearBadRequestMsg() {
