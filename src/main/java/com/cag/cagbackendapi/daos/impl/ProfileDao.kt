@@ -93,9 +93,9 @@ class ProfileDao : ProfileDaoI {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
 
-        //check for existing skill and create if not found
-        if(profileRegistrationDto.actor_ethnicity != null) {
-            saveUserEthnicities(savedProfileEntity, profileRegistrationDto.actor_ethnicity!!)
+        var validEthnicities = validateUserEthnicities(profileRegistrationDto.actor_ethnicity!!)
+        if (validEthnicities!=null) {
+            saveUserEthnicities(savedProfileEntity, validEthnicities);
         }
 
         return savedProfileEntity.toDto()
@@ -139,7 +139,6 @@ class ProfileDao : ProfileDaoI {
         if (actorEthnicity != null) {
             for (i in actorEthnicity){
                 val ethnicityEntity = getUserEthnicity(i.toLowerCase())
-
                 val ethnicityMemberEntity = EthnicityMemberEntity(
                         null,
                         savedProfileEntity,
@@ -170,6 +169,21 @@ class ProfileDao : ProfileDaoI {
         }
 
         return unionStatusEntity
+    }
+
+    private fun validateUserEthnicities(actorEthnicity: List<String>?): List<String>? {
+        val validEthnicities = mutableListOf<String>();
+        if (actorEthnicity!= null) {
+            for (i in actorEthnicity) {
+                val actorEthnicityEntity = unionStatusRepository.getByName(i)
+                if (actorEthnicityEntity == null) {
+                    badRequestMsg += DetailedErrorMessages.ETHNICITY_NOT_SUPPORTED
+                } else {
+                    validEthnicities.add(i);
+                }
+            }
+        }
+        return validEthnicities;
     }
 
     private fun getUserSkill(userSkill: String?): SkillEntity {
