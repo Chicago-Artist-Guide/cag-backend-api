@@ -11,5 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface AgeIncrementRepository extends CrudRepository<AgeIncrementEntity, UUID> {
-    AgeIncrementEntity getByName(List<String> ageIncrement);
+    AgeIncrementEntity getByAges(String ageIncrement);
 }

@@ -55,10 +55,9 @@ class ProfileDao : ProfileDaoI {
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
         val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
-        val ageIncrementEntity = validateAgeIncrement(profileRegistrationDto.age_increment)
+        //validateAgeIncrement(profileRegistrationDto.age_increment)
 
         // validate ethnicityEntity
-        // validate skillEntity
 
         if (badRequestMsg.isNotEmpty()) {
             throw BadRequestException(badRequestMsg, null)
@@ -95,7 +94,9 @@ class ProfileDao : ProfileDaoI {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
 
-        saveAgeIncrementMemberEntity(savedProfileEntity, ageIncrementEntity!!)
+        if(profileRegistrationDto.age_increment != null){
+            saveAgeIncrementMemberEntity(savedProfileEntity, profileRegistrationDto.age_increment!!)
+        }
 
         return savedProfileEntity.toDto()
     }
@@ -163,26 +164,33 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
-    private fun saveAgeIncrementMemberEntity(savedProfileEntity: ProfileEntity, ageIncrementEntity: AgeIncrementEntity){
-        val ageIncrementMemberEntity = AgeIncrementMemberEntity(
-            null,
-            savedProfileEntity,
-            ageIncrementEntity
-        )
+    private fun saveAgeIncrementMemberEntity(savedProfileEntity: ProfileEntity, ageIncrements: List<String>){
 
-        logger.info(LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity))
-        ageIncrementMemberRepository.save(ageIncrementMemberEntity)
+        for (i in ageIncrements){
+            val ageIncrementEntity = ageIncrementRepository.getByAges(i)
+
+            val ageIncrementMemberEntity = AgeIncrementMemberEntity(
+                    null,
+                    savedProfileEntity,
+                    ageIncrementEntity
+            )
+
+            ageIncrementMemberRepository.save(ageIncrementMemberEntity)
+            logger.info(LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity))
+        }
     }
 
-    private fun validateAgeIncrement(ageIncrementName: List<String>?): AgeIncrementEntity? {
-        val ageIncrementEntity = ageIncrementRepository.getByName(ageIncrementName)
+    //this will have to move to the service layer in a later ticket.
+    /*private fun validateAgeIncrement(ageIncrementName: List<String>?): AgeIncrementEntity? {
+        for (i in ageIncrementName){
+            val ageIncrementEntity = ageIncrementRepository.getByAges(i)
 
-        if (ageIncrementEntity == null) {
-            badRequestMsg += DetailedErrorMessages.AGE_INCREMENT_NOT_SUPPORTED
-        }
+            if (ageIncrementEntity == null) {
+                badRequestMsg += DetailedErrorMessages.AGE_INCREMENT_NOT_SUPPORTED
+            }
 
         return ageIncrementEntity
-    }
+    }*/
 
     private fun clearBadRequestMsg() {
         badRequestMsg = ""
