@@ -18,9 +18,11 @@ data class AgeIncrementMemberEntity(
     var age_increment_member_id: UUID?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_profile"))
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_age_increment"))
-    var ageIncrementEntity: AgeIncrementEntity?)
+    @JoinColumn(name = "age_increment_id", referencedColumnName = "age_increment_id")
+    var ageIncrementEntity: AgeIncrementEntity?
+)
+
