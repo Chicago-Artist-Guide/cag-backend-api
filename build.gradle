@@ -37,6 +37,8 @@ dependencies {
 	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0" //NOTE: Java unit testing framework
 	testImplementation "org.mockito:mockito-core:3.0.0"  //NOTE: Java unit testing framework
 	testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0" //NOTE: Needed for the mockito java unit testing framework to be useable in kotlin testing classes
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
 }
 
 test {
