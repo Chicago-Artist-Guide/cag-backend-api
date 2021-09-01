@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS union_status_member(
     PRIMARY KEY (union_status_member_id),
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
-            REFERENCES profile(profile_id),
+            REFERENCES profile(profile_id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_union_status
         FOREIGN KEY(union_status_id)
             REFERENCES union_status(union_status_id)
@@ -20,7 +21,8 @@ CREATE TABLE IF NOT EXISTS ethnicity_member(
     PRIMARY KEY (ethnicity_member_id),
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
-            REFERENCES profile(profile_id),
+            REFERENCES profile(profile_id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_ethnicity
         FOREIGN KEY(ethnicity_id)
             REFERENCES ethnicity(ethnicity_id)
@@ -34,7 +36,8 @@ CREATE TABLE IF NOT EXISTS age_increment_member(
     PRIMARY KEY (age_increment_member_id),
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
-            REFERENCES profile(profile_id),
+            REFERENCES profile(profile_id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_age_increment
         FOREIGN KEY(age_increment_id)
             REFERENCES age_increment(age_increment_id)
@@ -48,7 +51,8 @@ CREATE TABLE IF NOT EXISTS skill_member(
     PRIMARY KEY (skill_member_id),
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
-            REFERENCES profile(profile_id),
+            REFERENCES profile(profile_id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_skill
         FOREIGN KEY(skill_id)
             REFERENCES skill(skill_id)
