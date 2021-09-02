@@ -10,5 +10,5 @@ interface ProfileDaoI {
     fun getUserWithProfile(userId: UUID): ProfileDto?
     fun getProfile(userId: UUID): ProfileDto?
     fun saveUserSkills(savedProfileEntity: ProfileEntity?, actorSkills: List<String>?)
-    fun saveUserEthnicities(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?)
+    fun saveUserEthnicity(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?)
 }

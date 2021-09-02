@@ -47,8 +47,8 @@ object DetailedErrorMessages {
     const val EMAIL_ALREADY_EXISTS = "This email is already being used on another account."
     const val ETHNICITY_NOT_SUPPORTED = "Ethnicity not supported."
     const val ETHNICITY_REQUIRED = "Ethnicity required."
-    const val AGE_INCREMENT_MEMBER_REQUIRED = "Union status is required. "
-    const val AGE_INCREMENT_NOT_SUPPORTED = "Union Status not supported."
+    const val AGE_INCREMENT_MEMBER_REQUIRED = "Age increment is required. "
+    const val AGE_INCREMENT_NOT_SUPPORTED = "Age increment not supported."
 }
 
 object LoggerMessages {

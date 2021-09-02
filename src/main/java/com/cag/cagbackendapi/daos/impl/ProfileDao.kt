@@ -6,7 +6,6 @@ import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_AGE_INCREMENT_MEM
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_SKILL_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
-import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_ETHNICITY_MEMBER
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
@@ -100,10 +99,15 @@ class ProfileDao : ProfileDaoI {
             saveUserSkills(savedProfileEntity, profileRegistrationDto.actor_skills!!)
         }
 
-        var validEthnicities = validateUserEthnicities(profileRegistrationDto.actor_ethnicity!!)
+        //check for existing ethnicities and create if not found
+        if(profileRegistrationDto.actor_ethnicity != null) {
+            saveUserEthnicity(savedProfileEntity, profileRegistrationDto.actor_ethnicity!!)
+        }
+
+        /*var validEthnicities = validateUserEthnicities(profileRegistrationDto.actor_ethnicity!!)
         if (validEthnicities!=null) {
             saveUserEthnicities(savedProfileEntity, validEthnicities);
-        }
+        }*/
 
         if(profileRegistrationDto.age_increment != null){
             saveAgeIncrementMemberEntity(savedProfileEntity, profileRegistrationDto.age_increment!!)
@@ -145,8 +149,24 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+    override fun saveUserEthnicity(savedProfileEntity: ProfileEntity?, actorEthnicities: List<String>?) {
+        if (actorEthnicities != null) {
+            for (i in actorEthnicities){
+                val actorEthnicityEntity = getUserEthnicity(i.toLowerCase())
 
-    override fun saveUserEthnicities(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?) {
+                val ethnicityMemberEntity = EthnicityMemberEntity(
+                        null,
+                        savedProfileEntity,
+                        actorEthnicityEntity
+                )
+                ethnicityMemberRepository.save(ethnicityMemberEntity)
+                //logger.info(LOG_SAVE_SKILL_MEMBER(ethnicityMemberEntity))
+            }
+        }
+    }
+
+
+    /*override fun saveUserEthnicities(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?) {
         if (actorEthnicity != null) {
             for (i in actorEthnicity){
                 val ethnicityEntity = getUserEthnicity(i.toLowerCase())
@@ -159,7 +179,7 @@ class ProfileDao : ProfileDaoI {
                 logger.info(LOG_SAVE_ETHNICITY_MEMBER(ethnicityMemberEntity))
             }
         }
-    }
+    }*/
 
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
         val unionStatusMemberEntity = UnionStatusMemberEntity(
@@ -182,7 +202,7 @@ class ProfileDao : ProfileDaoI {
         return unionStatusEntity
     }
 
-    private fun validateUserEthnicities(actorEthnicity: List<String>?): List<String>? {
+    /*private fun validateUserEthnicities(actorEthnicity: List<String>?): List<String>? {
         val validEthnicities = mutableListOf<String>();
         if (actorEthnicity!= null) {
             for (i in actorEthnicity) {
@@ -195,7 +215,7 @@ class ProfileDao : ProfileDaoI {
             }
         }
         return validEthnicities;
-    }
+    }*/
 
     private fun getUserSkill(userSkill: String?): SkillEntity {
         return if (skillRepository.getByName(userSkill) != null ) {
@@ -203,6 +223,15 @@ class ProfileDao : ProfileDaoI {
         } else {
             val userSkillEntity = SkillEntity(null, userSkill)
             skillRepository.save(userSkillEntity)
+        }
+    }
+
+    private fun getUserEthnicity(ethnicity: String?): EthnicityEntity {
+        return if (ethnicityRepository.getByName(ethnicity) != null ) {
+            ethnicityRepository.getByName(ethnicity)
+        } else {
+            val userEthnicityEntity = EthnicityEntity(null, ethnicity)
+            ethnicityRepository.save(userEthnicityEntity)
         }
     }
 
@@ -234,14 +263,14 @@ class ProfileDao : ProfileDaoI {
         return ageIncrementEntity
     }*/
 
-    private fun getUserEthnicity(userEthnicity: String?): EthnicityEntity {
+    /*private fun getUserEthnicity(userEthnicity: String?): EthnicityEntity {
         return if (ethnicityRepository.getByName(userEthnicity) != null ) {
             ethnicityRepository.getByName(userEthnicity)
         } else {
             val userEthnicityEntity = EthnicityEntity(null, userEthnicity)
             ethnicityRepository.save(userEthnicityEntity)
         }
-    }
+    }*/
 
     private fun clearBadRequestMsg() {
         badRequestMsg = ""
