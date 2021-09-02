@@ -4,6 +4,7 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
+import com.cag.cagbackendapi.entities.AgeIncrementMemberEntity
 import com.cag.cagbackendapi.entities.SkillMemberEntity
 import com.cag.cagbackendapi.entities.UnionStatusEntity
 import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
@@ -46,6 +47,8 @@ object DetailedErrorMessages {
     const val EMAIL_ALREADY_EXISTS = "This email is already being used on another account."
     const val ETHNICITY_NOT_SUPPORTED = "Ethnicity not supported."
     const val ETHNICITY_REQUIRED = "Ethnicity required."
+    const val AGE_INCREMENT_MEMBER_REQUIRED = "Union status is required. "
+    const val AGE_INCREMENT_NOT_SUPPORTED = "Union Status not supported."
 }
 
 object LoggerMessages {
@@ -73,12 +76,14 @@ object LoggerMessages {
     fun LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity: UnionStatusMemberEntity): String {
         return "Save Union Status Member: $unionStatusMemberEntity"
     }
-
     fun LOG_SAVE_SKILL_MEMBER(skillMemberEntity: SkillMemberEntity): String {
         return "Save Skill Member: $skillMemberEntity"
     }
 
     fun LOG_SAVE_ETHNICITY_MEMBER (ethnicityMemberEntity: EthnicityMemberEntity): String {
         return "Save Ethnicity Member: $ethnicityMemberEntity"
+    }
+    fun LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity: AgeIncrementMemberEntity): String {
+        return "Save Age Increment Member Entity: $ageIncrementMemberEntity"
     }
 }

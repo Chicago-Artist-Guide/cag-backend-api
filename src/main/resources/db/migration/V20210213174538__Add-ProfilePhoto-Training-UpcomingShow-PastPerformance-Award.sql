@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS profile_photo(
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
             REFERENCES profile(profile_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS training(
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS training(
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
             REFERENCES profile(profile_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS upcoming_show(
@@ -37,6 +39,7 @@ CREATE TABLE IF NOT EXISTS upcoming_show(
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
             REFERENCES profile(profile_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS past_performance(
@@ -53,6 +56,7 @@ CREATE TABLE IF NOT EXISTS past_performance(
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
             REFERENCES profile(profile_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS award(
@@ -66,4 +70,5 @@ CREATE TABLE IF NOT EXISTS award(
     CONSTRAINT fk_profile
         FOREIGN KEY(profile_id)
             REFERENCES profile(profile_id)
+            ON DELETE CASCADE
 );
