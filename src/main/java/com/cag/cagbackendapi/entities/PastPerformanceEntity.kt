@@ -25,6 +25,6 @@ data class PastPerformanceEntity (
     var theater_group: String?,
 
     @OneToOne
-    @JoinColumn(foreignKey =ForeignKey(name = "fk_profile"))
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     var profileEntity: ProfileEntity?
 )

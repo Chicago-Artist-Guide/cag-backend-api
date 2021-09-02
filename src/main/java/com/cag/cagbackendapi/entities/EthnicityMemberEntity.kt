@@ -18,10 +18,10 @@ data class EthnicityMemberEntity (
     var ethnicity_member_id: UUID?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_profile"))
+    @JoinColumn(name = "profile_id", referencedColumnName = "profile_id")
     var profileEntity: ProfileEntity?,
 
     @ManyToOne
-    @JoinColumn(foreignKey = ForeignKey(name = "fk_ethnicity"))
+    @JoinColumn(name = "ethnicity_id", referencedColumnName = "ethnicity_id")
     var ethnicityEntity: EthnicityEntity?
 )
