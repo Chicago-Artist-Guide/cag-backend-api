@@ -3,6 +3,7 @@ package com.cag.cagbackendapi.daos.impl
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_AGE_INCREMENT_MEMBER
+import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_ETHNICITY_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_SKILL_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMBER
@@ -160,7 +161,7 @@ class ProfileDao : ProfileDaoI {
                         actorEthnicityEntity
                 )
                 ethnicityMemberRepository.save(ethnicityMemberEntity)
-                //logger.info(LOG_SAVE_SKILL_MEMBER(ethnicityMemberEntity))
+                logger.info(LOG_SAVE_ETHNICITY_MEMBER(ethnicityMemberEntity))
             }
         }
     }
