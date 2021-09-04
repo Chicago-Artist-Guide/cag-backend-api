@@ -37,7 +37,13 @@ public class ProfileController {
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.CREATED);
     }
-
+/*
+    @RequestMapping(value= "/{userId}/profilePhoto",
+            produces = {"application/json"},
+            consumes = {"multipart/form-data"},
+            method = RequestMethod.POST)
+    public ResponseEntity<ProfileF>
+*/
     @GetMapping(value = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ProfileDto> getProfile(
@@ -49,6 +55,7 @@ public class ProfileController {
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.OK);
     }
+
 }
 
 

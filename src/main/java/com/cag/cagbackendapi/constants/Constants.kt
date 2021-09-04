@@ -4,11 +4,7 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.UserRegistrationDto
 import com.cag.cagbackendapi.dtos.UserDto
 import com.cag.cagbackendapi.dtos.UserUpdateDto
-import com.cag.cagbackendapi.entities.AgeIncrementMemberEntity
-import com.cag.cagbackendapi.entities.SkillMemberEntity
-import com.cag.cagbackendapi.entities.UnionStatusEntity
-import com.cag.cagbackendapi.entities.UnionStatusMemberEntity
-import com.cag.cagbackendapi.entities.EthnicityMemberEntity
+import com.cag.cagbackendapi.entities.*
 import java.util.*
 
 object RestErrorMessages {
@@ -79,11 +75,13 @@ object LoggerMessages {
     fun LOG_SAVE_SKILL_MEMBER(skillMemberEntity: SkillMemberEntity): String {
         return "Save Skill Member: $skillMemberEntity"
     }
-
     fun LOG_SAVE_ETHNICITY_MEMBER (ethnicityMemberEntity: EthnicityMemberEntity): String {
         return "Save Ethnicity Member: $ethnicityMemberEntity"
     }
     fun LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity: AgeIncrementMemberEntity): String {
         return "Save Age Increment Member Entity: $ageIncrementMemberEntity"
+    }
+    fun LOG_SAVE_PROFILE_PHOTO_URL(profilePhotoEntity: ProfilePhotoEntity): String {
+        return "Save Profile Picture: $profilePhotoEntity"
     }
 }
