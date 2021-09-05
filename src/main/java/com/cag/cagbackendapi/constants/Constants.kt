@@ -45,6 +45,7 @@ object DetailedErrorMessages {
     const val ETHNICITY_REQUIRED = "Ethnicity required."
     const val AGE_INCREMENT_MEMBER_REQUIRED = "Age increment is required. "
     const val AGE_INCREMENT_NOT_SUPPORTED = "Age increment not supported."
+    const val PROFILE_PHOTO_UPLOAD_FAIL = "Profile Photo upload fail."
 }
 
 object LoggerMessages {
@@ -81,7 +82,5 @@ object LoggerMessages {
     fun LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity: AgeIncrementMemberEntity): String {
         return "Save Age Increment Member Entity: $ageIncrementMemberEntity"
     }
-    fun LOG_SAVE_PROFILE_PHOTO_URL(profilePhotoEntity: ProfilePhotoEntity): String {
-        return "Save Profile Picture: $profilePhotoEntity"
-    }
+
 }

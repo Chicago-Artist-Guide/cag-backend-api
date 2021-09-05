@@ -13,11 +13,20 @@ import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.entities.*
 import com.cag.cagbackendapi.errors.exceptions.BadRequestException
 import com.cag.cagbackendapi.errors.exceptions.NotFoundException
+import com.cag.cagbackendapi.errors.exceptions.UploadFailedException
 import com.cag.cagbackendapi.repositories.*
 import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import java.util.*
+import java.io.*
 
 @Service
 class ProfileDao : ProfileDaoI {
@@ -52,6 +61,9 @@ class ProfileDao : ProfileDaoI {
     private lateinit var ageIncrementRepository: AgeIncrementRepository
 
     @Autowired
+    private lateinit var profilePhotoRepository: ProfilePhotoRepository
+
+    @Autowired
     private lateinit var logger: Logger
 
     private var badRequestMsg: String = ""
@@ -61,6 +73,7 @@ class ProfileDao : ProfileDaoI {
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
         val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
+        val profilePhotoEntity = profileRegistrationDto.profile_photo_url
         //validateAgeIncrement(profileRegistrationDto.age_increment)
 
         // validate ethnicityEntity
@@ -166,6 +179,10 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+    override fun uploadProfilePhotoS3(userId: String, profilePhotoId: UUID, profilePhoto: MultipartFile): String {
+        return uploadS3(userId, profilePhotoId, profilePhoto);
+    }
+
     private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
         val unionStatusMemberEntity = UnionStatusMemberEntity(
                 null,
@@ -238,5 +255,30 @@ class ProfileDao : ProfileDaoI {
 
     private fun clearBadRequestMsg() {
         badRequestMsg = ""
+    }
+
+    private fun createS3Client(): AmazonS3 {
+        return AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
+    }
+
+    private fun convertFileJava(profilePhoto: MultipartFile): File {
+        val profilePhotoFile: File = File(profilePhoto.originalFilename);
+        val fos: FileOutputStream = FileOutputStream(profilePhotoFile);
+        fos.write(profilePhoto.bytes);
+        fos.close();
+        return profilePhotoFile;
+    }
+
+    private fun uploadS3(userId: String, profilePhotoId: UUID, profilePhoto: MultipartFile): String {
+        val s3 = createS3Client()
+        val convertedProfilePhoto: File = convertFileJava(profilePhoto)
+        val key = "user/$userId/${profilePhotoId.toString()}"
+        try {
+            val response = s3.putObject("profilepicture-dev", key, convertedProfilePhoto)
+        } catch (e:AmazonServiceException) {
+            UploadFailedException(DetailedErrorMessages.PROFILE_PHOTO_UPLOAD_FAIL, null)
+            return("")
+        }
+        return ("https://profilepicture-dev.s3.us-east-2.amazonaws.com/user/$key")
     }
 }

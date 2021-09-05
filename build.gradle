@@ -29,6 +29,8 @@ dependencies {
 	implementation "org.apache.httpcomponents:httpclient" //NOTE: Fixes integration test error: I/O error on POST request for "http://localhost:58941/path": cannot retry due to server authentication, in streaming mode; nested exception is java.net.HttpRetryException: cannot retry due to server authentication, in streaming mode
     implementation "org.flywaydb:flyway-core" //NOTE: Flyway is used for database migration management
 	implementation "org.springframework.security:spring-security-test" //NOTE: For password encoding
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
 
 	runtime "org.springframework.boot:spring-boot-devtools" //NOTE: The aim of the module is to try and improve the development time while working with the Spring Boot application. Spring Boot DevTools pick up the changes and restart the application. Docs: https://www.javatpoint.com/spring-boot-devtools
 	runtime "org.postgresql:postgresql:42.2.13" //NOTE: Postgres database dependency for our spring project
@@ -37,8 +39,6 @@ dependencies {
 	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0" //NOTE: Java unit testing framework
 	testImplementation "org.mockito:mockito-core:3.0.0"  //NOTE: Java unit testing framework
 	testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0" //NOTE: Needed for the mockito java unit testing framework to be useable in kotlin testing classes
-	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
-	implementation 'com.amazonaws:aws-java-sdk-s3'
 }
 
 test {

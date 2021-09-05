@@ -10,11 +10,6 @@ import javax.persistence.*
 data class ProfilePhotoEntity (
     @Id
     @Type(type = "pg-uuid")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     var profile_photo_id: UUID?,
     var photo_url: String?,
 
