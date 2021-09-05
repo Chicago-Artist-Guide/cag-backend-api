@@ -18,5 +18,5 @@ CREATE TABLE organizations(
     PRIMARY KEY (org_id)
 );
 
-INSERT INTO users(first_name, email) VALUES ('Cody', 'cody@aol.com');
+INSERT INTO users(first_name, email) VALUES ('Test', 'initialTest@aol.com');
 INSERT INTO organizations(name, address) VALUES ('Chicago Artist Guide', null);
