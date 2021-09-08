@@ -4,12 +4,12 @@ This backend API powers our frontend react application using tools including: Ja
 
 ## To develop on and run this project you'll need to install these free apps:
 
-- Intellij IDEA Community Edition: https://www.jetbrains.com/idea/download/#section=windows
+- Intellij IDEA Community Edition: https://www.jetbrains.com/idea/download/#section=linux
 - Git: https://git-scm.com/downloads
 
 ### Optional Apps That Also Help:
 
-- Docker (If you're on MacOS, it's very hard to setup on Windows): https://docs.docker.com/get-docker/
+- Docker (If you're on MacOS, it's very hard to setup on Windows - but if you are using windows.... what are you doing): https://docs.docker.com/get-docker/
 - Postman: https://www.postman.com/downloads/
 
 ## Configuring Intellij & Installing Java JDK 11
