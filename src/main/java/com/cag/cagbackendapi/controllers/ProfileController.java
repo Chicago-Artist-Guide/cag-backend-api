@@ -2,7 +2,9 @@ package com.cag.cagbackendapi.controllers;
 
 
 import com.cag.cagbackendapi.dtos.ProfileDto;
+import com.cag.cagbackendapi.dtos.ProfileExtraInfoDto;
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto;
+import com.cag.cagbackendapi.dtos.ProfileRegistrationExtraInfoDto;
 import com.cag.cagbackendapi.services.user.impl.ProfileService;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +51,17 @@ public class ProfileController {
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/register/registertwo")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ProfileExtraInfoDto> registerProfile(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId,
+            @RequestBody ProfileRegistrationExtraInfoDto profileRegistrationExtraInfoDto
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        ProfileExtraInfoDto profileExtraInfoDto = this.profileServiceExtraInfo.registerProfileExtraInfo(userId, profileRegistrationExtraInfoDto);
+
+        return new ResponseEntity<>(profileResponseExtraInfoDto, HttpStatus.CREATED);
+    }
 }
-
-
-
-
-
-
