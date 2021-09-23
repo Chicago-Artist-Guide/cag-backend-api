@@ -6,6 +6,7 @@ import com.cag.cagbackendapi.dtos.ProfileExtraInfoDto;
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto;
 import com.cag.cagbackendapi.dtos.ProfileRegistrationExtraInfoDto;
 import com.cag.cagbackendapi.services.user.impl.ProfileService;
+import com.cag.cagbackendapi.services.user.impl.ProfileServiceExtraInfo;
 import com.cag.cagbackendapi.services.validation.impl.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,12 +20,14 @@ public class ProfileController {
 
     private final ValidationService validationService;
     private final ProfileService profileService;
+    private final ProfileServiceExtraInfo profileServiceExtraInfo;
 
 
     @Autowired
-    ProfileController(ProfileService profileService, ValidationService validationService) {
+    ProfileController(ProfileService profileService, ValidationService validationService, ProfileServiceExtraInfo profileServiceExtraInfo) {
         this.validationService = validationService;
         this.profileService = profileService;
+        this.profileServiceExtraInfo = profileServiceExtraInfo;
     }
 
     @PostMapping(value = "/register")
@@ -65,3 +68,4 @@ public class ProfileController {
         return new ResponseEntity<>(profileResponseExtraInfoDto, HttpStatus.CREATED);
     }
 }
+

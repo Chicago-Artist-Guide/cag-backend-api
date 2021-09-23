@@ -16,4 +16,3 @@ data class ProfileExtraInfoDto(
         var additional_skills_manuel: String?,
         var awards: AwardEntity?,
         var userEntity: UserDto? )
-
