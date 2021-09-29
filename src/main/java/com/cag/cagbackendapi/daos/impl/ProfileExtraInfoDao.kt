@@ -9,6 +9,7 @@ import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_UNION_STATUS_MEMB
 import com.cag.cagbackendapi.daos.ProfileDaoI
 import com.cag.cagbackendapi.daos.ProfileExtraInfoDaoI
 import com.cag.cagbackendapi.dtos.ProfileDto
+import com.cag.cagbackendapi.dtos.ProfileExtraInfoDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationDto
 import com.cag.cagbackendapi.dtos.ProfileRegistrationExtraInfoDto
 import com.cag.cagbackendapi.entities.*
@@ -38,7 +39,30 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         badRequestMsg = ""
     }
 
-    override fun saveProfileExtraInfo(userId: UUID, profileRegistrationExtraInfoDto: ProfileRegistrationExtraInfoDto) {
-        TODO("Not yet implemented")
+    override fun saveProfileExtraInfo(userId: UUID, profileRegistrationExtraInfoDto: ProfileRegistrationExtraInfoDto): ProfileExtraInfoDto {
+
+        clearBadRequestMsg()
+
+        if (badRequestMsg.isNotEmpty()) {
+            throw BadRequestException(badRequestMsg, null)
+        }
+
+        val user = userRepository.getByUserId(userId) ?:
+            throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        val userProfile = profileRepository.getByUserEntity_userId(userId) ?:
+            throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
+
+        val profileExtraInfoDto = ProfileExtraInfoDto(
+                profile_id = userProfile.profile_id,
+                userEntity = user.toDto(),
+        )
+
+        return profileExtraInfoDto
+        //get profile UUID using user UUID
+        //save each entity using the registration dto &
+
     }
 }
+
+

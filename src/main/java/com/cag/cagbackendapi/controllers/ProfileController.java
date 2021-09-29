@@ -57,15 +57,16 @@ public class ProfileController {
 
     @PostMapping(value = "/register/registertwo")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ProfileExtraInfoDto> registerProfile(
+    public ResponseEntity<ProfileExtraInfoDto> registerProfileExtraInfo(
             @RequestHeader("authKey") String authKey,
             @PathVariable("userId") String userId,
             @RequestBody ProfileRegistrationExtraInfoDto profileRegistrationExtraInfoDto
     ) {
         this.validationService.validateAuthKey(authKey);
-        ProfileExtraInfoDto profileExtraInfoDto = this.profileServiceExtraInfo.registerProfileExtraInfo(userId, profileRegistrationExtraInfoDto);
+        ProfileExtraInfoDto profileExtraInfoResponseDto = this.profileServiceExtraInfo.registerProfileExtraInfo(userId, profileRegistrationExtraInfoDto);
 
-        return new ResponseEntity<>(profileResponseExtraInfoDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(profileExtraInfoResponseDto, HttpStatus.CREATED);
+        //return null;
     }
 }
 
