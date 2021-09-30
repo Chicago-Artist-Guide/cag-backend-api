@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/user/{userId}/profile")
@@ -41,6 +42,20 @@ public class ProfileController {
         ProfileDto profileResponseDto = this.profileService.registerProfile(userId, profileRegistrationDto);
 
         return new ResponseEntity<>(profileResponseDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping(value= "/profilePhoto",
+            produces = {"text/plain"},
+            consumes = {"multipart/form-data"})
+    @ResponseBody
+    public String uploadProfilePicture(
+            @RequestHeader("authKey") String authKey,
+            @PathVariable("userId") String userId,
+            @RequestPart("file") MultipartFile profilePhoto
+    ) {
+        this.validationService.validateAuthKey(authKey);
+        String profile_photo_url = this.profileService.uploadFileS3(userId, profilePhoto);
+        return profile_photo_url;
     }
 
     @GetMapping(value = "")

@@ -15,3 +15,5 @@ class ConflictException(errorMessage: String?, cause: Throwable?) : RuntimeExcep
 class ServiceUnavailableException(errorMessage: String?, cause: Throwable?) : RuntimeException(errorMessage, cause)
 
 class InternalServerErrorException(errorMessage: String?, cause: Throwable?) : RuntimeException(errorMessage, cause)
+
+class UploadFailedException(errorMessage: String?, cause:Throwable?) : RuntimeException(errorMessage, cause)

@@ -11,6 +11,7 @@ import com.cag.cagbackendapi.errors.exceptions.NotFoundException;
 import com.cag.cagbackendapi.services.user.ProfileServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -63,6 +64,14 @@ public class ProfileService implements ProfileServiceI {
         }
 
         return userUUID;
+    }
+
+    //I don't know why I have to make this public
+    public String uploadFileS3(String userId, MultipartFile profilePhoto) {
+        UUID profilePhotoId = UUID.randomUUID();
+        //kept function in dao, feel free to correct if this is not a best practice
+        String s3url = profileDao.uploadProfilePhotoS3(userId, profilePhotoId, profilePhoto);
+        return s3url;
     }
 
     private void validateProfileRegistrationDto(ProfileRegistrationDto profileRegistrationDto){
