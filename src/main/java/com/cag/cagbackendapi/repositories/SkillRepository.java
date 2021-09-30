@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.repositories;
 
 import com.cag.cagbackendapi.entities.SkillEntity;
+import com.cag.cagbackendapi.entities.EthnicityEntity;
 import com.cag.cagbackendapi.entities.UnionStatusEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
