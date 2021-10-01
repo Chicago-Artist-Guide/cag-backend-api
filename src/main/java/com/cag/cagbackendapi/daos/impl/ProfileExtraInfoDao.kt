@@ -33,19 +33,7 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
     @Autowired
     private lateinit var logger: Logger
 
-    private var badRequestMsg: String = ""
-
-    private fun clearBadRequestMsg() {
-        badRequestMsg = ""
-    }
-
     override fun saveProfileExtraInfo(userId: UUID, profileRegistrationExtraInfoDto: ProfileRegistrationExtraInfoDto): ProfileExtraInfoDto {
-
-        clearBadRequestMsg()
-
-        if (badRequestMsg.isNotEmpty()) {
-            throw BadRequestException(badRequestMsg, null)
-        }
 
         val user = userRepository.getByUserId(userId) ?:
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
@@ -53,15 +41,18 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         val userProfile = profileRepository.getByUserEntity_userId(userId) ?:
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
+        /*
+        1. check to see if past performance list is null
+        2. create a method that iterates through the list of past performance
+        3. for each pastPerformanceEntity, build the entity and save to database
+        */
+
         val profileExtraInfoDto = ProfileExtraInfoDto(
                 profile_id = userProfile.profile_id,
                 userEntity = user.toDto(),
         )
 
         return profileExtraInfoDto
-        //get profile UUID using user UUID
-        //save each entity using the registration dto &
-
     }
 }
 

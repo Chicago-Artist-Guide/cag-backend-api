@@ -81,7 +81,6 @@ public class ProfileController {
         ProfileExtraInfoDto profileExtraInfoResponseDto = this.profileServiceExtraInfo.registerProfileExtraInfo(userId, profileRegistrationExtraInfoDto);
 
         return new ResponseEntity<>(profileExtraInfoResponseDto, HttpStatus.CREATED);
-        //return null;
     }
 }
 

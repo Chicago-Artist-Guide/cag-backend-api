@@ -30,41 +30,10 @@ public class ProfileServiceExtraInfo implements ProfileServiceExtraInfoI {
     public ProfileExtraInfoDto registerProfileExtraInfo(String userId, ProfileRegistrationExtraInfoDto profileRegistrationExtraInfoDto) {
         UUID userUUID = getUserUuidFromString(userId);
 
-        /*if(profileDao.getUserWithProfile(userUUID) != null){
-            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
-        }*/
-
-        //validateProfileRegistrationDto(profileRegistrationDto);
+        //we should be checking to make sure tha there's an existing user & profile associated with the UUID.
 
         return profileExtraInfoDao.saveProfileExtraInfo(userUUID, profileRegistrationExtraInfoDto);
-
     }
-
-    /*@Override
-    public ProfileDto registerProfile(String userId, ProfileRegistrationDto profileRegistrationDto) {
-        UUID userUUID = getUserUuidFromString(userId);
-
-        if(profileDao.getUserWithProfile(userUUID) != null){
-            throw new ConflictException(DetailedErrorMessages.USER_HAS_PROFILE, null);
-        }
-
-        validateProfileRegistrationDto(profileRegistrationDto);
-
-        return profileDao.saveProfile(userUUID, profileRegistrationDto);
-    }*/
-
-
-   /* public ProfileDto getProfile(String userId) {
-        UUID userUUID = getUserUuidFromString(userId);
-
-        var profileResponseDto = profileExtraInfoDao.getProfile(userUUID);
-
-        if(profileResponseDto == null) {
-            throw new NotFoundException(DetailedErrorMessages.PROFILE_NOT_FOUND, null);
-        }
-
-        return profileResponseDto;
-    }*/
 
     private UUID getUserUuidFromString(String userId) {
         if(userId == null || userId.equals("")) {
@@ -81,8 +50,4 @@ public class ProfileServiceExtraInfo implements ProfileServiceExtraInfoI {
 
         return userUUID;
     }
-
-
-
-
 }

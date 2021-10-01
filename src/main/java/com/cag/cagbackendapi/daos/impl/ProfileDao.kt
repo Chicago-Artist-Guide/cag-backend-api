@@ -73,10 +73,8 @@ class ProfileDao : ProfileDaoI {
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
         val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
-        val profilePhotoEntity = profileRegistrationDto.profile_photo_url
+        //val profilePhotoEntity = profileRegistrationDto.profile_photo_url
         //validateAgeIncrement(profileRegistrationDto.age_increment)
-
-        // validate ethnicityEntity
 
         if (badRequestMsg.isNotEmpty()) {
             throw BadRequestException(badRequestMsg, null)
@@ -118,12 +116,7 @@ class ProfileDao : ProfileDaoI {
             saveUserEthnicity(savedProfileEntity, profileRegistrationDto.actor_ethnicity!!)
         }
 
-        /*var validEthnicities = validateUserEthnicities(profileRegistrationDto.actor_ethnicity!!)
-        if (validEthnicities!=null) {
-            saveUserEthnicities(savedProfileEntity, validEthnicities);
-        }*/
-
-        if(profileRegistrationDto.age_increment != null){
+        if(profileRegistrationDto.age_increment != null && profileRegistrationDto.age_increment!![0] != "string"){
             saveAgeIncrementMemberEntity(savedProfileEntity, profileRegistrationDto.age_increment!!)
         }
 
@@ -203,21 +196,6 @@ class ProfileDao : ProfileDaoI {
 
         return unionStatusEntity
     }
-    //this will have to move to the service layer in a later ticket.
-    /*private fun validateUserEthnicities(actorEthnicity: List<String>?): List<String>? {
-        val validEthnicities = mutableListOf<String>();
-        if (actorEthnicity!= null) {
-            for (i in actorEthnicity) {
-                val actorEthnicityEntity = unionStatusRepository.getByName(i)
-                if (actorEthnicityEntity == null) {
-                    badRequestMsg += DetailedErrorMessages.ETHNICITY_NOT_SUPPORTED
-                } else {
-                    validEthnicities.add(i);
-                }
-            }
-        }
-        return validEthnicities;
-    }*/
 
     private fun getUserSkill(userSkill: String?): SkillEntity {
         return if (skillRepository.getByName(userSkill) != null ) {
