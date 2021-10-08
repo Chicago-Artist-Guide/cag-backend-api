@@ -7,7 +7,7 @@ import javax.persistence.*
 
 class AwardRegistrationEntity (
     var name: String?,
-    var year_received: String?,
+    var year_received: Int?,
     var award_url: String?,
     var description: String?,
 

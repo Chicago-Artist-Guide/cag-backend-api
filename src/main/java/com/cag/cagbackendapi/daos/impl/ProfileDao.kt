@@ -159,7 +159,7 @@ class ProfileDao : ProfileDaoI {
     override fun saveUserEthnicity(savedProfileEntity: ProfileEntity?, actorEthnicities: List<String>?) {
         if (actorEthnicities != null) {
             for (i in actorEthnicities){
-                val actorEthnicityEntity = getUserEthnicity(i.toLowerCase())
+                val actorEthnicityEntity = getUserEthnicity(i.lowercase())
 
                 val ethnicityMemberEntity = EthnicityMemberEntity(
                         null,
