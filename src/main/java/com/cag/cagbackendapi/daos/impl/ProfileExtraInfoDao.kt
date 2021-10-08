@@ -29,6 +29,8 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
 
     override fun saveProfileExtraInfo(userId: UUID, profileRegistrationExtraInfoDto: ProfileRegistrationExtraInfoDto): ProfileExtraInfoDto {
 
+        var awardEntityList = listOf<AwardEntity>()
+
         val user = userRepository.getByUserId(userId) ?:
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
@@ -36,7 +38,7 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
         if(profileRegistrationExtraInfoDto.awards != null) {
-            saveAwards(userProfile, profileRegistrationExtraInfoDto.awards!!)
+            awardEntityList = saveAwards(userProfile, profileRegistrationExtraInfoDto.awards!!)
         }
         /*
         1. check to see if past performance list is null
@@ -47,12 +49,15 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         val profileExtraInfoDto = ProfileExtraInfoDto(
                 profile_id = userProfile.profile_id,
                 userEntity = user.toDto(),
+                awards = awardEntityList,
         )
 
         return profileExtraInfoDto
     }
 
-    private fun saveAwards(savedProfileEntity: ProfileEntity?, awards: List<AwardRegistrationEntity>) {
+    private fun saveAwards(savedProfileEntity: ProfileEntity?, awards: List<AwardRegistrationEntity>) : List<AwardEntity> {
+        var awardEntityList = mutableListOf<AwardEntity>()
+
         for (i in awards){
             val awardEntity = AwardEntity(
                     null,
@@ -64,7 +69,9 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
             )
             awardsRepository.save(awardEntity)
             logger.info(LoggerMessages.LOG_SAVE_AWARD(awardEntity))
+            awardEntityList.add(awardEntity)
         }
+        return awardEntityList
     }
 }
 
