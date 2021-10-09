@@ -83,4 +83,17 @@ object LoggerMessages {
         return "Save Age Increment Member Entity: $ageIncrementMemberEntity"
     }
 
+
+
+
+
+
+
+    fun LOG_SAVE_PAST_PERFORMANCE(pastPerformanceEntity: PastPerformanceEntity):String {
+        return "Save Past Performance: $pastPerformanceEntity"
+
+    }
+
+
+
 }

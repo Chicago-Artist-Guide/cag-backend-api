@@ -1,6 +1,7 @@
 package com.cag.cagbackendapi.daos.impl
 
 import com.cag.cagbackendapi.constants.DetailedErrorMessages
+import com.cag.cagbackendapi.constants.LoggerMessages
 import com.cag.cagbackendapi.constants.LoggerMessages.GET_PROFILE
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_AGE_INCREMENT_MEMBER
 import com.cag.cagbackendapi.constants.LoggerMessages.LOG_SAVE_PROFILE
@@ -30,6 +31,12 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+
+
+
+    @Autowired
+    private lateinit var pastPerformanceRepository: PastPerformanceRepository
+
     @Autowired
     private lateinit var logger: Logger
 
@@ -41,6 +48,12 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         val userProfile = profileRepository.getByUserEntity_userId(userId) ?:
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
 
+        var pastPerformanceList = listOf<PastPerformanceEntity>()
+
+        if (profileRegistrationExtraInfoDto.past_performance!= null){
+            pastPerformanceList= savePastPerformance(userProfile, profileRegistrationExtraInfoDto.past_performance !!)
+        }
+
         /*
         1. check to see if past performance list is null
         2. create a method that iterates through the list of past performance
@@ -50,9 +63,40 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         val profileExtraInfoDto = ProfileExtraInfoDto(
                 profile_id = userProfile.profile_id,
                 userEntity = user.toDto(),
+
+                past_performance = pastPerformanceList,
         )
 
         return profileExtraInfoDto
+    }
+
+
+    private fun savePastPerformance(savedProfileEntity: ProfileEntity?, pastPerformances: List<PastPerformanceRegistrationEntity> ): List<PastPerformanceEntity>{
+        var pastPerformanceList = mutableListOf<PastPerformanceEntity>()
+
+        for (p in pastPerformances){
+            //build new pastPerformance object
+            val pastPerformance = PastPerformanceEntity(
+                null,
+                show_title = p.show_title,
+                role = p.role,
+                theater_or_location = p.theater_or_location,
+                show_url = p.show_url,
+                director = p.director,
+                musical_director = p.musical_director,
+                theater_group = p.theater_group,
+                profileEntity = savedProfileEntity
+
+            )
+
+            pastPerformanceRepository.save(pastPerformance)
+            logger.info(LoggerMessages.LOG_SAVE_PAST_PERFORMANCE(pastPerformance))
+            pastPerformanceList.add(pastPerformance)
+
+        }
+
+        return pastPerformanceList
+
     }
 }
 
