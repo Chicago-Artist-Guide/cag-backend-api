@@ -22,6 +22,9 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
     private lateinit var awardsRepository: AwardRepository
 
     @Autowired
+    private lateinit var trainingRepository: TrainingRepository
+
+    @Autowired
     private lateinit var userRepository: UserRepository
 
     @Autowired
@@ -30,6 +33,8 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
     override fun saveProfileExtraInfo(userId: UUID, profileRegistrationExtraInfoDto: ProfileRegistrationExtraInfoDto): ProfileExtraInfoDto {
 
         var awardEntityList = listOf<AwardEntity>()
+
+        var trainingEntityList = listOf<TrainingEntity>()
 
         val user = userRepository.getByUserId(userId) ?:
             throw NotFoundException(DetailedErrorMessages.USER_NOT_FOUND, null)
@@ -46,10 +51,15 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         3. for each pastPerformanceEntity, build the entity and save to database
         */
 
+        if(profileRegistrationExtraInfoDto.training != null) {
+            trainingEntityList = saveTraining(userProfile, profileRegistrationExtraInfoDto.training!!)
+        }
+
         val profileExtraInfoDto = ProfileExtraInfoDto(
                 profile_id = userProfile.profile_id,
                 userEntity = user.toDto(),
                 awards = awardEntityList,
+                training = trainingEntityList
         )
 
         return profileExtraInfoDto
@@ -72,6 +82,29 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
             awardEntityList.add(awardEntity)
         }
         return awardEntityList
+    }
+
+    private fun saveTraining(savedProfileEntity: ProfileEntity?, training: List<TrainingRegistrationEntity>) : List<TrainingEntity> {
+        var trainingEntityList = mutableListOf<TrainingEntity>()
+
+        for (i in training){
+            val trainingEntity = TrainingEntity(
+                training_id = null,
+                institution = i.institution,
+                degree = i.degree,
+                start_year = i.start_year,
+                end_year = i.end_year,
+                country = i.country,
+                city = i.city,
+                state = i.state,
+                notes = i.notes,
+                profileEntity = savedProfileEntity
+            )
+            trainingRepository.save(trainingEntity)
+            logger.info(LoggerMessages.LOG_SAVE_TRAINING(trainingEntity))
+            trainingEntityList.add(trainingEntity)
+        }
+        return trainingEntityList
     }
 }
 

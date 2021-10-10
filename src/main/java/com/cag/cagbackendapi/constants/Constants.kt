@@ -82,8 +82,10 @@ object LoggerMessages {
     fun LOG_SAVE_AGE_INCREMENT_MEMBER(ageIncrementMemberEntity: AgeIncrementMemberEntity): String {
         return "Save Age Increment Member Entity: $ageIncrementMemberEntity"
     }
-
     fun LOG_SAVE_AWARD(awardEntity: AwardEntity): String {
         return "Save Award Entity: $awardEntity"
+    }
+    fun LOG_SAVE_TRAINING(trainingEntity: TrainingEntity): String {
+        return "Save Award Entity: $trainingEntity"
     }
 }
