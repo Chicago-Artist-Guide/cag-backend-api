@@ -178,7 +178,7 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
-    fun saveUnionStatusMember(savedProfileEntity: ProfileEntity?, unionStatusName: String?) {
+    override fun saveUnionStatusMember(savedProfileEntity: ProfileEntity?, unionStatusName: String?) {
         if (unionStatusName != null) {
                 val unionStatusEntity = getUnionStatus(unionStatusName.lowercase())
 
