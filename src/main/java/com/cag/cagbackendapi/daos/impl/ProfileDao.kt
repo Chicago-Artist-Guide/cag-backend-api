@@ -72,7 +72,7 @@ class ProfileDao : ProfileDaoI {
         clearBadRequestMsg()
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
-        val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
+        //val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
         //val profilePhotoEntity = profileRegistrationDto.profile_photo_url
         //validateAgeIncrement(profileRegistrationDto.age_increment)
 
@@ -104,7 +104,13 @@ class ProfileDao : ProfileDaoI {
         val savedProfileEntity = profileRepository.save(profileEntity)
 
         //check & save union status member entity to union status member table
-        saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
+        //val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
+        //saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
+
+        //check for existing union and create if not found
+        if(profileRegistrationDto.demographic_union_status != null) {
+            saveUnionStatusMember(savedProfileEntity, profileRegistrationDto.demographic_union_status!!)
+        }
 
         //check for existing skill and create if not found
         if(profileRegistrationDto.actor_skills != null) {
@@ -172,11 +178,26 @@ class ProfileDao : ProfileDaoI {
         }
     }
 
+    fun saveUnionStatusMember(savedProfileEntity: ProfileEntity?, unionStatusName: String?) {
+        if (unionStatusName != null) {
+                val unionStatusEntity = getUnionStatus(unionStatusName.lowercase())
+
+            val unionStatusMemberEntity = UnionStatusMemberEntity(
+                    null,
+                    savedProfileEntity,
+                    unionStatusEntity
+            )
+
+            logger.info(LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity))
+            unionStatusMemberRepository.save(unionStatusMemberEntity)
+        }
+    }
+
     override fun uploadProfilePhotoS3(userId: String, profilePhotoId: UUID, profilePhoto: MultipartFile): String {
         return uploadS3(userId, profilePhotoId, profilePhoto);
     }
 
-    private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
+    /*private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
         val unionStatusMemberEntity = UnionStatusMemberEntity(
                 null,
                 savedProfileEntity,
@@ -185,9 +206,9 @@ class ProfileDao : ProfileDaoI {
 
         logger.info(LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity))
         unionStatusMemberRepository.save(unionStatusMemberEntity)
-    }
+    }*/
 
-    private fun validateUnionStatus(unionStatusName: String?): UnionStatusEntity? {
+    /*private fun validateUnionStatus(unionStatusName: String?): UnionStatusEntity? {
         val unionStatusEntity = unionStatusRepository.getByName(unionStatusName)
 
         if (unionStatusEntity == null) {
@@ -195,6 +216,15 @@ class ProfileDao : ProfileDaoI {
         }
 
         return unionStatusEntity
+    }*/
+
+    private fun getUnionStatus(unionStatusName: String?): UnionStatusEntity {
+        return if (unionStatusRepository.getByName(unionStatusName) != null ) {
+            unionStatusRepository.getByName(unionStatusName)
+        } else {
+            val unionStatusEntity = UnionStatusEntity(null, unionStatusName)
+            unionStatusRepository.save(unionStatusEntity)
+        }
     }
 
     private fun getUserSkill(userSkill: String?): SkillEntity {

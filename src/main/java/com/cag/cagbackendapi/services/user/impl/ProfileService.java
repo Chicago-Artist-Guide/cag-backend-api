@@ -97,9 +97,9 @@ public class ProfileService implements ProfileServiceI {
             badRequestMsg += DetailedErrorMessages.BIO_REQUIRED;
         }
 
-        if (profileRegistrationDto.getDemographic_union_status() == null || profileRegistrationDto.getDemographic_union_status().isBlank()) {
+        /*if (profileRegistrationDto.getDemographic_union_status() == null || profileRegistrationDto.getDemographic_union_status().isBlank()) {
             badRequestMsg += DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED;
-        }
+        }*/
 
         if(!badRequestMsg.isEmpty()){
             throw new BadRequestException(badRequestMsg,null);
