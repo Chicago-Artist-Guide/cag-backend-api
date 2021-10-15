@@ -8,8 +8,7 @@ import com.cag.cagbackendapi.errors.ErrorDetails
 import com.cag.cagbackendapi.util.SpringCommandLineProfileResolver
 import com.cag.cagbackendapi.util.TestDataCreatorService
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -465,8 +464,8 @@ class ProfileControllerIntegrationTests {
         assertEquals(validProfileExtraInfo.awards!![0].description, createdProfileExtraInfo.awards!![0].description)
         assertEquals(validProfileExtraInfo.awards!![0].year_received, createdProfileExtraInfo.awards!![0].year_received)
         assertNotNull(createdProfileExtraInfo.awards!![0].profileEntity)
-        assertEquals(validProfileExtraInfo.training, createdProfileExtraInfo.training)
-        assertEquals(validProfileExtraInfo.past_performance, createdProfileExtraInfo.past_performance)
+        assertTrue(createdProfileExtraInfo.training!!.isEmpty())
+        assertTrue(createdProfileExtraInfo.past_performance!!.isEmpty())
         assertEquals(validProfileExtraInfo.upcoming, createdProfileExtraInfo.upcoming)
         assertEquals(validProfileExtraInfo.additional_skills_checkboxes, createdProfileExtraInfo.additional_skills_checkboxes)
         assertEquals(validProfileExtraInfo.additional_skills_manual, createdProfileExtraInfo.additional_skills_manual)
