@@ -16,7 +16,7 @@ data class AwardEntity (
             strategy = "org.hibernate.id.UUIDGenerator")
     var award_id: UUID?,
     var name: String?,
-    var year_received: String?,
+    var year_received: Int?,
     var award_url: String?,
     var description: String?,
 

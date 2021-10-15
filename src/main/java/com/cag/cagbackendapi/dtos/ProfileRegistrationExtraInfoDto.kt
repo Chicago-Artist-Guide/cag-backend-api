@@ -9,5 +9,5 @@ data class ProfileRegistrationExtraInfoDto(
         var upcoming: List<UpcomingShowRegistrationEntity>? = null,
         var additional_skills_checkboxes: List<String>? = null,
         var additional_skills_manual: List<String>? = null,
-        var awards1: List<AwardRegistrationEntity>? = null
+        var awards: List<AwardRegistrationEntity>? = null
 )
