@@ -131,7 +131,7 @@ class ProfileServiceTest {
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
         val userProfile = ProfileRegistrationDto(pronouns = null, lgbtqplus_member = null, gender_identity = "", comfortable_playing_transition = true, comfortable_playing_man = true, comfortable_playing_women = true, comfortable_playing_neither = false, height_inches = null, agency = "Pedro LLC", website_link_one = "", website_link_two = "", website_type_one = "", website_type_two = "", bio = "", demographic_union_status = null)
-        val badRequestException = BadRequestException(DetailedErrorMessages.PRONOUN_REQUIRED + DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED  + DetailedErrorMessages.GENDER_IDENTITY_REQUIRED + DetailedErrorMessages.HEIGHT_INCHES_REQUIRED + DetailedErrorMessages.BIO_REQUIRED + DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED, null)
+        val badRequestException = BadRequestException(DetailedErrorMessages.PRONOUN_REQUIRED + DetailedErrorMessages.LGBTQPLUS_MEMBER_REQUIRED  + DetailedErrorMessages.GENDER_IDENTITY_REQUIRED + DetailedErrorMessages.HEIGHT_INCHES_REQUIRED + DetailedErrorMessages.BIO_REQUIRED, null)
 
         //act
         val actualException = assertThrows<BadRequestException> {
@@ -222,7 +222,7 @@ class ProfileServiceTest {
         verifyNoMoreInteractions(profileDao, passwordEncoder)
     }
 
-    @Test
+    /*@Test
     fun registerProfile_nullUnionStatus(){
         val userIdUUID = UUID.randomUUID()
         val userId = userIdUUID.toString()
@@ -237,5 +237,5 @@ class ProfileServiceTest {
         Assertions.assertEquals(badRequestException.message, actualException.message)
         verify(profileDao).getUserWithProfile(userIdUUID)
         verifyNoMoreInteractions(profileDao, passwordEncoder)
-    }
+    }*/
 }
