@@ -73,7 +73,7 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
                 profile_id = userProfile.profile_id,
                 userEntity = user.toDto(),
                 awards = awardEntityList,
-                training = trainingEntityList
+                training = trainingEntityList,
                 past_performance = pastPerformanceList,
 
         )
@@ -81,21 +81,21 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         return profileExtraInfoDto
     }
 
-    private fun savePastPerformance(savedProfileEntity: ProfileEntity?, pastPerformances: List<PastPerformanceRegistrationEntity> ): List<PastPerformanceEntity>{
+    private fun savePastPerformance(savedProfileEntity: ProfileEntity?, pastPerformances: List<PastPerformanceRegistrationEntity> ): List<PastPerformanceEntity> {
         var pastPerformanceList = mutableListOf<PastPerformanceEntity>()
 
-        for (p in pastPerformances){
+        for (p in pastPerformances) {
             //build new pastPerformance object
             val pastPerformance = PastPerformanceEntity(
-                null,
-                show_title = p.show_title,
-                role = p.role,
-                theater_or_location = p.theater_or_location,
-                show_url = p.show_url,
-                director = p.director,
-                musical_director = p.musical_director,
-                theater_group = p.theater_group,
-                profileEntity = savedProfileEntity
+                    null,
+                    show_title = p.show_title,
+                    role = p.role,
+                    theater_or_location = p.theater_or_location,
+                    show_url = p.show_url,
+                    director = p.director,
+                    musical_director = p.musical_director,
+                    theater_group = p.theater_group,
+                    profileEntity = savedProfileEntity
 
             )
 
@@ -106,11 +106,11 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         }
 
         return pastPerformanceList
-
-    private fun saveAwards(savedProfileEntity: ProfileEntity?, awards: List<AwardRegistrationEntity>) : List<AwardEntity> {
+    }
+    private fun saveAwards(savedProfileEntity: ProfileEntity?, awards: List<AwardRegistrationEntity>): List<AwardEntity> {
         var awardEntityList = mutableListOf<AwardEntity>()
 
-        for (i in awards){
+        for (i in awards) {
             val awardEntity = AwardEntity(
                     null,
                     name = i.name,
@@ -126,21 +126,21 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
         return awardEntityList
     }
 
-    private fun saveTraining(savedProfileEntity: ProfileEntity?, training: List<TrainingRegistrationEntity>) : List<TrainingEntity> {
+    private fun saveTraining(savedProfileEntity: ProfileEntity?, training: List<TrainingRegistrationEntity>): List<TrainingEntity> {
         var trainingEntityList = mutableListOf<TrainingEntity>()
 
-        for (i in training){
+        for (i in training) {
             val trainingEntity = TrainingEntity(
-                training_id = null,
-                institution = i.institution,
-                degree = i.degree,
-                start_year = i.start_year,
-                end_year = i.end_year,
-                country = i.country,
-                city = i.city,
-                state = i.state,
-                notes = i.notes,
-                profileEntity = savedProfileEntity
+                    training_id = null,
+                    institution = i.institution,
+                    degree = i.degree,
+                    start_year = i.start_year,
+                    end_year = i.end_year,
+                    country = i.country,
+                    city = i.city,
+                    state = i.state,
+                    notes = i.notes,
+                    profileEntity = savedProfileEntity
             )
             trainingRepository.save(trainingEntity)
             logger.info(LoggerMessages.LOG_SAVE_TRAINING(trainingEntity))
@@ -150,5 +150,6 @@ class ProfileExtraInfoDao : ProfileExtraInfoDaoI {
 
     }
 }
+
 
 
