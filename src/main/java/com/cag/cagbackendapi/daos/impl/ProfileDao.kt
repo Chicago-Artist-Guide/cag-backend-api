@@ -72,9 +72,7 @@ class ProfileDao : ProfileDaoI {
         clearBadRequestMsg()
         logger.info(LOG_SAVE_PROFILE(profileRegistrationDto))
 
-        //val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
         //val profilePhotoEntity = profileRegistrationDto.profile_photo_url
-        //validateAgeIncrement(profileRegistrationDto.age_increment)
 
         if (badRequestMsg.isNotEmpty()) {
             throw BadRequestException(badRequestMsg, null)
@@ -102,10 +100,6 @@ class ProfileDao : ProfileDaoI {
                 user)
 
         val savedProfileEntity = profileRepository.save(profileEntity)
-
-        //check & save union status member entity to union status member table
-        //val unionStatusEntity = validateUnionStatus(profileRegistrationDto.demographic_union_status)
-        //saveUnionStatusMemberEntity(savedProfileEntity, unionStatusEntity!!)
 
         //check for existing union and create if not found
         if(profileRegistrationDto.demographic_union_status != null) {
@@ -196,27 +190,6 @@ class ProfileDao : ProfileDaoI {
     override fun uploadProfilePhotoS3(userId: String, profilePhotoId: UUID, profilePhoto: MultipartFile): String {
         return uploadS3(userId, profilePhotoId, profilePhoto);
     }
-
-    /*private fun saveUnionStatusMemberEntity(savedProfileEntity: ProfileEntity, unionStatusEntity: UnionStatusEntity){
-        val unionStatusMemberEntity = UnionStatusMemberEntity(
-                null,
-                savedProfileEntity,
-                unionStatusEntity
-        )
-
-        logger.info(LOG_SAVE_UNION_STATUS_MEMBER(unionStatusMemberEntity))
-        unionStatusMemberRepository.save(unionStatusMemberEntity)
-    }*/
-
-    /*private fun validateUnionStatus(unionStatusName: String?): UnionStatusEntity? {
-        val unionStatusEntity = unionStatusRepository.getByName(unionStatusName)
-
-        if (unionStatusEntity == null) {
-            badRequestMsg += DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED
-        }
-
-        return unionStatusEntity
-    }*/
 
     private fun getUnionStatus(unionStatusName: String?): UnionStatusEntity {
         return if (unionStatusRepository.getByName(unionStatusName) != null ) {

@@ -312,84 +312,6 @@ class ProfileControllerIntegrationTests {
 
         testDataCreatorService.deleteUser(userIdUUID!!)
     }
-/*
-    @Test
-    fun registerProfile_invalidUnionStatus_400InvalidUnion() {
-        //create user headers
-        val validRegisterUser = testDataCreatorService.createValidRegisterUser()
-        val headers = HttpHeaders()
-        headers.set("authKey", validAuthKey)
-        val request = HttpEntity(validRegisterUser, headers)
-
-        //create user
-        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
-        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.userId
-
-        //register profile headers
-        val headers2 = HttpHeaders()
-        headers2.set("authKey", validAuthKey)
-        headers2.set("userId", userIdUUID.toString())
-        val request2 = HttpEntity(userProfileInvalidUnionStatus, headers2)
-
-        //create profile
-        val errorDetailsResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, ErrorDetails::class.java)
-
-        //check the created user
-        assertNotNull(createdUserResponse)
-        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertEquals(validRegisterUser.first_name, createUser.first_name)
-        assertEquals(validRegisterUser.last_name, createUser.last_name)
-        assertEquals(validRegisterUser.email, createUser.email)
-        assertNotNull(createUser.userId)
-
-        //check the error
-        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
-        assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.UNION_STATUS_NOT_SUPPORTED)
-
-        testDataCreatorService.deleteUser(userIdUUID!!)
-    }*/
-
-/*    @Test
-    fun registerProfile_nullUnionStatus_400BadRequest() {
-        //create user headers
-        val validRegisterUser = testDataCreatorService.createValidRegisterUser()
-        val headers = HttpHeaders()
-        headers.set("authKey", validAuthKey)
-        val request = HttpEntity(validRegisterUser, headers)
-
-        //create user
-        val createdUserResponse = testRestTemplate.postForEntity("/user/register", request, String::class.java)
-        val createUser = objectMapper.readValue(createdUserResponse.body, UserDto::class.java)
-        val userIdUUID = createUser.userId
-
-        //register profile headers
-        val headers2 = HttpHeaders()
-        headers2.set("authKey", validAuthKey)
-        headers2.set("userId", userIdUUID.toString())
-        val request2 = HttpEntity(userProfileNullUnionStatus, headers2)
-
-        //create profile
-        val errorDetailsResponse = testRestTemplate.exchange("/user/${userIdUUID.toString()}/profile/register", HttpMethod.POST, request2, ErrorDetails::class.java)
-
-        //check the created user
-        assertNotNull(createdUserResponse)
-        assertEquals(HttpStatus.CREATED, createdUserResponse.statusCode)
-        assertEquals(validRegisterUser.first_name, createUser.first_name)
-        assertEquals(validRegisterUser.last_name, createUser.last_name)
-        assertEquals(validRegisterUser.email, createUser.email)
-        assertNotNull(createUser.userId)
-
-        //check the error
-        assertEquals(HttpStatus.BAD_REQUEST, errorDetailsResponse.statusCode)
-        assertNotNull(errorDetailsResponse?.body?.time)
-        assertEquals(errorDetailsResponse?.body?.restErrorMessage, RestErrorMessages.BAD_REQUEST_MESSAGE)
-        assertEquals(errorDetailsResponse?.body?.detailedMessage, DetailedErrorMessages.UNION_STATUS_MEMBER_REQUIRED)
-
-        testDataCreatorService.deleteUser(userIdUUID!!)
-    }*/
 
     @Test
     fun registerProfileExtraInfo_validInput_201Success() {
@@ -465,7 +387,7 @@ class ProfileControllerIntegrationTests {
         assertEquals(validProfileExtraInfo.awards!![0].year_received, createdProfileExtraInfo.awards!![0].year_received)
         assertNotNull(createdProfileExtraInfo.awards!![0].profileEntity)
         assertTrue(createdProfileExtraInfo.training!!.isEmpty())
-        assertEquals(validProfileExtraInfo.past_performance, createdProfileExtraInfo.past_performance)
+        assertTrue(createdProfileExtraInfo.past_performance!!.isEmpty())
         assertEquals(validProfileExtraInfo.upcoming, createdProfileExtraInfo.upcoming)
         assertEquals(validProfileExtraInfo.additional_skills_checkboxes, createdProfileExtraInfo.additional_skills_checkboxes)
         assertEquals(validProfileExtraInfo.additional_skills_manual, createdProfileExtraInfo.additional_skills_manual)
