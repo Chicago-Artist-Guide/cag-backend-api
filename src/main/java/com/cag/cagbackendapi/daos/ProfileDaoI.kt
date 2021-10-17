@@ -13,4 +13,5 @@ interface ProfileDaoI {
     fun saveUserSkills(savedProfileEntity: ProfileEntity?, actorSkills: List<String>?)
     fun saveUserEthnicity(savedProfileEntity: ProfileEntity?, actorEthnicity: List<String>?)
     fun uploadProfilePhotoS3(userId: String, profilePhotoId: UUID, profilePhoto: MultipartFile): String?
+    fun saveUnionStatusMember(savedProfileEntity: ProfileEntity?, unionStatusName: String?)
 }
