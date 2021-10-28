@@ -8,6 +8,6 @@ data class ProfileRegistrationExtraInfoDto(
         var past_performance: List<PastPerformanceRegistrationEntity>? = null,
         var upcoming: List<UpcomingShowRegistrationEntity>? = null,
         var additional_skills_checkboxes: List<String>? = null,
-        var additional_skills_manual: List<String>? = null,
+        var additional_skills_manual: String? = null,
         var awards: List<AwardRegistrationEntity>? = null
 )

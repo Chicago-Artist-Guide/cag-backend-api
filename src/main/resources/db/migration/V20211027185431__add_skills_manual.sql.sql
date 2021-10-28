@@ -1,4 +1,4 @@
-create table addSkillsManual(
+create table add_skills_manual(
     skills_id uuid default uuid_generate_v4(),
     profile_id UUID NOT NULL,
     skills varchar(250),
